@@ -336,6 +336,12 @@ class Quiddler(arcade.View):
         self.get_go_down_pile_position()
         self.get_hand_position()
 
+        # Handle text in go_down pile
+        text = ''
+        for card in self.piles[GO_DOWN_PILE]:
+            text += self.card_dict[card]
+        self.text = text
+
 
 
 
@@ -375,7 +381,7 @@ class Quiddler(arcade.View):
                 self.piles[pile].remove(primary_card)
                 self.pull_to_top(self.held_cards[0], self.current_player)
 
-                logging.warning(self.held_cards_original_pile)
+                # logging.warning(self.held_cards_original_pile)
 
 
         if len(buttons) > 0:
@@ -504,7 +510,7 @@ class Quiddler(arcade.View):
 
                     letter = self.held_cards[0].value
                     self.text += letter
-                    print(self.text)
+                    logging.warning(self.text)
 
                     for card in self.held_cards:
                         self.move_card_to_new_pile(card, pile_index)
@@ -518,10 +524,10 @@ class Quiddler(arcade.View):
             if reset_position:
                 for card in self.held_cards:
                     self.move_card_to_new_pile(card, self.held_cards_original_pile)
-                    logging.warning(self.get_pile_for_card(self.held_cards[0]))
+                    # logging.warning(self.get_pile_for_card(self.held_cards[0]))
 
 
-        print(self.get_pile_for_card(self.held_cards[0]))
+
         self.held_cards = []
 
 
@@ -552,7 +558,7 @@ class Quiddler(arcade.View):
         except:
             pass
         self.piles[pile_index].append(card)
-        logging.warning(self.get_pile_for_card(card))
+        # logging.warning(self.get_pile_for_card(card))
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ENTER:
