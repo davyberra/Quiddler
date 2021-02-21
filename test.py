@@ -15,6 +15,9 @@ class QuiddlerTest(unittest.TestCase):
                        Quiddler.pull_to_top(self.player_2.card_list[5], self.player_2)
                        )
 
+    # def test_card_positions(self):
+
+
 
 if __name__ == '__main__':
     unittest.main()
