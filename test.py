@@ -1,11 +1,20 @@
-import main as Quiddler
+from main import Quiddler, Player, Card
 import unittest
 
 
 class QuiddlerTest(unittest.TestCase):
 
-    def test_len_player_hands(self):
-        if Quiddler.Quiddler.__init__(self).rnd == 1:
-            assert len(Quiddler.Quiddler.__init__(self).piles[Quiddler.PLAYER_1_HAND]) == 3
+    def setUp(self):
+        self.player_1 = Player()
+        self.player_2 = Player()
+        Quiddler.setup(Quiddler)
+
+    def test_player_card_list(self):
+
+       self.assertEqual(Quiddler.pull_to_top(self.player_1.card_list[5], self.player_1),
+                       Quiddler.pull_to_top(self.player_2.card_list[5], self.player_2)
+                       )
 
 
+if __name__ == '__main__':
+    unittest.main()

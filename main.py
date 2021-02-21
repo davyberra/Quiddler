@@ -1,5 +1,8 @@
 import arcade
 import random
+import pyglet
+import logging
+
 from nltk.corpus import words
 from pyglet.window import key
 
@@ -42,11 +45,19 @@ PLAYER_1 = 0
 PLAYER_2 = 1
 NUMBER_OF_PLAYERS = 2
 
-
+logging.basicConfig(level=logging.WARNING)
 
 class Card(arcade.Sprite):
+    """
+    Class for each card sprite.
+    """
 
     def __init__(self, value, scale=1):
+        """
+        Assigns the letter value to the card, and creates the appropriate image.
+        :param value: Letter(s) on card
+        :param scale: Scaled size of card
+        """
         self.value = value
 
         self.image_file_name = f"{self.value}.png"
@@ -64,9 +75,10 @@ class Player:
         self.hand_index = None
 
 
-
-
 class Quiddler(arcade.View):
+    """
+    Main application class.
+    """
 
     def __init__(self):
         super().__init__()
@@ -74,9 +86,11 @@ class Quiddler(arcade.View):
         self.player_list = []
         self.player_1 = Player()
         self.player_1.hand_index = PLAYER_1_HAND
+        self.player_1.pile_numbers_list = [0, 1, 2, 3]
         self.player_list.append(self.player_1)
         self.player_2 = Player()
         self.player_2.hand_index = PLAYER_2_HAND
+        self.player_2.pile_numbers_list = [0, 1, 2, 4]
         self.player_list.append(self.player_2)
 
         self.rnd = 1
@@ -99,15 +113,20 @@ class Quiddler(arcade.View):
 
         # List of Player Scores
         self.player_scores = None
-        self.text = ''
+        # Text string representing letters in the go_down pile.
+        self.text = None
         arcade.set_background_color(arcade.color.AMAZON)
 
     def setup(self):
+        """
+        Initializes values for piles, hands.
+        :return:
+        """
 
         self.text = ''
 
 
-        # List of cards we're dragging with the mouse
+        # List of cards we're dragging with the mouse ------------------------------------------------------------------
         self.held_cards = []
         # List of buttons currently pressed
         self.buttons_pressed = []
@@ -124,10 +143,10 @@ class Quiddler(arcade.View):
         self.piles[PLAYER_1_HAND] = arcade.SpriteList()
         self.piles[PLAYER_2_HAND] = arcade.SpriteList()
         self.piles[COMPLETED_CARDS] = arcade.SpriteList()
-        # self.player_1.card_list = arcade.SpriteList()
-        # self.player_2.card_list = arcade.SpriteList()
+        self.player_1.card_list = arcade.SpriteList()
+        self.player_2.card_list = arcade.SpriteList()
 
-
+        # Create buttons -----------------------------------------------------------------------------------------------
         self.next_turn_button = arcade.Sprite("next_turn.png")
         self.next_turn_button.center_x = 1160
         self.next_turn_button.center_y = 25
@@ -143,6 +162,7 @@ class Quiddler(arcade.View):
         self.save_word_button.center_y = 25
         self.button_list.append(self.save_word_button)
 
+        # Create a card dictionary with Card keys assigned to letter values
         self.card_dict = {}
 
         # Create sprite list with all the mats
@@ -158,7 +178,6 @@ class Quiddler(arcade.View):
         self.pile_mat_list.append(pile)
 
         # Create mat for going down
-
         pile = arcade.SpriteSolidColor(SCREEN_WIDTH, MAT_HEIGHT, arcade.color.ALIZARIN_CRIMSON)
         pile.position = SCREEN_WIDTH / 2, GO_DOWN_MAT_Y
         self.pile_mat_list.append(pile)
@@ -219,23 +238,12 @@ class Quiddler(arcade.View):
 
         self.piles[DISCARD_PILE].append(discard)
 
-        # Assign piles to each Player class that should be displayed on their turn
-        for num in range(GO_DOWN_PILE):
-            self.player_1.pile_numbers_list.append(num)
-            self.player_2.pile_numbers_list.append(num)
-        self.player_1.pile_numbers_list.append(PLAYER_1_HAND)
-        self.player_2.pile_numbers_list.append(PLAYER_2_HAND)
-
         # Create a list in each Player with all of the cards displayed,
         # to help with rendering order
         for player in self.player_list:
             for index in player.pile_numbers_list:
                 for card in self.piles[index]:
                     player.card_list.append(card)
-
-        print(len(self.player_1.card_list))
-        print(len(self.player_2.card_list))
-        print(len(self.piles[FACE_DOWN_PILE]))
 
         # Initiate player turn
         self.current_player = self.player_1
@@ -245,7 +253,7 @@ class Quiddler(arcade.View):
         self.has_discarded = False
 
         """ Test which cards are being drawn """
-        self.player_2.card_list = arcade.SpriteList()
+        # self.player_2.card_list = arcade.SpriteList()
 
     def on_show(self):
 
@@ -294,18 +302,39 @@ class Quiddler(arcade.View):
 
         self.pile_mat_list.draw()
 
-        # self.current_player.card_list.draw()
+        # if self.current_player == self.player_1:
+        #     self.player_1.card_list.draw()
+        # elif self.current_player == self.player_2:
+        #     self.player_2.card_list.draw()
 
-        self.piles[FACE_DOWN_PILE].draw()
+        self.current_player.card_list.draw()
 
-        self.piles[DISCARD_PILE].draw()
+        # self.card_list.draw()
 
-        self.piles[GO_DOWN_PILE].draw()
+        # self.piles[FACE_DOWN_PILE].draw()
+        #
+        # self.piles[DISCARD_PILE].draw()
+        #
+        # self.piles[GO_DOWN_PILE].draw()
+        #
+        # self.piles[self.current_player.hand_index].draw()
+        #
+        # self.piles[COMPLETED_CARDS].draw()
 
-        self.piles[self.current_player.hand_index].draw()
-
-        self.piles[COMPLETED_CARDS].draw()
-
+    def on_update(self, delta_time: float):
+        """
+        Update card positions every 1/60 second based on the card's pile.
+        :param delta_time:
+        :return:
+        """
+        for card in self.piles[FACE_DOWN_PILE]:
+            card.center_x, card.center_y = FACE_DOWN_POSITION_X, FACE_DOWN_POSITION_Y
+        for card in self.piles[DISCARD_PILE]:
+            card.center_x, card.center_y = DISCARD_POSITION_X, DISCARD_POSITION_Y
+        for card in self.piles[COMPLETED_CARDS]:
+            card.center_x, card.center_y = COMPLETED_CARD_POSITION_X, COMPLETED_CARD_POSITION_Y
+        self.get_go_down_pile_position()
+        self.get_hand_position()
 
 
 
@@ -342,8 +371,12 @@ class Quiddler(arcade.View):
                 pile = self.get_pile_for_card(cards[0])
                 primary_card = self.held_cards[-1]
                 self.held_cards = [primary_card]
-                self.held_cards_original_position = [self.held_cards[0].position]
+                self.held_cards_original_pile: int = pile
+                self.piles[pile].remove(primary_card)
                 self.pull_to_top(self.held_cards[0], self.current_player)
+
+                logging.warning(self.held_cards_original_pile)
+
 
         if len(buttons) > 0:
             self.buttons_pressed = buttons
@@ -384,7 +417,7 @@ class Quiddler(arcade.View):
                         for i in range(len(self.piles[GO_DOWN_PILE])):
                             card = self.piles[GO_DOWN_PILE][0]
                             self.move_card_to_new_pile(card, COMPLETED_CARDS)
-                            card.position = COMPLETED_CARD_POSITION_X, COMPLETED_CARD_POSITION_Y
+
                     else:
                         print("Sorry, that's not a word. Dumbass.")
 
@@ -393,7 +426,7 @@ class Quiddler(arcade.View):
                             self.move_card_to_new_pile(card, self.current_player.hand_index)
 
                         self.text = ''
-                        self.get_hand_position()
+
 
                     self.text = ''
                     if len(self.piles[GO_DOWN_PILE]) != len(self.text):
@@ -424,15 +457,14 @@ class Quiddler(arcade.View):
                             self.has_discarded = True
 
                     elif pile_index == GO_DOWN_PILE:
-                        letter = self.card_dict[self.held_cards[0]]
-                        self.text += letter
-                        print(self.text)
+                        # letter = self.held_cards[0].value
+                        # self.text += letter
+                        # print(self.text)
 
                         for card in self.held_cards:
                             self.move_card_to_new_pile(card, pile_index)
-                            self.get_go_down_pile_position()
 
-            elif self.get_pile_for_card(self.held_cards[0]) == FACE_DOWN_PILE or self.get_pile_for_card(self.held_cards[0]) == DISCARD_PILE:
+            elif self.held_cards_original_pile == FACE_DOWN_PILE or self.held_cards_original_pile == DISCARD_PILE:
                 if arcade.check_for_collision(self.held_cards[0], pile):
                     pile_index = self.pile_mat_list.index(pile)
 
@@ -442,7 +474,6 @@ class Quiddler(arcade.View):
                     else:
                         for card in self.held_cards:
                             self.move_card_to_new_pile(card, self.current_player.hand_index)
-                        self.get_hand_position()
 
                         self.has_drawn = True
 
@@ -450,20 +481,15 @@ class Quiddler(arcade.View):
 
                 pile_index = self.pile_mat_list.index(pile)
 
-                if pile_index == self.get_pile_for_card(self.held_cards[0]):
-                    current_position = self.held_cards[0].position
-                    if current_position != self.held_cards_original_position:
-                        for pile_index, card in enumerate(self.held_cards):
-                            card.position = self.held_cards_original_position[pile_index]
-                    else:
-                        pass
+                if pile_index == self.held_cards_original_pile:
+                    self.move_card_to_new_pile(self.held_cards[0], self.held_cards_original_pile)
 
                 elif pile_index == FACE_DOWN_PILE:
                     pass
 
                 elif pile_index == DISCARD_PILE:
-                    for i, dropped_card in enumerate(self.held_cards):
-                        dropped_card.position = pile.center_x, pile.center_y
+                    # for i, dropped_card in enumerate(self.held_cards):
+                    #     dropped_card.position = pile.center_x, pile.center_y
 
                     for card in self.held_cards:
                         self.move_card_to_new_pile(card, pile_index)
@@ -472,17 +498,17 @@ class Quiddler(arcade.View):
 
                     for card in self.held_cards:
                         self.move_card_to_new_pile(card, self.current_player.hand_index)
-                    self.get_hand_position()
+
 
                 elif pile_index == GO_DOWN_PILE:
 
-                    letter = self.card_dict[self.held_cards[0]]
+                    letter = self.held_cards[0].value
                     self.text += letter
                     print(self.text)
 
                     for card in self.held_cards:
                         self.move_card_to_new_pile(card, pile_index)
-                        self.get_go_down_pile_position()
+
 
 
 
@@ -490,12 +516,15 @@ class Quiddler(arcade.View):
                 reset_position = False
 
             if reset_position:
-                for pile_index, card in enumerate(self.held_cards):
-                    card.position = self.held_cards_original_position[pile_index]
+                for card in self.held_cards:
+                    self.move_card_to_new_pile(card, self.held_cards_original_pile)
+                    logging.warning(self.get_pile_for_card(self.held_cards[0]))
 
+
+        print(self.get_pile_for_card(self.held_cards[0]))
         self.held_cards = []
 
-        self.get_hand_position()
+
 
         self.buttons_pressed = []
 
@@ -518,8 +547,12 @@ class Quiddler(arcade.View):
                 break
 
     def move_card_to_new_pile(self, card, pile_index):
-        self.remove_card_from_pile(card)
+        try:
+            self.remove_card_from_pile(card)
+        except:
+            pass
         self.piles[pile_index].append(card)
+        logging.warning(self.get_pile_for_card(card))
 
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ENTER:
