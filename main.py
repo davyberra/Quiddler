@@ -266,9 +266,13 @@ class Quiddler(arcade.View):
                 for card in self.piles[index]:
                     player.card_list.append(card)
 
-        # Initiate player turn
-        self.current_player = self.player_1
-        self.player_1_turn = True
+        # Initiate player turn, depending on rnd
+        if self.rnd % 2 == 1:
+            self.current_player = self.player_1
+            self.player_1_turn = True
+        else:
+            self.current_player = self.player_2
+            self.player_1_turn = False
 
         self.has_drawn = False
         self.has_discarded = False
@@ -460,6 +464,7 @@ class Quiddler(arcade.View):
                                 self.get_completed_words()
 
                             self.round_end_sequence()
+                            
 
                     elif not self.player_1_turn:
                         if self.player_1.has_gone_down:
@@ -613,6 +618,8 @@ class Quiddler(arcade.View):
         if len(self.piles[COMPLETED_CARDS]) > self.rnd + 2:
             logging.warning("You need to have a discard.")
             self.recall_sequence()
+        elif len(self.piles[COMPLETED_CARDS]) == 0:
+            pass
         else:
             word_length_list = []
             current_score = 0
