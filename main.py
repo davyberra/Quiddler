@@ -309,9 +309,9 @@ class Quiddler(arcade.View):
     def go_down_straightline(self, i):
         return 120 * i - (((self.rnd + 1) * 120) / 2) + 640
 
-    def pull_to_top(self, card, current_player):
+    def pull_to_top(self, card):
         # Figure out which player's card list is being used
-        card_pile = current_player.card_list
+        card_pile = self.card_list
         # Loop and pull all the other cards down towards the zero end
         for i in range(len(card_pile) - 1):
             card_pile[i] = card_pile[i + 1]
@@ -402,14 +402,12 @@ class Quiddler(arcade.View):
         buttons = arcade.get_sprites_at_point((x, y), self.button_list)
 
 
-        if self.has_discarded:
-            pass
 
-        elif len(cards) > 0:
+        if len(cards) > 0:
 
             self.held_cards = cards
 
-            for card in cards:
+            for card in self.held_cards:
                 if card in self.piles[COMPLETED_CARDS]:
                     self.held_cards = []
 
@@ -425,12 +423,12 @@ class Quiddler(arcade.View):
                             if self.held_cards[i] in self.piles[PLAYER_1_HAND]:
                                 self.held_cards.remove(self.held_cards[i])
 
-                pile = self.get_pile_for_card(cards[0])
-                self.held_cards = [self.held_cards[-1]]
 
+                self.held_cards = [self.held_cards[-1]]
+                pile = self.get_pile_for_card(self.held_cards[0])
                 self.held_cards_original_pile: int = pile
                 self.piles[pile].remove(self.held_cards[0])
-                self.pull_to_top(self.held_cards[0], self.current_player)
+                self.pull_to_top(self.held_cards[0])
 
                 # logging.warning(self.held_cards_original_pile)
 
@@ -450,7 +448,10 @@ class Quiddler(arcade.View):
         if len(self.held_cards) == 0 and len(self.buttons_pressed) == 0:
             return
 
+
+
         if len(self.buttons_pressed) > 0:
+
             if self.next_turn_button in self.buttons_pressed:
                 rnd_end = False
 
@@ -481,6 +482,9 @@ class Quiddler(arcade.View):
                     if len(self.piles[COMPLETED_CARDS]) != 0:
                         for _ in range(len(self.piles[COMPLETED_CARDS])):
                             self.move_card_to_new_pile(self.piles[COMPLETED_CARDS][0], self.current_player.hand_index)
+                    if len(self.piles[GO_DOWN_PILE]) != 0:
+                        for _ in range(len(self.piles[GO_DOWN_PILE])):
+                            self.move_card_to_new_pile(self.piles[GO_DOWN_PILE][0], self.current_player.hand_index)
 
                     if not rnd_end:
                         self.player_1_turn = not self.player_1_turn
@@ -519,80 +523,133 @@ class Quiddler(arcade.View):
             elif self.recall_button in self.buttons_pressed:
                 self.recall_sequence()
 
+
         if len(self.held_cards) > 0 and len(self.buttons_pressed) == 0:
 
             pile, distance = arcade.get_closest_sprite(self.held_cards[0], self.pile_mat_list)
             reset_position = True
-            if self.has_drawn:
-                if arcade.check_for_collision(self.held_cards[0], pile):
-                    pile_index = self.pile_mat_list.index(pile)
 
-                    if pile_index == FACE_DOWN_PILE:
-                        pass
-                    elif pile_index == DISCARD_PILE:
+            if modifiers and arcade.key.MOD_CTRL and button == arcade.MOUSE_BUTTON_LEFT:
+                pile_index = self.held_cards_original_pile
 
-                        if self.held_cards_original_pile == self.current_player.hand_index:
-                            self.move_card_to_new_pile(self.held_cards[0], pile_index)
-                            self.has_discarded = True
-                            self.next_turn_button.texture = arcade.load_texture(NEXT_TURN)
-                            reset_position = False
-                        for card in self.piles[DISCARD_PILE]:
-                            logging.warning(card.value)
-
-                    elif pile_index == GO_DOWN_PILE:
-                        # letter = self.held_cards[0].value
-                        # self.text += letter
-                        # print(self.text)
-
-                        for card in self.held_cards:
-                            self.move_card_to_new_pile(card, pile_index)
-                            reset_position = False
-
-            elif self.held_cards_original_pile == FACE_DOWN_PILE or self.held_cards_original_pile == DISCARD_PILE:
-                if arcade.check_for_collision(self.held_cards[0], pile):
-                    pile_index = self.pile_mat_list.index(pile)
-
-                    if pile_index != PLAYER_1_HAND:
-                        reset_position = True
-
-                    else:
-                        for card in self.held_cards:
-                            self.move_card_to_new_pile(card, self.current_player.hand_index)
-
-                        self.has_drawn = True
-
-                        reset_position = False
-
-            elif arcade.check_for_collision(self.held_cards[0], pile) and not self.has_drawn:
-
-                pile_index = self.pile_mat_list.index(pile)
-
-                if pile_index == self.held_cards_original_pile:
-                    reset_position = True
-
-                elif pile_index == FACE_DOWN_PILE:
-                    reset_position = True
-
-                elif pile_index == DISCARD_PILE:
-                    reset_position = True
-
-
-                elif pile_index == PLAYER_1_HAND:
-
-                    for card in self.held_cards:
-                        self.move_card_to_new_pile(card, self.current_player.hand_index)
-                    reset_position = False
-
-                elif pile_index == GO_DOWN_PILE:
-
+                if pile_index == self.current_player.hand_index:
                     letter = self.held_cards[0].value
                     self.go_down_text += letter
                     logging.warning(self.go_down_text)
-
                     for card in self.held_cards:
-                        self.move_card_to_new_pile(card, pile_index)
-                
-                    reset_position = False
+                        self.move_card_to_new_pile(card, GO_DOWN_PILE)
+                        reset_position = False
+
+                elif pile_index == GO_DOWN_PILE:
+                    for card in self.held_cards:
+                        self.move_card_to_new_pile(card, self.current_player.hand_index)
+                        reset_position = False
+
+                if pile_index == FACE_DOWN_PILE or pile_index == DISCARD_PILE:
+                    if not self.has_drawn:
+                        for card in self.held_cards:
+                            self.move_card_to_new_pile(card, self.current_player.hand_index)
+                        self.has_drawn = True
+                        reset_position = False
+                else:
+                    pass
+
+
+
+            elif modifiers and arcade.key.MOD_CTRL and button == arcade.MOUSE_BUTTON_RIGHT:
+                pile_index = self.held_cards_original_pile
+
+                if pile_index != self.current_player.hand_index:
+                    pass
+
+                elif pile_index == self.current_player.hand_index:
+                    if not self.has_drawn or self.has_discarded:
+                        pass
+
+                    elif self.has_drawn:
+                        for card in self.held_cards:
+                            self.move_card_to_new_pile(card, DISCARD_PILE)
+                        self.has_discarded = True
+                        self.next_turn_button.texture = arcade.load_texture(NEXT_TURN)
+
+                        reset_position = False
+
+            elif not modifiers and button == arcade.MOUSE_BUTTON_LEFT:
+                if self.has_drawn:
+                    if arcade.check_for_collision(self.held_cards[0], pile):
+                        pile_index = self.pile_mat_list.index(pile)
+
+                        if pile_index == FACE_DOWN_PILE:
+                            pass
+                        elif pile_index == DISCARD_PILE:
+                            if not self.has_discarded:
+                                if self.held_cards_original_pile == self.current_player.hand_index:
+                                    self.move_card_to_new_pile(self.held_cards[0], pile_index)
+                                    self.has_discarded = True
+                                    self.next_turn_button.texture = arcade.load_texture(NEXT_TURN)
+                                    reset_position = False
+
+                            current_discard_pile = []
+                            for card in self.piles[DISCARD_PILE]:
+                                current_discard_pile.append(card.value)
+                            logging.warning(current_discard_pile)
+
+                        elif pile_index == GO_DOWN_PILE:
+                            # letter = self.held_cards[0].value
+                            # self.text += letter
+                            # print(self.text)
+
+                            for card in self.held_cards:
+                                self.move_card_to_new_pile(card, pile_index)
+                                reset_position = False
+
+                elif self.held_cards_original_pile == FACE_DOWN_PILE or self.held_cards_original_pile == DISCARD_PILE:
+                    if arcade.check_for_collision(self.held_cards[0], pile):
+                        pile_index = self.pile_mat_list.index(pile)
+
+                        if pile_index != PLAYER_1_HAND:
+                            reset_position = True
+
+                        else:
+                            for card in self.held_cards:
+                                self.move_card_to_new_pile(card, self.current_player.hand_index)
+
+                            self.has_drawn = True
+
+                            reset_position = False
+
+                elif arcade.check_for_collision(self.held_cards[0], pile) and not self.has_drawn:
+
+                    pile_index = self.pile_mat_list.index(pile)
+
+                    if pile_index == self.held_cards_original_pile:
+                        reset_position = True
+
+                    elif pile_index == FACE_DOWN_PILE:
+                        reset_position = True
+
+                    elif pile_index == DISCARD_PILE:
+                        reset_position = True
+
+
+                    elif pile_index == PLAYER_1_HAND:
+
+                        for card in self.held_cards:
+                            self.move_card_to_new_pile(card, self.current_player.hand_index)
+                        reset_position = False
+
+                    elif pile_index == GO_DOWN_PILE:
+
+                        letter = self.held_cards[0].value
+                        self.go_down_text += letter
+                        logging.warning(self.go_down_text)
+
+                        for card in self.held_cards:
+                            self.move_card_to_new_pile(card, pile_index)
+
+                        reset_position = False
+            else:
+                pass
 
             if reset_position:
                 for card in self.held_cards:
