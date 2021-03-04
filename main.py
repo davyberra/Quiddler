@@ -3,10 +3,11 @@ import random
 import pyglet
 import logging
 
+from word_list import get_word_list
 from nltk.corpus import words
 from pyglet.window import key
 
-WORD_LIST = words.words()
+WORD_LIST = get_word_list()
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 960
 MAT_WIDTH = 120
@@ -310,7 +311,6 @@ class Quiddler(arcade.View):
         return 120 * i - (((self.rnd + 1) * 120) / 2) + 640
 
     def pull_to_top(self, card):
-        # Figure out which player's card list is being used
         card_pile = self.card_list
         # Loop and pull all the other cards down towards the zero end
         for i in range(len(card_pile) - 1):
@@ -364,6 +364,18 @@ class Quiddler(arcade.View):
         arcade.draw_text(str(self.current_player), 1000, 900, arcade.color.WHITE, font_size=24, anchor_x="center")
         arcade.draw_text(f"Round: {self.rnd}", 1200, 900, arcade.color.WHITE, font_size=24, anchor_x="center")
 
+        # Draw 'final turn' when other player has gone down
+        if self.player_1_turn:
+            if self.player_2.has_gone_down:
+                arcade.draw_text("Final Turn", 1200, 800, arcade.color.ALIZARIN_CRIMSON, font_size=30,
+                                 anchor_x="center")
+
+        elif not self.player_1_turn:
+            if self.player_1.has_gone_down:
+                arcade.draw_text("Final Turn", 1100, 800, arcade.color.RED_VIOLET, font_size=30,
+                                 anchor_x="center")
+
+
 
     def on_update(self, delta_time: float):
         """
@@ -398,39 +410,49 @@ class Quiddler(arcade.View):
 
     def on_mouse_press(self, x, y, button, key_modifiers):
 
-        cards = arcade.get_sprites_at_point((x, y), self.card_list)
+        self.held_cards = arcade.get_sprites_at_point((x, y), self.card_list)
+        for card in self.held_cards:
+            logging.warning(card.value)
+        logging.warning(self.held_cards)
         buttons = arcade.get_sprites_at_point((x, y), self.button_list)
 
 
 
-        if len(cards) > 0:
-
-            self.held_cards = cards
+        if len(self.held_cards) > 0:
 
             for card in self.held_cards:
                 if card in self.piles[COMPLETED_CARDS]:
                     self.held_cards = []
 
             if len(self.held_cards) > 0:
+                logging.warning(len(self.held_cards))
+                logging.warning(len(self.piles[self.current_player.hand_index]))
                 if self.current_player == self.player_1:
                     for i in range(len(self.held_cards)):
                         if i < len(self.held_cards):
                             if self.held_cards[i] in self.piles[PLAYER_2_HAND]:
-                                self.held_cards.remove(self.held_cards[i])
+                                pile = self.get_pile_for_card(self.held_cards[i])
+                                self.move_card_to_new_pile(self.held_cards[i], pile)
+                                # self.held_cards.remove(self.held_cards[i])
                 if self.current_player == self.player_2:
                     for i in range(len(self.held_cards)):
                         if i < len(self.held_cards):
+
                             if self.held_cards[i] in self.piles[PLAYER_1_HAND]:
-                                self.held_cards.remove(self.held_cards[i])
+                                pile = self.get_pile_for_card(self.held_cards[i])
+                                self.move_card_to_new_pile(self.held_cards[i], pile)
+                                # self.held_cards.remove(self.held_cards[i])
 
+                for _ in range(len(self.held_cards) - 1 ):
+                    self.held_cards.remove(self.held_cards[0])
 
-                self.held_cards = [self.held_cards[-1]]
                 pile = self.get_pile_for_card(self.held_cards[0])
                 self.held_cards_original_pile: int = pile
-                self.piles[pile].remove(self.held_cards[0])
+                self.remove_card_from_pile(id(self.held_cards[0]))
+                # self.piles[pile].remove(self.held_cards[0])
                 self.pull_to_top(self.held_cards[0])
 
-                # logging.warning(self.held_cards_original_pile)
+                logging.warning(len(self.held_cards))
 
 
         if len(buttons) > 0:
@@ -751,17 +773,18 @@ class Quiddler(arcade.View):
             if card in pile:
                 return index
 
-    def remove_card_from_pile(self, card):
+    def remove_card_from_pile(self, card_id):
         for pile in self.piles:
-            if card in pile:
-                pile.remove(card)
-                break
+            for card in pile:
+                if id(card) == card_id:
+                    pile.remove(card)
+                    break
 
     def move_card_to_new_pile(self, card, pile_index):
-        try:
-            self.remove_card_from_pile(card)
-        except:
-            pass
+        # try:
+        #     self.remove_card_from_pile(card)
+        # except:
+        #     pass
         self.piles[pile_index].append(card)
         # logging.warning(self.get_pile_for_card(card))
 
