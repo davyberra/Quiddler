@@ -1,11 +1,9 @@
 import arcade
 import random
-import pyglet
 import logging
 
 from word_list import get_word_list
-from nltk.corpus import words
-from pyglet.window import key
+
 
 WORD_LIST = get_word_list()
 SCREEN_WIDTH = 1280
@@ -33,6 +31,8 @@ SAVE_WORD = "images/save_word.png"
 SAVE_WORD_PRESSED = "images/save_word_pressed.png"
 RECALL = "images/recall.png"
 RECALL_PRESSED = "images/recall_pressed.png"
+UNDO = "images/undo.png"
+UNDO_PRESSED = "images/undo_pressed.png"
 
 FACE_DOWN_POSITION_X, FACE_DOWN_POSITION_Y = (SCREEN_WIDTH / 2) - 70, SCREEN_HEIGHT - SCREEN_HEIGHT / 4
 DISCARD_POSITION_X, DISCARD_POSITION_Y = (SCREEN_WIDTH / 2) + 70, SCREEN_HEIGHT - SCREEN_HEIGHT / 4
@@ -126,6 +126,7 @@ class Quiddler(arcade.View):
         self.go_down_button = None
         self.save_word_button = None
         self.recall_button = None
+        self.undo_button = None
 
         self.card_dict = None
         self.pile_mat_list = None
@@ -139,6 +140,9 @@ class Quiddler(arcade.View):
         self.has_discarded = False
         self.completed_words_list = []
         self.card_input_original_position = None
+        self.drawn_card_original_pile = None
+        self.moves = None
+        self.last_move = None
 
 
         arcade.set_background_color(arcade.color.AMAZON)
@@ -151,6 +155,8 @@ class Quiddler(arcade.View):
 
         self.go_down_text = ''
         self.completed_words_list = []
+        self.moves = 0
+        self.last_move = 0
 
 
         # List of cards we're dragging with the mouse ------------------------------------------------------------------
@@ -193,6 +199,11 @@ class Quiddler(arcade.View):
         self.recall_button.center_x = 250
         self.recall_button.center_y = 25
         self.button_list.append(self.recall_button)
+
+        self.undo_button = arcade.Sprite(UNDO)
+        self.undo_button.center_x = 75
+        self.undo_button.center_y = SCREEN_HEIGHT - 25
+        self.button_list.append(self.undo_button)
 
         # Create a card dictionary with Card keys assigned to letter values
         self.card_dict = {}
@@ -358,7 +369,7 @@ class Quiddler(arcade.View):
         # Draw 'final turn' when other player has gone down
         if self.player_1_turn:
             if self.player_2.has_gone_down:
-                arcade.draw_text("Final Turn", 1200, 800, arcade.color.ALIZARIN_CRIMSON, font_size=40,
+                arcade.draw_text("Final Turn", 1100, 600, arcade.color.ALIZARIN_CRIMSON, font_size=40,
                                  anchor_x="center")
 
         elif not self.player_1_turn:
@@ -473,6 +484,11 @@ class Quiddler(arcade.View):
                 self.save_word_button.texture = arcade.load_texture(SAVE_WORD_PRESSED)
             elif self.recall_button in self.buttons_pressed:
                 self.recall_button.texture = arcade.load_texture(RECALL_PRESSED)
+            elif self.next_turn_button in self.buttons_pressed:
+                self.next_turn_button.texture = arcade.load_texture(NEXT_TURN_PRESSED)
+            elif self.undo_button in self.buttons_pressed:
+                self.undo_button.texture = arcade.load_texture(UNDO_PRESSED)
+
 
     def on_mouse_release(self, x: float, y: float, button: int,
                          modifiers: int):
@@ -482,77 +498,115 @@ class Quiddler(arcade.View):
 
 
         if len(self.buttons_pressed) > 0:
+            buttons = arcade.get_sprites_at_point((x, y), self.button_list)
+            if self.buttons_pressed == buttons:
+                if self.undo_button in self.buttons_pressed:
+                    if self.moves == self.last_move + 1:
+                        if self.has_drawn and not self.has_discarded:
+                            undo_card = self.piles[self.current_player.hand_index][-1]
+                            self.move_card_to_new_pile(undo_card, self.drawn_card_original_pile)
+                            undo_card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
+                            self.has_drawn = False
 
-            if self.next_turn_button in self.buttons_pressed:
-                rnd_end = False
+                        elif self.has_discarded:
+                            undo_card = self.piles[DISCARD_PILE][-1]
+                            self.move_card_to_new_pile(undo_card, self.current_player.hand_index)
+                            self.has_discarded = False
+                            self.next_turn_button.texture = arcade.load_texture(NEXT_TURN_PRESSED)
 
+                    self.undo_button.texture = arcade.load_texture(UNDO)
+                if self.next_turn_button in self.buttons_pressed:
+                    rnd_end = False
+
+                    if self.has_discarded:
+                        self.next_turn_button.texture = arcade.load_texture(NEXT_TURN)
+
+
+                        if self.player_1_turn:
+                            if self.player_2.has_gone_down:
+                                self.current_player.has_gone_down = True
+
+                                if len(self.piles[COMPLETED_CARDS]) != 0 or len(self.piles[self.current_player.hand_index]) != 0:
+                                    self.get_completed_words()
+                                rnd_end = True
+                                self.round_end_sequence()
+
+
+
+                        elif not self.player_1_turn:
+                            if self.player_1.has_gone_down:
+                                self.current_player.has_gone_down = True
+
+                                if len(self.piles[COMPLETED_CARDS]) != 0 or len(self.piles[self.current_player.hand_index]) != 0:
+                                    self.get_completed_words()
+                                rnd_end = True
+                                self.round_end_sequence()
+
+                        if len(self.piles[COMPLETED_CARDS]) != 0:
+                            for _ in range(len(self.piles[COMPLETED_CARDS])):
+                                self.move_card_to_new_pile(self.piles[COMPLETED_CARDS][0], self.current_player.hand_index)
+                        if len(self.piles[GO_DOWN_PILE]) != 0:
+                            for _ in range(len(self.piles[GO_DOWN_PILE])):
+                                self.move_card_to_new_pile(self.piles[GO_DOWN_PILE][0], self.current_player.hand_index)
+
+                        if not rnd_end:
+                            self.player_1_turn = not self.player_1_turn
+                            if not self.player_1_turn:
+                                self.current_player = self.player_2
+                            else:
+                                self.current_player = self.player_1
+                            game_view = SplashScreen(self, current_player=self.current_player, rnd_end=False,
+                                                     rnd_number=None)
+                            self.window.show_view(game_view)
+
+                        self.has_drawn = False
+                        self.has_discarded = False
+                        self.buttons_pressed = []
+                        self.completed_words_list = []
+                        self.next_turn_button.texture = arcade.load_texture(NEXT_TURN_PRESSED)
+
+
+
+
+                    else:
+                        pass
+
+                elif self.go_down_button in self.buttons_pressed:
+                    self.go_down_button.texture = arcade.load_texture(GO_DOWN)
+                    if len(self.piles[GO_DOWN_PILE]) == 0 and len(self.piles[self.current_player.hand_index]) == 0:
+                        self.current_player.has_gone_down = True
+
+                        self.get_completed_words()
+                        for _ in range(len(self.piles[COMPLETED_CARDS])):
+                            self.piles[COMPLETED_CARDS].pop()
+
+                    else:
+                        logging.warning("You can't go down yet.")
+
+
+
+                elif self.save_word_button in self.buttons_pressed:
+                    self.save_word_button.texture = arcade.load_texture(SAVE_WORD)
+                    self.save_word_sequence()
+
+                elif self.recall_button in self.buttons_pressed:
+                    self.recall_button.texture = arcade.load_texture(RECALL)
+                    self.recall_sequence()
+
+            elif self.buttons_pressed[0] == self.save_word_button:
+                self.save_word_button.texture = arcade.load_texture(SAVE_WORD)
+            elif self.buttons_pressed[0] == self.recall_button:
+                self.recall_button.texture = arcade.load_texture(RECALL)
+            elif self.buttons_pressed[0] == self.go_down_button:
+                self.go_down_button.texture = arcade.load_texture(GO_DOWN)
+            elif self.buttons_pressed[0] == self.next_turn_button:
                 if self.has_discarded:
                     self.next_turn_button.texture = arcade.load_texture(NEXT_TURN)
-
-
-                    if self.player_1_turn:
-                        if self.player_2.has_gone_down:
-                            self.current_player.has_gone_down = True
-
-                            if len(self.piles[COMPLETED_CARDS]) != 0 or len(self.piles[self.current_player.hand_index]) != 0:
-                                self.get_completed_words()
-                            rnd_end = True
-                            self.round_end_sequence()
-
-
-
-                    elif not self.player_1_turn:
-                        if self.player_1.has_gone_down:
-                            self.current_player.has_gone_down = True
-
-                            if len(self.piles[COMPLETED_CARDS]) != 0 or len(self.piles[self.current_player.hand_index]) != 0:
-                                self.get_completed_words()
-                            rnd_end = True
-                            self.round_end_sequence()
-
-                    if len(self.piles[COMPLETED_CARDS]) != 0:
-                        for _ in range(len(self.piles[COMPLETED_CARDS])):
-                            self.move_card_to_new_pile(self.piles[COMPLETED_CARDS][0], self.current_player.hand_index)
-                    if len(self.piles[GO_DOWN_PILE]) != 0:
-                        for _ in range(len(self.piles[GO_DOWN_PILE])):
-                            self.move_card_to_new_pile(self.piles[GO_DOWN_PILE][0], self.current_player.hand_index)
-
-                    if not rnd_end:
-                        self.player_1_turn = not self.player_1_turn
-                        if not self.player_1_turn:
-                            self.current_player = self.player_2
-                        else:
-                            self.current_player = self.player_1
-                    self.has_drawn = False
-                    self.has_discarded = False
-                    self.buttons_pressed = []
-                    self.completed_words_list = []
-                    self.next_turn_button.texture = arcade.load_texture(NEXT_TURN_PRESSED)
-
-
                 else:
                     pass
+            elif self.buttons_pressed[0] == self.undo_button:
+                self.undo_button.texture = arcade.load_texture(UNDO)
 
-            elif self.go_down_button in self.buttons_pressed:
-                self.go_down_button.texture = arcade.load_texture(GO_DOWN)
-                if len(self.piles[GO_DOWN_PILE]) == 0 and len(self.piles[self.current_player.hand_index]) == 0:
-                    self.current_player.has_gone_down = True
-
-                    self.get_completed_words()
-                    for _ in range(len(self.piles[COMPLETED_CARDS])):
-                        self.piles[COMPLETED_CARDS].pop()
-
-                else:
-                    logging.warning("You can't go down yet.")
-
-
-
-            elif self.save_word_button in self.buttons_pressed:
-                self.save_word_button.texture = arcade.load_texture(SAVE_WORD)
-                self.save_word_sequence()
-
-            elif self.recall_button in self.buttons_pressed:
-                self.recall_sequence()
 
 
         if len(self.held_cards) > 0 and len(self.buttons_pressed) == 0:
@@ -581,6 +635,8 @@ class Quiddler(arcade.View):
                         for card in self.held_cards:
                             self.move_card_to_new_pile(card, self.current_player.hand_index)
                         self.has_drawn = True
+                        self.drawn_card_original_pile = pile_index
+                        self.last_move = self.moves
                         reset_position = False
                 else:
                     pass
@@ -601,6 +657,7 @@ class Quiddler(arcade.View):
                         for card in self.held_cards:
                             self.move_card_to_new_pile(card, DISCARD_PILE)
                         self.has_discarded = True
+                        self.last_move = self.moves
                         self.next_turn_button.texture = arcade.load_texture(NEXT_TURN)
 
                         reset_position = False
@@ -617,6 +674,7 @@ class Quiddler(arcade.View):
                                 if self.held_cards_original_pile == self.current_player.hand_index:
                                     self.move_card_to_new_pile(self.held_cards[0], pile_index)
                                     self.has_discarded = True
+                                    self.last_move = self.moves
                                     self.next_turn_button.texture = arcade.load_texture(NEXT_TURN)
                                     reset_position = False
 
@@ -646,7 +704,8 @@ class Quiddler(arcade.View):
                                 self.move_card_to_new_pile(card, self.current_player.hand_index)
 
                             self.has_drawn = True
-
+                            self.drawn_card_original_pile = pile_index
+                            self.last_move = self.moves
                             reset_position = False
 
                 elif arcade.check_for_collision(self.held_cards[0], pile) and not self.has_drawn:
@@ -679,8 +738,11 @@ class Quiddler(arcade.View):
                             self.move_card_to_new_pile(card, pile_index)
 
                         reset_position = False
+
             else:
                 pass
+
+            self.moves += 1
 
             if reset_position:
                 for card in self.held_cards:
@@ -737,7 +799,10 @@ class Quiddler(arcade.View):
         if self.rnd > 8:
             game_view = GameEnd(player_1_score=self.player_1.total_score, player_2_score=self.player_2.total_score)
             self.window.show_view(game_view)
-        self.setup()
+        else:
+            game_view = SplashScreen(self, self.current_player, rnd_end=True, rnd_number=self.rnd)
+            self.window.show_view(game_view)
+            self.setup()
 
     def save_word_sequence(self):
         if len(self.go_down_text) > 1:
@@ -824,11 +889,26 @@ class Quiddler(arcade.View):
                     break
 
 
+class SplashScreen(arcade.View):
 
+    def __init__(self, game_view, current_player, rnd_end, rnd_number):
+        super().__init__()
+        self.game_view = game_view
+        self.current_player = current_player
+        self.rnd_end = rnd_end
+        self.rnd_number = rnd_number
 
-    # def round_end(self):
-    #     self.rnd += 1
-    #     self.setup()
+    def on_draw(self):
+        arcade.draw_rectangle_filled(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 400, 300, arcade.color.ALIZARIN_CRIMSON)
+        if self.rnd_end:
+            arcade.draw_text(f'Round {self.rnd_number}', SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 100, arcade.color.WHITE,
+                             font_size=24, anchor_x="center")
+        arcade.draw_text(f"{self.current_player}'s Turn.", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100, arcade.color.WHITE,
+                             font_size=24, anchor_x="center")
+
+    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+        self.window.show_view(self.game_view)
+
 
 class GameEnd(arcade.View):
 
