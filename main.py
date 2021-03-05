@@ -85,6 +85,7 @@ class Player:
         self.hand_index = None
         self.has_gone_down = False
         self.longest_words = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0}
+        self.color = None
 
     def __str__(self):
         return self.player_name
@@ -102,10 +103,12 @@ class Quiddler(arcade.View):
         self.player_1 = Player('Player 1')
         self.player_1.hand_index = PLAYER_1_HAND
         self.player_1.pile_numbers_list = [0, 1, 2, 3, 5]
+        self.player_1.color = arcade.color.ALLOY_ORANGE
         self.player_list.append(self.player_1)
         self.player_2 = Player('Player 2')
         self.player_2.hand_index = PLAYER_2_HAND
         self.player_2.pile_numbers_list = [0, 1, 2, 4, 5]
+        self.player_2.color = arcade.color.AIR_FORCE_BLUE
         self.player_list.append(self.player_2)
 
         self.rnd = 1
@@ -118,10 +121,11 @@ class Quiddler(arcade.View):
         self.piles = None
         self.player_1_turn = None
 
-        # self.current_player = None
+        self.current_player = None
         self.next_turn_button = None
         self.go_down_button = None
         self.save_word_button = None
+        self.recall_button = None
 
         self.card_dict = None
         self.pile_mat_list = None
@@ -130,6 +134,13 @@ class Quiddler(arcade.View):
         self.player_scores = None
         # Text string representing letters in the go_down pile.
         self.go_down_text = None
+
+        self.has_drawn = False
+        self.has_discarded = False
+        self.completed_words_list = []
+        self.card_input_original_position = None
+
+
         arcade.set_background_color(arcade.color.AMAZON)
 
     def setup(self):
@@ -199,13 +210,13 @@ class Quiddler(arcade.View):
         self.pile_mat_list.append(pile)
 
         # Create mat for going down
-        pile = arcade.SpriteSolidColor(SCREEN_WIDTH, MAT_HEIGHT, arcade.color.ALIZARIN_CRIMSON)
+        pile = arcade.SpriteSolidColor(SCREEN_WIDTH, MAT_HEIGHT, arcade.color.GLAUCOUS)
         pile.position = SCREEN_WIDTH / 2, GO_DOWN_MAT_Y
         self.pile_mat_list.append(pile)
 
         # Create mat for the player hands
         for i in range(2):
-            pile = arcade.SpriteSolidColor((self.rnd + 2) * MAT_WIDTH, MAT_HEIGHT, arcade.color.ALIZARIN_CRIMSON)
+            pile = arcade.SpriteSolidColor((self.rnd + 2) * MAT_WIDTH, MAT_HEIGHT, arcade.color.AMAZON)
             pile.position = SCREEN_WIDTH / 2, PLAYER_HAND_Y
             self.pile_mat_list.append(pile)
 
@@ -329,26 +340,6 @@ class Quiddler(arcade.View):
 
         self.pile_mat_list.draw()
 
-        # if self.current_player == self.player_1:
-        #     self.player_1.card_list.draw()
-        # elif self.current_player == self.player_2:
-        #     self.player_2.card_list.draw()
-
-        # self.current_player.card_list.draw()
-
-        # self.card_list.draw()
-
-        # self.piles[FACE_DOWN_PILE].draw()
-        #
-        # self.piles[DISCARD_PILE].draw()
-        #
-        # self.piles[GO_DOWN_PILE].draw()
-        #
-        # self.piles[self.current_player.hand_index].draw()
-        #
-        # self.piles[COMPLETED_CARDS].draw()
-
-
         for pile in self.current_player.pile_numbers_list:
             self.piles[pile].draw()
 
@@ -361,18 +352,18 @@ class Quiddler(arcade.View):
                          anchor_x="center")
         arcade.draw_text(str(self.player_2.total_score), SCREEN_WIDTH / 2 + 50, 900, arcade.color.WHITE, font_size=24,
                          anchor_x="center")
-        arcade.draw_text(str(self.current_player), 1000, 900, arcade.color.WHITE, font_size=24, anchor_x="center")
+        arcade.draw_text(str(self.current_player), 1000, 900, self.current_player.color, font_size=40, anchor_x="center")
         arcade.draw_text(f"Round: {self.rnd}", 1200, 900, arcade.color.WHITE, font_size=24, anchor_x="center")
 
         # Draw 'final turn' when other player has gone down
         if self.player_1_turn:
             if self.player_2.has_gone_down:
-                arcade.draw_text("Final Turn", 1200, 800, arcade.color.ALIZARIN_CRIMSON, font_size=30,
+                arcade.draw_text("Final Turn", 1200, 800, arcade.color.ALIZARIN_CRIMSON, font_size=40,
                                  anchor_x="center")
 
         elif not self.player_1_turn:
             if self.player_1.has_gone_down:
-                arcade.draw_text("Final Turn", 1100, 800, arcade.color.RED_VIOLET, font_size=30,
+                arcade.draw_text("Final Turn", 1100, 600, arcade.color.ALIZARIN_CRIMSON, font_size=40,
                                  anchor_x="center")
 
 
@@ -410,50 +401,68 @@ class Quiddler(arcade.View):
 
     def on_mouse_press(self, x, y, button, key_modifiers):
 
-        self.held_cards = arcade.get_sprites_at_point((x, y), self.card_list)
-        for card in self.held_cards:
-            logging.warning(card.value)
-        logging.warning(self.held_cards)
+        pile = arcade.get_sprites_at_point((x, y), self.pile_mat_list)
+        if pile:
+            for value in pile:
+                logging.debug(f'Pile #: {self.pile_mat_list.index(value)}')
+            if len(pile) > 1:
+                pile.remove(pile[-1])
+            if self.pile_mat_list.index(pile[0]) == FACE_DOWN_PILE:
+                cards = arcade.get_sprites_at_point((x, y), self.piles[FACE_DOWN_PILE])
+            elif self.pile_mat_list.index(pile[0]) == DISCARD_PILE:
+                cards = arcade.get_sprites_at_point((x, y), self.piles[DISCARD_PILE])
+            elif self.pile_mat_list.index(pile[0]) == PLAYER_1_HAND or pile == PLAYER_2_HAND:
+                cards = arcade.get_sprites_at_point((x, y), self.piles[self.current_player.hand_index])
+            elif self.pile_mat_list.index(pile[0]) == GO_DOWN_PILE:
+                cards = arcade.get_sprites_at_point((x, y), self.piles[GO_DOWN_PILE])
+            elif self.pile_mat_list.index(pile[0]) == COMPLETED_CARDS:
+                pass
+
+        # cards = arcade.get_sprites_at_point((x, y), self.card_list)
+            logging.debug('-' * 100)
+            for i, card in enumerate(cards):
+                logging.warning(f'#{i} card in held_cards: {card.value}')
+            logging.warning(f'cards variable: {cards}')
+        else:
+            cards = []
         buttons = arcade.get_sprites_at_point((x, y), self.button_list)
 
 
 
-        if len(self.held_cards) > 0:
-
+        if len(cards) > 0:
+            self.held_cards = cards
             for card in self.held_cards:
                 if card in self.piles[COMPLETED_CARDS]:
                     self.held_cards = []
 
             if len(self.held_cards) > 0:
-                logging.warning(len(self.held_cards))
-                logging.warning(len(self.piles[self.current_player.hand_index]))
+                logging.warning(f'Length of held_cards: {len(self.held_cards)}')
+                logging.warning(f'Length of Player hand: {len(self.piles[self.current_player.hand_index])}')
                 if self.current_player == self.player_1:
                     for i in range(len(self.held_cards)):
                         if i < len(self.held_cards):
-                            if self.held_cards[i] in self.piles[PLAYER_2_HAND]:
-                                pile = self.get_pile_for_card(self.held_cards[i])
-                                self.move_card_to_new_pile(self.held_cards[i], pile)
-                                # self.held_cards.remove(self.held_cards[i])
+                            for card in self.piles[PLAYER_2_HAND]:
+                                if id(self.held_cards[i]) == id(card):
+
+                                    self.held_cards.remove(self.held_cards[i])
                 if self.current_player == self.player_2:
                     for i in range(len(self.held_cards)):
                         if i < len(self.held_cards):
+                            for card in self.piles[PLAYER_1_HAND]:
+                                if id(self.held_cards[i]) == id(card):
+                                    self.held_cards.remove(self.held_cards[i])
 
-                            if self.held_cards[i] in self.piles[PLAYER_1_HAND]:
-                                pile = self.get_pile_for_card(self.held_cards[i])
-                                self.move_card_to_new_pile(self.held_cards[i], pile)
-                                # self.held_cards.remove(self.held_cards[i])
-
-                for _ in range(len(self.held_cards) - 1 ):
+                for _ in range(len(self.held_cards) - 1):
                     self.held_cards.remove(self.held_cards[0])
 
                 pile = self.get_pile_for_card(self.held_cards[0])
                 self.held_cards_original_pile: int = pile
-                self.remove_card_from_pile(id(self.held_cards[0]))
-                # self.piles[pile].remove(self.held_cards[0])
+
+                self.piles[pile].remove(self.held_cards[0])
                 self.pull_to_top(self.held_cards[0])
 
-                logging.warning(len(self.held_cards))
-
+                logging.warning(f'Length of held_cards at the end of mouse_press sequence: {len(self.held_cards)}')
+                logging.debug('-' * 50)
 
         if len(buttons) > 0:
             self.buttons_pressed = buttons
@@ -726,7 +735,7 @@ class Quiddler(arcade.View):
         self.rnd += 1
         self.buttons_pressed = []
         if self.rnd > 8:
-            game_view = GameEnd()
+            game_view = GameEnd(player_1_score=self.player_1.total_score, player_2_score=self.player_2.total_score)
             self.window.show_view(game_view)
         self.setup()
 
@@ -781,10 +790,10 @@ class Quiddler(arcade.View):
                     break
 
     def move_card_to_new_pile(self, card, pile_index):
-        # try:
-        #     self.remove_card_from_pile(card)
-        # except:
-        #     pass
+        try:
+            self.remove_card_from_pile(id(card))
+        except:
+            pass
         self.piles[pile_index].append(card)
         # logging.warning(self.get_pile_for_card(card))
 
@@ -821,8 +830,49 @@ class Quiddler(arcade.View):
     #     self.rnd += 1
     #     self.setup()
 
+class GameEnd(arcade.View):
 
+    def __init__(self, player_1_score, player_2_score):
+        super().__init__()
+        self.player_1_score = player_1_score
+        self.player_2_score = player_2_score
+        self.winner = None
+        self.draw = False
 
+        if self.player_1_score > self.player_2_score:
+            self.winner = 'Player 1'
+        elif self.player_2_score > self.player_1_score:
+            self.winner = 'Player 2'
+        elif self.player_1_score == self.player_2_score:
+            self.draw = True
+
+    def on_show(self):
+        arcade.set_background_color(arcade.csscolor.DARK_SLATE_BLUE)
+
+    def on_draw(self):
+        arcade.start_render()
+        if self.winner:
+            arcade.draw_text(f'Congratulations, {self.winner}!\nYou won by {abs(self.player_2_score - self.player_1_score)}.',
+                             SCREEN_WIDTH / 2, SCREEN_HEIGHT - 100, arcade.color.WHITE, font_size=24, align="center",
+                             anchor_x="center")
+        elif self.draw:
+            arcade.draw_text(f'Congratulations, Player 1 and Player 2 - you tied!\nA rematch must be had to determine who is the best Quiddler player!',
+                SCREEN_WIDTH / 2, SCREEN_HEIGHT - 100, arcade.color.WHITE, font_size=24, align="center",
+                             anchor_x="center")
+        arcade.draw_text(f'SCORES\n\nPlayer 1: {self.player_1_score}       Player 2: {self.player_2_score}',
+                             SCREEN_WIDTH / 2, SCREEN_HEIGHT - 400, arcade.color.WHITE, font_size=24, align="center",
+                         anchor_x="center")
+        arcade.draw_text("Would you like to play again?\nPress 'y' for yes, 'n' for no.",
+                         SCREEN_WIDTH / 2, SCREEN_HEIGHT - 700, arcade.color.WHITE, font_size=24, align="center",
+                         anchor_x="center")
+
+    def on_key_press(self, key, modifiers: int):
+        if key == arcade.key.Y:
+            game_view = Quiddler()
+            game_view.setup()
+            self.window.show_view(game_view)
+        elif key == arcade.key.N:
+            exit()
 
 
 
@@ -844,9 +894,6 @@ class GameMenu(arcade.View):
         game_view.setup()
         self.window.show_view(game_view)
 
-
-class GameEnd(arcade.View):
-    pass
 
 class GoDownMenu(arcade.View):
 
