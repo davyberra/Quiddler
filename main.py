@@ -1,6 +1,7 @@
 import arcade
 import random
 import logging
+import time
 
 from word_list import get_word_list
 
@@ -102,7 +103,7 @@ class Quiddler(arcade.View):
     Main application class.
     """
 
-    def __init__(self):
+    def __init__(self, rnd_number):
         super().__init__()
         # Initialize Players and add them to a list of all players
         self.player_list = []
@@ -118,6 +119,7 @@ class Quiddler(arcade.View):
         self.player_list.append(self.player_2)
 
         self.rnd = 1
+        self.rnd_max = rnd_number
         self.card_list = None
         self.mat_list = None
         self.button_list = None
@@ -149,6 +151,7 @@ class Quiddler(arcade.View):
         self.drawn_card_original_pile = None
         self.moves = None
         self.last_move = None
+        self.score_change_list= None
 
 
         arcade.set_background_color(arcade.color.AMAZON)
@@ -163,6 +166,7 @@ class Quiddler(arcade.View):
         self.completed_words_list = []
         self.moves = 0
         self.last_move = 0
+        self.score_change_list = []
 
 
         # List of cards we're dragging with the mouse ------------------------------------------------------------------
@@ -383,6 +387,22 @@ class Quiddler(arcade.View):
                 arcade.draw_text("Final Turn", 1100, 600, arcade.color.ALIZARIN_CRIMSON, font_size=40,
                                  anchor_x="center")
 
+        for score_list in self.score_change_list:
+            x, y, color, prefix = 0, 0, None, None
+            if score_list[0] == self.player_1:
+                x, y = SCREEN_WIDTH / 2 - 100, 900
+            elif score_list[0] == self.player_2:
+                x, y = SCREEN_WIDTH / 2 + 100, 900
+
+            if score_list[1] >= 0:
+                color = arcade.color.GREEN
+                prefix = '+'
+            elif score_list[1] < 0:
+                color = arcade.color.RED
+                prefix = ''
+
+            arcade.draw_text(f'{prefix}{score_list[1]}', x, y, color, font_size=24, anchor_x="center")
+
 
 
     def on_update(self, delta_time: float):
@@ -409,6 +429,11 @@ class Quiddler(arcade.View):
             text += self.card_dict[card]
         self.go_down_text = text
 
+        for score_list in self.score_change_list:
+            if score_list[2] > 200:
+                self.score_change_list.remove(score_list)
+            else:
+                score_list[2] += 1
 
 
 
@@ -537,6 +562,8 @@ class Quiddler(arcade.View):
 
                                 if len(self.piles[COMPLETED_CARDS]) != 0 or len(self.piles[self.current_player.hand_index]) != 0:
                                     self.get_completed_words()
+
+
                                 rnd_end = True
                                 self.round_end_sequence()
 
@@ -548,6 +575,8 @@ class Quiddler(arcade.View):
 
                                 if len(self.piles[COMPLETED_CARDS]) != 0 or len(self.piles[self.current_player.hand_index]) != 0:
                                     self.get_completed_words()
+
+
                                 rnd_end = True
                                 self.round_end_sequence()
 
@@ -566,8 +595,9 @@ class Quiddler(arcade.View):
                                 self.current_player = self.player_2
                             else:
                                 self.current_player = self.player_1
-                            game_view = SplashScreen(self, current_player=self.current_player, rnd_end=False,
-                                                     rnd_number=None)
+                            game_view = SplashScreen(self, current_player=self.current_player, player_1=self.player_1,
+                                                     player_2=self.player_2, rnd_end=False,
+                                                     rnd_number=None, score_change_list=self.score_change_list)
                             self.window.show_view(game_view)
 
                         self.has_drawn = False
@@ -804,6 +834,7 @@ class Quiddler(arcade.View):
                     current_score -= CARD_SCORE[card.value]
             logging.warning(current_score)
             self.current_player.total_score += current_score
+            self.score_change_list.append([self.current_player, current_score, 0])
 
             if len(word_length_list) > 0:
                 word_length_list.sort()
@@ -814,19 +845,26 @@ class Quiddler(arcade.View):
     def round_end_sequence(self):
 
         if self.player_1.longest_words[self.rnd] > self.player_2.longest_words[self.rnd]:
+            current_score = 10
             self.player_1.total_score += 10
+            self.score_change_list.append([self.player_1, current_score, 0])
         elif self.player_1.longest_words[self.rnd] < self.player_2.longest_words[self.rnd]:
+            current_score = 10
             self.player_2.total_score += 10
+            self.score_change_list.append([self.player_2, current_score, 0])
+
 
         self.rnd += 1
         self.buttons_pressed = []
-        if self.rnd > 8:
+        if self.rnd > self.rnd_max:
             game_view = GameEnd(player_1_score=self.player_1.total_score, player_2_score=self.player_2.total_score)
             self.window.show_view(game_view)
         else:
-            game_view = SplashScreen(self, self.current_player, rnd_end=True, rnd_number=self.rnd)
-            self.window.show_view(game_view)
             self.setup()
+            game_view = SplashScreen(self, self.current_player, player_1=self.player_1, player_2=self.player_2,
+                                     rnd_end=True, rnd_number=self.rnd, score_change_list=self.score_change_list)
+            self.window.show_view(game_view)
+
 
     def save_word_sequence(self):
         if len(self.go_down_text) > 1:
@@ -925,12 +963,15 @@ class Quiddler(arcade.View):
 
 class SplashScreen(arcade.View):
 
-    def __init__(self, game_view, current_player, rnd_end, rnd_number):
+    def __init__(self, game_view, current_player, player_1, player_2, rnd_end, rnd_number, score_change_list):
         super().__init__()
         self.game_view = game_view
         self.current_player = current_player
         self.rnd_end = rnd_end
         self.rnd_number = rnd_number
+        self.score_change_list = score_change_list
+        self.player_1 = player_1
+        self.player_2 = player_2
 
     def on_draw(self):
         arcade.draw_rectangle_filled(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 400, 300, arcade.color.ALIZARIN_CRIMSON)
@@ -939,6 +980,22 @@ class SplashScreen(arcade.View):
                              font_size=24, anchor_x="center")
         arcade.draw_text(f"{self.current_player}'s Turn.", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100, arcade.color.WHITE,
                              font_size=24, anchor_x="center")
+
+        for score_list in self.score_change_list:
+            x, y, color, prefix = 0, 0, None, None
+            if score_list[0] == self.player_1:
+                x, y = SCREEN_WIDTH / 2 - 100, 900
+            elif score_list[0] == self.player_2:
+                x, y = SCREEN_WIDTH / 2 + 100, 900
+
+            if score_list[1] >= 0:
+                color = arcade.color.GREEN
+                prefix = '+'
+            elif score_list[1] < 0:
+                color = arcade.color.RED
+                prefix = ''
+
+            arcade.draw_text(f'{prefix}{score_list[1]}', x, y, color, font_size=24, anchor_x="center")
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         self.window.show_view(self.game_view)
@@ -982,8 +1039,7 @@ class GameEnd(arcade.View):
 
     def on_key_press(self, key, modifiers: int):
         if key == arcade.key.Y:
-            game_view = Quiddler()
-            game_view.setup()
+            game_view = GameMenu()
             self.window.show_view(game_view)
         elif key == arcade.key.N:
             exit()
@@ -999,32 +1055,44 @@ class GameMenu(arcade.View):
     def on_draw(self):
         """ Draw this view """
         arcade.start_render()
-        arcade.draw_text("QUIDDLER", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE, font_size=100, anchor_x="center")
-        arcade.draw_text("Click anywhere to start", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100, arcade.color.WHITE, font_size=40, anchor_x="center")
+        arcade.draw_text("QUIDDLER\n", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.WHITE, font_size=100, anchor_x="center")
+        arcade.draw_text("Press '1' for a half-game (up through 10 cards)\n\n"
+                         "Press '2' for a full-game (up to 10 and back down)",
+                         SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100, arcade.color.WHITE, font_size=40, anchor_x="center")
 
-    def on_mouse_press(self, x, y, button, modifiers):
-        """ If the user presses the mouse button, start the game. """
-        game_view = Quiddler()
-        game_view.setup()
-        self.window.show_view(game_view)
+    # def on_mouse_press(self, x, y, button, modifiers):
+    #     """ If the user presses the mouse button, start the game. """
+    #     game_view = Quiddler()
+    #     game_view.setup()
+    #     self.window.show_view(game_view)
+
+    def on_key_press(self, symbol: int, modifiers: int):
+        if symbol == arcade.key.KEY_1 or symbol == arcade.key.NUM_1:
+            game_view = Quiddler(rnd_number=8)
+            game_view.setup()
+            self.window.show_view(game_view)
+        elif symbol == arcade.key.KEY_2 or symbol == arcade.key.NUM_2:
+            game_view = Quiddler(rnd_number=16)
+            game_view.setup()
+            self.window.show_view(game_view)
 
 
-class GoDownMenu(arcade.View):
-
-    def __init__(self, game_view):
-        super().__init__()
-        self.game_view = game_view
-
-    def on_show(self):
-        arcade.set_background_color(arcade.csscolor.FOREST_GREEN)
-
-    def on_draw(self):
-        arcade.start_render()
-        arcade.draw_text("This is the go-down menu", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100, arcade.color.WHITE,
-                         font_size=40, anchor_x="center")
-
-    def on_mouse_press(self, x, y, button, modifiers):
-        self.window.show_view(self.game_view)
+# class GoDownMenu(arcade.View):
+#
+#     def __init__(self, game_view):
+#         super().__init__()
+#         self.game_view = game_view
+#
+#     def on_show(self):
+#         arcade.set_background_color(arcade.csscolor.FOREST_GREEN)
+#
+#     def on_draw(self):
+#         arcade.start_render()
+#         arcade.draw_text("This is the go-down menu", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100, arcade.color.WHITE,
+#                          font_size=40, anchor_x="center")
+#
+#     def on_mouse_press(self, x, y, button, modifiers):
+#         self.window.show_view(self.game_view)
 
 
 def main():
