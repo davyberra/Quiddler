@@ -34,6 +34,12 @@ RECALL_PRESSED = "images/recall_pressed.png"
 UNDO = "images/undo.png"
 UNDO_PRESSED = "images/undo_pressed.png"
 
+CARD_MOVE_SOUND = arcade.load_sound("sounds/card_move.ogg")
+SAVE_WORD_SOUND = arcade.load_sound("sounds/save_word.ogg")
+GO_DOWN_SOUND = arcade.load_sound("sounds/go_down.ogg")
+WRONG_WORD_SOUND = arcade.load_sound("sounds/wrong_word.ogg")
+
+
 FACE_DOWN_POSITION_X, FACE_DOWN_POSITION_Y = (SCREEN_WIDTH / 2) - 70, SCREEN_HEIGHT - SCREEN_HEIGHT / 4
 DISCARD_POSITION_X, DISCARD_POSITION_Y = (SCREEN_WIDTH / 2) + 70, SCREEN_HEIGHT - SCREEN_HEIGHT / 4
 COMPLETED_CARD_POSITION_X, COMPLETED_CARD_POSITION_Y = 150, SCREEN_HEIGHT - 150
@@ -504,15 +510,18 @@ class Quiddler(arcade.View):
                     if self.moves == self.last_move + 1:
                         if self.has_drawn and not self.has_discarded:
                             undo_card = self.piles[self.current_player.hand_index][-1]
-                            self.move_card_to_new_pile(undo_card, self.drawn_card_original_pile)
+                            self.move_card_to_new_pile(undo_card, self.drawn_card_original_pile,
+                                                       self.held_cards_original_pile)
                             undo_card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
                             self.has_drawn = False
+                            arcade.play_sound(WRONG_WORD_SOUND, volume=0.5)
 
                         elif self.has_discarded:
                             undo_card = self.piles[DISCARD_PILE][-1]
-                            self.move_card_to_new_pile(undo_card, self.current_player.hand_index)
+                            self.move_card_to_new_pile(undo_card, self.current_player.hand_index, DISCARD_PILE)
                             self.has_discarded = False
                             self.next_turn_button.texture = arcade.load_texture(NEXT_TURN_PRESSED)
+                            arcade.play_sound(WRONG_WORD_SOUND, volume=0.5)
 
                     self.undo_button.texture = arcade.load_texture(UNDO)
                 if self.next_turn_button in self.buttons_pressed:
@@ -544,10 +553,12 @@ class Quiddler(arcade.View):
 
                         if len(self.piles[COMPLETED_CARDS]) != 0:
                             for _ in range(len(self.piles[COMPLETED_CARDS])):
-                                self.move_card_to_new_pile(self.piles[COMPLETED_CARDS][0], self.current_player.hand_index)
+                                self.move_card_to_new_pile(self.piles[COMPLETED_CARDS][0], self.current_player.hand_index,
+                                                           COMPLETED_CARDS)
                         if len(self.piles[GO_DOWN_PILE]) != 0:
                             for _ in range(len(self.piles[GO_DOWN_PILE])):
-                                self.move_card_to_new_pile(self.piles[GO_DOWN_PILE][0], self.current_player.hand_index)
+                                self.move_card_to_new_pile(self.piles[GO_DOWN_PILE][0], self.current_player.hand_index,
+                                                           GO_DOWN_PILE)
 
                         if not rnd_end:
                             self.player_1_turn = not self.player_1_turn
@@ -581,6 +592,7 @@ class Quiddler(arcade.View):
                             self.piles[COMPLETED_CARDS].pop()
 
                     else:
+                        arcade.play_sound(WRONG_WORD_SOUND, volume=0.5)
                         logging.warning("You can't go down yet.")
 
 
@@ -622,18 +634,18 @@ class Quiddler(arcade.View):
                     self.go_down_text += letter
                     logging.warning(self.go_down_text)
                     for card in self.held_cards:
-                        self.move_card_to_new_pile(card, GO_DOWN_PILE)
+                        self.move_card_to_new_pile(card, GO_DOWN_PILE, self.held_cards_original_pile)
                         reset_position = False
 
                 elif pile_index == GO_DOWN_PILE:
                     for card in self.held_cards:
-                        self.move_card_to_new_pile(card, self.current_player.hand_index)
+                        self.move_card_to_new_pile(card, self.current_player.hand_index, self.held_cards_original_pile)
                         reset_position = False
 
                 if pile_index == FACE_DOWN_PILE or pile_index == DISCARD_PILE:
                     if not self.has_drawn:
                         for card in self.held_cards:
-                            self.move_card_to_new_pile(card, self.current_player.hand_index)
+                            self.move_card_to_new_pile(card, self.current_player.hand_index, self.held_cards_original_pile)
                         self.has_drawn = True
                         self.drawn_card_original_pile = pile_index
                         self.last_move = self.moves
@@ -655,7 +667,7 @@ class Quiddler(arcade.View):
 
                     elif self.has_drawn:
                         for card in self.held_cards:
-                            self.move_card_to_new_pile(card, DISCARD_PILE)
+                            self.move_card_to_new_pile(card, DISCARD_PILE, self.held_cards_original_pile)
                         self.has_discarded = True
                         self.last_move = self.moves
                         self.next_turn_button.texture = arcade.load_texture(NEXT_TURN)
@@ -672,7 +684,8 @@ class Quiddler(arcade.View):
                         elif pile_index == DISCARD_PILE:
                             if not self.has_discarded:
                                 if self.held_cards_original_pile == self.current_player.hand_index:
-                                    self.move_card_to_new_pile(self.held_cards[0], pile_index)
+                                    self.move_card_to_new_pile(self.held_cards[0], pile_index,
+                                                               self.held_cards_original_pile)
                                     self.has_discarded = True
                                     self.last_move = self.moves
                                     self.next_turn_button.texture = arcade.load_texture(NEXT_TURN)
@@ -689,8 +702,15 @@ class Quiddler(arcade.View):
                             # print(self.text)
 
                             for card in self.held_cards:
-                                self.move_card_to_new_pile(card, pile_index)
+                                self.move_card_to_new_pile(card, pile_index, self.held_cards_original_pile)
                                 reset_position = False
+
+                        elif pile_index == PLAYER_1_HAND:
+
+                            for card in self.held_cards:
+                                self.move_card_to_new_pile(card, self.current_player.hand_index,
+                                                           self.held_cards_original_pile)
+                            reset_position = False
 
                 elif self.held_cards_original_pile == FACE_DOWN_PILE or self.held_cards_original_pile == DISCARD_PILE:
                     if arcade.check_for_collision(self.held_cards[0], pile):
@@ -701,7 +721,8 @@ class Quiddler(arcade.View):
 
                         else:
                             for card in self.held_cards:
-                                self.move_card_to_new_pile(card, self.current_player.hand_index)
+                                self.move_card_to_new_pile(card, self.current_player.hand_index,
+                                                           self.held_cards_original_pile)
 
                             self.has_drawn = True
                             self.drawn_card_original_pile = pile_index
@@ -725,7 +746,8 @@ class Quiddler(arcade.View):
                     elif pile_index == PLAYER_1_HAND:
 
                         for card in self.held_cards:
-                            self.move_card_to_new_pile(card, self.current_player.hand_index)
+                            self.move_card_to_new_pile(card, self.current_player.hand_index,
+                                                       self.held_cards_original_pile)
                         reset_position = False
 
                     elif pile_index == GO_DOWN_PILE:
@@ -735,7 +757,7 @@ class Quiddler(arcade.View):
                         logging.warning(self.go_down_text)
 
                         for card in self.held_cards:
-                            self.move_card_to_new_pile(card, pile_index)
+                            self.move_card_to_new_pile(card, pile_index, self.held_cards_original_pile)
 
                         reset_position = False
 
@@ -746,7 +768,7 @@ class Quiddler(arcade.View):
 
             if reset_position:
                 for card in self.held_cards:
-                    self.move_card_to_new_pile(card, self.held_cards_original_pile)
+                    self.move_card_to_new_pile(card, self.held_cards_original_pile, self.held_cards_original_pile)
                     # logging.warning(self.get_pile_for_card(self.held_cards[0]))
 
 
@@ -787,6 +809,8 @@ class Quiddler(arcade.View):
                 word_length_list.sort()
                 self.current_player.longest_words[self.rnd] = word_length_list[-1]
 
+        arcade.play_sound(GO_DOWN_SOUND, volume=0.2)
+
     def round_end_sequence(self):
 
         if self.player_1.longest_words[self.rnd] > self.player_2.longest_words[self.rnd]:
@@ -809,18 +833,19 @@ class Quiddler(arcade.View):
             if self.go_down_text in WORD_LIST:
                 for i in range(len(self.piles[GO_DOWN_PILE])):
                     card = self.piles[GO_DOWN_PILE][0]
-                    self.move_card_to_new_pile(card, COMPLETED_CARDS)
+                    self.move_card_to_new_pile(card, COMPLETED_CARDS, GO_DOWN_PILE)
 
                 self.completed_words_list.append(self.go_down_text)
+                arcade.play_sound(SAVE_WORD_SOUND)
 
                 logging.warning(self.completed_words_list)
 
             else:
                 print("Sorry, that's not a word. Dumbass.")
-
+                arcade.play_sound(WRONG_WORD_SOUND, volume=0.5)
                 for i in range(len(self.piles[GO_DOWN_PILE])):
                     card = self.piles[GO_DOWN_PILE][0]
-                    self.move_card_to_new_pile(card, self.current_player.hand_index)
+                    self.move_card_to_new_pile(card, self.current_player.hand_index, GO_DOWN_PILE)
 
                 self.go_down_text = ''
 
@@ -829,15 +854,18 @@ class Quiddler(arcade.View):
 
         else:
             print("Sorry, your word needs to be at least 2 letters long. Dumbass.")
+            arcade.play_sound(WRONG_WORD_SOUND, volume=0.5)
             for card in self.piles[GO_DOWN_PILE]:
-                self.move_card_to_new_pile(card, self.current_player.hand_index)
+                self.move_card_to_new_pile(card, self.current_player.hand_index, GO_DOWN_PILE)
             self.go_down_text = ''
 
     def recall_sequence(self):
         if len(self.piles[COMPLETED_CARDS]) != 0:
             for _ in range(len(self.piles[COMPLETED_CARDS])):
-                self.move_card_to_new_pile(self.piles[COMPLETED_CARDS][0], self.current_player.hand_index)
+                self.move_card_to_new_pile(self.piles[COMPLETED_CARDS][0], self.current_player.hand_index,
+                                           COMPLETED_CARDS)
 
+            arcade.play_sound(WRONG_WORD_SOUND, volume=0.5)
             self.completed_words_list = []
 
 
@@ -854,12 +882,16 @@ class Quiddler(arcade.View):
                     pile.remove(card)
                     break
 
-    def move_card_to_new_pile(self, card, pile_index):
+    def move_card_to_new_pile(self, card, pile_index, held_cards_original_pile):
         try:
             self.remove_card_from_pile(id(card))
         except:
             pass
         self.piles[pile_index].append(card)
+
+        if held_cards_original_pile != pile_index:
+            if pile_index == PLAYER_1_HAND or pile_index == PLAYER_2_HAND or pile_index == DISCARD_PILE or pile_index == GO_DOWN_PILE:
+                arcade.play_sound(CARD_MOVE_SOUND)
         # logging.warning(self.get_pile_for_card(card))
 
     def on_key_press(self, key, modifiers):
@@ -869,7 +901,8 @@ class Quiddler(arcade.View):
             self.recall_sequence()
         elif key == arcade.key.BACKSPACE:
             if len(self.piles[GO_DOWN_PILE]) > 0:
-                self.move_card_to_new_pile(self.piles[GO_DOWN_PILE][-1], self.current_player.hand_index)
+                self.move_card_to_new_pile(self.piles[GO_DOWN_PILE][-1], self.current_player.hand_index,
+                                           GO_DOWN_PILE)
 
     def on_text(self, text):
 
@@ -880,10 +913,11 @@ class Quiddler(arcade.View):
                 card_input: Card = i
 
                 if card_input in self.piles[self.current_player.hand_index]:
-                    self.card_input_original_position = [card_input.position]
-                    self.piles[GO_DOWN_PILE].append(card_input)
-                    self.get_go_down_pile_position()
-                    self.piles[self.current_player.hand_index].remove(card_input)
+                    self.move_card_to_new_pile(card_input, GO_DOWN_PILE, self.current_player.hand_index)
+                    # self.card_input_original_position = [card_input.position]
+                    # self.piles[GO_DOWN_PILE].append(card_input)
+                    # self.get_go_down_pile_position()
+                    # self.piles[self.current_player.hand_index].remove(card_input)
                     self.go_down_text += text
                     print(self.go_down_text)
                     break
