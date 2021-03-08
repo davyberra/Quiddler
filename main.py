@@ -18,36 +18,39 @@ CARD_LIST = ['a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'a', 'b', 'b', 'c', 'c
              's', 't', 't', 't', 't', 't', 't', 'u', 'u', 'u', 'u', 'u', 'u',
              'v', 'v', 'w', 'w', 'x', 'x', 'y', 'y', 'y', 'y', 'z', 'z', 'er', 'er', 'cl', 'cl', 'in', 'in', 'th', 'th',
              'qu', 'qu']
-CARD_SCORE = {'a': 2, 'b': 8, 'c': 8, 'd': 4, 'e': 2, 'f': 6, 'g': 6, 'h': 7, 'i': 2, 'j': 13, 'k': 8, 'l': 3, 'm': 5,
+CARD_SCORE = {'a': 2, 'b': 8, 'c': 8, 'd': 5, 'e': 2, 'f': 6, 'g': 6, 'h': 7, 'i': 2, 'j': 13, 'k': 8, 'l': 3, 'm': 5,
               'n': 5, 'o': 2, 'p': 6, 'q': 15, 'r': 5, 's': 3, 't': 3, 'u': 4, 'v': 11, 'w': 10, 'x': 12, 'y': 4,
               'z': 14, 'er': 7, 'cl': 10, 'in': 7, 'th': 9, 'qu': 9}
 
-FACE_DOWN_IMAGE = "images/card_back.png"
-GO_DOWN = "images/go_down.png"
-GO_DOWN_PRESSED = "images/go_down_pressed.png"
-GO_DOWN_FLASH = "images/go_down_flash.png"
-NEXT_TURN = "images/next_turn.png"
-NEXT_TURN_PRESSED = "images/next_turn_pressed.png"
-NEXT_TURN_FLASH = "images/next_turn_flash.png"
-SAVE_WORD = "images/save_word.png"
-SAVE_WORD_PRESSED = "images/save_word_pressed.png"
-SAVE_WORD_FLASH = "images/save_word_flash.png"
-RECALL = "images/recall.png"
-RECALL_PRESSED = "images/recall_pressed.png"
-UNDO = "images/undo.png"
-UNDO_PRESSED = "images/undo_pressed.png"
+FACE_DOWN_IMAGE = "test_images/card_back.png"
+GO_DOWN = "test_images/go_down.png"
+GO_DOWN_PRESSED = "test_images/go_down_pressed.png"
+GO_DOWN_FLASH = "test_images/go_down_flash.png"
+NEXT_TURN = "test_images/next_turn.png"
+NEXT_TURN_PRESSED = "test_images/next_turn_pressed.png"
+NEXT_TURN_FLASH = "test_images/next_turn_flash.png"
+SAVE_WORD = "test_images/save_word.png"
+SAVE_WORD_PRESSED = "test_images/save_word_pressed.png"
+SAVE_WORD_FLASH = "test_images/save_word_flash.png"
+RECALL = "test_images/recall.png"
+RECALL_PRESSED = "test_images/recall_pressed.png"
+UNDO = "test_images/undo.png"
+UNDO_PRESSED = "test_images/undo_pressed.png"
+EXIT = "images/exit_button.png"
+EXIT_PRESSED = "images/exit_button_pressed.png"
 
 CARD_MOVE_SOUND = arcade.load_sound("sounds/card_move.ogg")
 SAVE_WORD_SOUND = arcade.load_sound("sounds/save_word.ogg")
 GO_DOWN_SOUND = arcade.load_sound("sounds/go_down.ogg")
 WRONG_WORD_SOUND = arcade.load_sound("sounds/wrong_word.ogg")
+BACKGROUND_MUSIC = arcade.load_sound("sounds/quiddler_theme_2.ogg")
+MAIN_MENU_MUSIC = arcade.load_sound("sounds/quiddler_theme_1.ogg")
 
+SCALE = 1
 
-# self.face_down_position_x, self.face_down_position_y = (self.screen_width / 2) - 70, self.screen_height - self.screen_height / 4
-# self.discard_position_x, self.discard_position_y = (self.screen_width / 2) + 70, self.screen_height - self.screen_height / 4
-# self.completed_card_position_x, self.completed_card_position_y = 150, self.screen_height - 150
-PLAYER_HAND_Y = 150
+PLAYER_HAND_Y = 225
 GO_DOWN_MAT_Y = 450
+BUTTON_Y = 50
 
 PILE_COUNT = 6
 FACE_DOWN_PILE = 0
@@ -80,7 +83,7 @@ class Card(arcade.Sprite):
         """
         self.value = value
 
-        self.image_file_name = f"images/{self.value}.png"
+        self.image_file_name = f"test_cards/{self.value}.png"
 
         super().__init__(self.image_file_name, scale, )
         self.texture = arcade.load_texture(self.image_file_name)
@@ -113,20 +116,23 @@ class Quiddler(arcade.View):
         super().__init__()
         # Initialize Players and add them to a list of all players
         self.screen_width, self.screen_height = self.window.get_size()
-        self.face_down_position_x, self.face_down_position_y = (self.screen_width / 2) - 70, self.screen_height - self.screen_height / 4
-        self.discard_position_x, self.discard_position_y = (self.screen_width / 2) + 70, self.screen_height - self.screen_height / 4
-        self.completed_card_position_x, self.completed_card_position_y = 150, self.screen_height - 150
+        # self.screen_width, self.screen_height = round(self.screen_width * .6), round(self.screen_height * .6)
+        self.scale = min(self.screen_width / 1920, self.screen_height / 1080)
+
+        self.face_down_position_x, self.face_down_position_y = (self.screen_width / 2) - 70 * self.scale, self.screen_height - self.screen_height / 4
+        self.discard_position_x, self.discard_position_y = (self.screen_width / 2) + 70 * self.scale, self.screen_height - self.screen_height / 4
+        self.completed_card_position_x, self.completed_card_position_y = 150 * self.scale, self.screen_height - 250 * self.scale
         self.player_1_score_box = {
-            'center_x': (self.screen_width / 2) - 450,
-            'center_y': self.screen_height - 125,
-            'width': 400,
-            'height': 200
+            'center_x': (self.screen_width / 2) - 450 * self.scale,
+            'center_y': self.screen_height - 125 * self.scale,
+            'width': 400 * self.scale,
+            'height': 200 * self.scale
         }
         self.player_2_score_box = {
-            'center_x': (self.screen_width / 2) + 450,
-            'center_y': self.screen_height - 125,
-            'width': 400,
-            'height': 200
+            'center_x': (self.screen_width / 2) + 450 * self.scale,
+            'center_y': self.screen_height - 125 * self.scale,
+            'width': 400 * self.scale,
+            'height': 200 * self.scale
         }
 
         self.player_list = []
@@ -145,6 +151,7 @@ class Quiddler(arcade.View):
         self.rnd_hand_count = 3
         self.rnd_max = rnd_number
         self.card_list = None
+        self.small_card_list = None
         self.mat_list = None
         self.button_list = None
         self.buttons_pressed = None
@@ -170,7 +177,8 @@ class Quiddler(arcade.View):
 
         self.has_drawn = False
         self.has_discarded = False
-        self.completed_words_list = []
+        self.completed_words_text_list = []
+        self.completed_words_card_list = []
         self.card_input_original_position = None
         self.drawn_card_original_pile = None
         self.moves = None
@@ -187,6 +195,8 @@ class Quiddler(arcade.View):
 
         self.background = None
 
+        BACKGROUND_MUSIC.play(volume=.25)
+
     def setup(self):
         """
         Initializes values for piles, hands.
@@ -194,7 +204,7 @@ class Quiddler(arcade.View):
         """
 
         self.go_down_text = ''
-        self.completed_words_list = []
+        self.completed_words_text_list = []
         self.moves = 0
         self.last_move = 0
         self.score_change_list = []
@@ -216,6 +226,7 @@ class Quiddler(arcade.View):
         self.piles = [[] for _ in range(PILE_COUNT)]
 
         self.card_list = arcade.SpriteList()
+        self.small_card_list = arcade.SpriteList()
         self.button_list = arcade.SpriteList()
         self.piles[FACE_DOWN_PILE] = arcade.SpriteList()
         self.piles[DISCARD_PILE] = arcade.SpriteList()
@@ -227,29 +238,29 @@ class Quiddler(arcade.View):
         self.player_2.card_list = arcade.SpriteList()
 
         # Create buttons -----------------------------------------------------------------------------------------------
-        self.next_turn_button = arcade.Sprite(NEXT_TURN_PRESSED)
-        self.next_turn_button.center_x = self.screen_width - 100
-        self.next_turn_button.center_y = 25
+        self.next_turn_button = arcade.Sprite(NEXT_TURN_PRESSED, self.scale)
+        self.next_turn_button.center_x = self.screen_width - 150 * self.scale
+        self.next_turn_button.center_y = BUTTON_Y * self.scale
         self.button_list.append(self.next_turn_button)
 
-        self.go_down_button = arcade.Sprite(GO_DOWN)
-        self.go_down_button.center_x = self.screen_width - 250
-        self.go_down_button.center_y = 25
+        self.go_down_button = arcade.Sprite(GO_DOWN, self.scale)
+        self.go_down_button.center_x = self.screen_width - 400 * self.scale
+        self.go_down_button.center_y = BUTTON_Y * self.scale
         self.button_list.append(self.go_down_button)
 
-        self.save_word_button = arcade.Sprite(SAVE_WORD)
-        self.save_word_button.center_x = 100
-        self.save_word_button.center_y = 25
+        self.save_word_button = arcade.Sprite(SAVE_WORD, self.scale)
+        self.save_word_button.center_x = 150 * self.scale
+        self.save_word_button.center_y = BUTTON_Y * self.scale
         self.button_list.append(self.save_word_button)
 
-        self.recall_button = arcade.Sprite(RECALL)
-        self.recall_button.center_x = 250
-        self.recall_button.center_y = 25
+        self.recall_button = arcade.Sprite(RECALL, self.scale)
+        self.recall_button.center_x = 400 * self.scale
+        self.recall_button.center_y = BUTTON_Y * self.scale
         self.button_list.append(self.recall_button)
 
-        self.undo_button = arcade.Sprite(UNDO)
-        self.undo_button.center_x = 75
-        self.undo_button.center_y = self.screen_height - 25
+        self.undo_button = arcade.Sprite(UNDO, self.scale)
+        self.undo_button.center_x = 150 * self.scale
+        self.undo_button.center_y = self.screen_height - 50 * self.scale
         self.button_list.append(self.undo_button)
 
         # Create a card dictionary with Card keys assigned to letter values
@@ -259,37 +270,42 @@ class Quiddler(arcade.View):
         self.pile_mat_list: arcade.SpriteList = arcade.SpriteList()
 
         # Create the mats for the face down and discard piles
-        pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, (255, 255, 255, 40))
+        pile = arcade.SpriteSolidColor(round(MAT_WIDTH * self.scale), round(MAT_HEIGHT * self.scale), (255, 255, 255, 40))
         pile.position = self.face_down_position_x, self.face_down_position_y
         self.pile_mat_list.append(pile)
 
-        pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, (255, 255, 255, 40))
+        pile = arcade.SpriteSolidColor(round(MAT_WIDTH * self.scale), round(MAT_HEIGHT * self.scale), (255, 255, 255, 40))
         pile.position = self.discard_position_x, self.discard_position_y
         self.pile_mat_list.append(pile)
 
         # Create mat for going down
-        pile = arcade.SpriteSolidColor(self.screen_width, MAT_HEIGHT, (255, 255, 255, 40))
-        pile.position = self.screen_width / 2, GO_DOWN_MAT_Y
+        pile = arcade.SpriteSolidColor(self.screen_width, round(MAT_HEIGHT * self.scale), (255, 255, 0, 1))
+        pile.position = self.screen_width / 2, GO_DOWN_MAT_Y * self.scale
         self.pile_mat_list.append(pile)
 
         # Create mat for the player hands
         for i in range(2):
-            pile = arcade.SpriteSolidColor(self.rnd_hand_count * MAT_WIDTH, MAT_HEIGHT, (255, 255, 255, 10))
-            pile.position = self.screen_width / 2, PLAYER_HAND_Y
+            pile = arcade.SpriteSolidColor(round(self.rnd_hand_count * MAT_WIDTH * self.scale),
+                                           round(MAT_HEIGHT * self.scale),
+                                           (255, 255, 255, 10))
+            pile.position = self.screen_width / 2, PLAYER_HAND_Y * self.scale
             self.pile_mat_list.append(pile)
 
         # Create mat for completed cards
-        pile = arcade.SpriteSolidColor(MAT_WIDTH, MAT_HEIGHT, (255, 255, 255, 40))
+        pile = arcade.SpriteSolidColor(round(MAT_WIDTH * self.scale),
+                                       round(MAT_HEIGHT * self.scale),
+                                       (255, 255, 255, 40))
         pile.position = self.completed_card_position_x, self.completed_card_position_y
         self.pile_mat_list.append(pile)
 
-        # Create every card
+        # Create every card, both regular and small versions
         for value in CARD_LIST:
-            card = Card(value)
+            card = Card(value, self.scale)
             card.position = self.face_down_position_x, self.face_down_position_y
             self.card_list.append(card)
             card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
             self.card_dict[card] = value
+
 
         # Shuffle the cards
         for pos1 in range(len(self.card_list)):
@@ -314,12 +330,12 @@ class Quiddler(arcade.View):
         for i in range(len(self.piles[PLAYER_1_HAND])):
             card = self.piles[PLAYER_1_HAND][i]
             card.center_x = self.straightline(i, PLAYER_1_HAND)
-            card.center_y = PLAYER_HAND_Y
+            card.center_y = PLAYER_HAND_Y * self.scale
 
         for i in range(len(self.piles[PLAYER_2_HAND])):
             card = self.piles[PLAYER_2_HAND][i]
             card.center_x = self.straightline(i, PLAYER_2_HAND)
-            card.center_y = PLAYER_HAND_Y
+            card.center_y = PLAYER_HAND_Y * self.scale
 
         # Pop top card into discard pile
         discard = self.piles[FACE_DOWN_PILE].pop()
@@ -352,6 +368,11 @@ class Quiddler(arcade.View):
             player.rnd_score = 0
             player.has_gone_down = False
 
+        # Flip all cards (except draw pile) face_up
+        for pile in self.piles[1:]:
+            for card in pile:
+                card.texture = arcade.load_texture(card.image_file_name)
+
         self.background = arcade.Sprite(filename="images/quiddler_background_large(2).png",
                                         scale=self.screen_width / BACKGROUND_IMAGE_WIDTH)
         self.background.position = self.screen_width / 2, self.screen_height / 2
@@ -361,36 +382,31 @@ class Quiddler(arcade.View):
         for i in range(len(self.piles[PLAYER_1_HAND])):
             card = self.piles[PLAYER_1_HAND][i]
             card.center_x = self.straightline(i, PLAYER_1_HAND)
-            card.center_y = PLAYER_HAND_Y
+            card.center_y = PLAYER_HAND_Y * self.scale
 
         for i in range(len(self.piles[PLAYER_2_HAND])):
             card = self.piles[PLAYER_2_HAND][i]
             card.center_x = self.straightline(i, PLAYER_2_HAND)
-            card.center_y = PLAYER_HAND_Y
+            card.center_y = PLAYER_HAND_Y * self.scale
 
     def get_go_down_pile_position(self):
         for i in range(len(self.piles[GO_DOWN_PILE])):
             card = self.piles[GO_DOWN_PILE][i]
             card.center_x = self.go_down_straightline(i)
-            card.center_y = GO_DOWN_MAT_Y
+            card.center_y = GO_DOWN_MAT_Y * self.scale
 
     def straightline(self, i, current_player_hand):
-        return 110 * i - ((((len(self.piles[current_player_hand])) - 1) * 110) / 2) + self.screen_width / 2
+        return 110 * self.scale * i - ((((len(self.piles[current_player_hand])) - 1) * 110 * self.scale) / 2) + self.screen_width / 2
 
     def go_down_straightline(self, i):
-        return 120 * i - (((len(self.piles[GO_DOWN_PILE]) - 1) * 120) / 2) + self.screen_width / 2
+        return 120 * self.scale * i - (((len(self.piles[GO_DOWN_PILE]) - 1) * 120 * self.scale) / 2) + self.screen_width / 2
 
-    def pull_to_top(self, card):
-        card_pile = self.card_list
+    def pull_to_top(self, card, card_pile):
         # Loop and pull all the other cards down towards the zero end
         for i in range(len(card_pile) - 1):
             card_pile[i] = card_pile[i + 1]
         # Put this card at the right-side/top of list
         card_pile[len(card_pile) - 1] = card
-
-    def erase(self, player_hand):
-        for card in player_hand:
-            card.texture = arcade.make_transparent_color(arcade.csscolor.DARK_OLIVE_GREEN, 100000)
 
     def on_draw(self):
         arcade.start_render()
@@ -412,6 +428,8 @@ class Quiddler(arcade.View):
             color=self.player_2.color
         )
 
+        # Draw cards/buttons
+
         self.button_list.draw()
 
         self.pile_mat_list.draw()
@@ -422,41 +440,43 @@ class Quiddler(arcade.View):
         for card in self.held_cards:
             card.draw()
 
+        self.small_card_list.draw()
+
         # Draw Player Scores
         
         arcade.draw_text(
             f'{self.player_1}',
             self.player_1_score_box['center_x'],
-            self.player_1_score_box['center_y'] + 50,
+            self.player_1_score_box['center_y'] + 50 * self.scale,
             WHITE,
-            font_size=40,
+            font_size=round(40 * self.scale),
             anchor_x="center",
             anchor_y="center",
         )
         arcade.draw_text(
             f'{self.player_1.total_score}',
             self.player_1_score_box['center_x'],
-            self.player_1_score_box['center_y'] - 50,
+            self.player_1_score_box['center_y'] - 50 * self.scale,
             WHITE,
-            font_size=24,
+            font_size=round(24 * self.scale),
             anchor_x="center",
             anchor_y="center",
         )
         arcade.draw_text(
             f'{self.player_2}',
             self.player_2_score_box['center_x'],
-            self.player_2_score_box['center_y'] + 50,
+            self.player_2_score_box['center_y'] + 50 * self.scale,
             WHITE,
-            font_size=40,
+            font_size=round(40 * self.scale),
             anchor_x="center",
             anchor_y="center",
         )
         arcade.draw_text(
             f'{self.player_2.total_score}',
             self.player_2_score_box['center_x'],
-            self.player_2_score_box['center_y'] - 50,
+            self.player_2_score_box['center_y'] - 50 * self.scale,
             WHITE,
-            font_size=24,
+            font_size=round(24 * self.scale),
             anchor_x="center",
             anchor_y="center",
         )
@@ -465,10 +485,10 @@ class Quiddler(arcade.View):
 
         arcade.draw_text(
             f"Round: {self.rnd}",
-            self.screen_width - 125,
-            self.screen_height - 50,
+            self.screen_width - 125 * self.scale,
+            self.screen_height - 50 * self.scale,
             WHITE,
-            font_size=40,
+            font_size=round(40 * self.scale),
             anchor_x="center",
             anchor_y="center",
         )
@@ -477,10 +497,10 @@ class Quiddler(arcade.View):
 
         arcade.draw_text(
             f"Cards: {self.rnd_hand_count}",
-            self.screen_width - 120,
-            self.screen_height - 150,
+            self.screen_width - 120 * self.scale,
+            self.screen_height - 150 * self.scale,
             WHITE,
-            font_size=40,
+            font_size=round(40 * self.scale),
             anchor_x="center",
             anchor_y="center"
         )
@@ -488,13 +508,25 @@ class Quiddler(arcade.View):
         # Draw 'final turn' when other player has gone down
         if self.player_1_turn:
             if self.player_2.has_gone_down:
-                arcade.draw_text("Final Turn!", self.screen_width - 100, 50, arcade.color.GOLD, font_size=19,
-                                 anchor_x="center")
+                arcade.draw_text(
+                    "Final Turn!",
+                    self.screen_width - 150 * self.scale,
+                    100 * self.scale,
+                    arcade.color.GOLD,
+                    font_size=round(24 * self.scale),
+                    anchor_x="center"
+                )
 
         elif not self.player_1_turn:
             if self.player_1.has_gone_down:
-                arcade.draw_text("Final Turn!", self.screen_width - 100, 50, arcade.color.GOLD, font_size=19,
-                                 anchor_x="center")
+                arcade.draw_text(
+                    "Final Turn!",
+                    self.screen_width - 150 * self.scale,
+                    100 * self.scale,
+                    arcade.color.GOLD,
+                    font_size=round(24 * self.scale),
+                    anchor_x="center"
+                )
 
         for score_list in self.score_change_list:
             x, y, color, prefix = 0, 0, None, None
@@ -514,8 +546,10 @@ class Quiddler(arcade.View):
                 f'{prefix}{score_list[1]}',
                 x, y,
                 color,
-                font_size=24,
-                anchor_x="center", anchor_y="center")
+                font_size=round(24 * self.scale),
+                anchor_x="center",
+                anchor_y="center"
+            )
 
 
 
@@ -525,9 +559,15 @@ class Quiddler(arcade.View):
         :param delta_time:
         :return:
         """
-        for pile in self.piles[1:]:
-            for card in pile:
-                card.texture = arcade.load_texture(card.image_file_name)
+        # Loop audio
+        if BACKGROUND_MUSIC.is_complete():
+            BACKGROUND_MUSIC.play(volume=.25)
+
+        # Update card positions
+
+        # for pile in self.piles[1:]:
+        #     for card in pile:
+        #         card.texture = arcade.load_texture(card.image_file_name)
         for card in self.piles[FACE_DOWN_PILE]:
             card.center_x, card.center_y = self.face_down_position_x, self.face_down_position_y
         for card in self.piles[DISCARD_PILE]:
@@ -559,31 +599,34 @@ class Quiddler(arcade.View):
             self.save_word_button.texture = arcade.load_texture(SAVE_WORD)
 
         if len(self.piles[COMPLETED_CARDS]) == self.rnd_hand_count and self.has_discarded:
-            if self.go_down_flash_timer >= 30:
-                self.go_down_button.texture = arcade.load_texture(GO_DOWN)
-                self.go_down_flash_timer_change = -self.go_down_flash_timer_change
-            elif self.go_down_flash_timer <= 0:
-                self.go_down_button.texture = arcade.load_texture(GO_DOWN_FLASH)
-                self.go_down_flash_timer_change = -self.go_down_flash_timer_change
-            self.go_down_flash_timer += self.go_down_flash_timer_change
+            if self.go_down_button not in self.buttons_pressed:
+                if self.go_down_flash_timer >= 30:
+                    self.go_down_button.texture = arcade.load_texture(GO_DOWN)
+                    self.go_down_flash_timer_change = -self.go_down_flash_timer_change
+                elif self.go_down_flash_timer <= 0:
+                    self.go_down_button.texture = arcade.load_texture(GO_DOWN_FLASH)
+                    self.go_down_flash_timer_change = -self.go_down_flash_timer_change
+                self.go_down_flash_timer += self.go_down_flash_timer_change
 
         elif len(self.piles[GO_DOWN_PILE]) > 1:
-            if self.save_word_flash_timer >= 30:
-                self.save_word_button.texture = arcade.load_texture(SAVE_WORD)
-                self.save_word_flash_timer_change = -self.save_word_flash_timer_change
-            elif self.save_word_flash_timer <= 0:
-                self.save_word_button.texture = arcade.load_texture(SAVE_WORD_FLASH)
-                self.save_word_flash_timer_change = -self.save_word_flash_timer_change
-            self.save_word_flash_timer += self.save_word_flash_timer_change
+            if self.save_word_button not in self.buttons_pressed:
+                if self.save_word_flash_timer >= 30:
+                    self.save_word_button.texture = arcade.load_texture(SAVE_WORD)
+                    self.save_word_flash_timer_change = -self.save_word_flash_timer_change
+                elif self.save_word_flash_timer <= 0:
+                    self.save_word_button.texture = arcade.load_texture(SAVE_WORD_FLASH)
+                    self.save_word_flash_timer_change = -self.save_word_flash_timer_change
+                self.save_word_flash_timer += self.save_word_flash_timer_change
 
         elif self.current_player.has_gone_down:
-            if self.next_turn_flash_timer >= 30:
-                self.next_turn_button.texture = arcade.load_texture(NEXT_TURN)
-                self.next_turn_flash_timer_change = -self.next_turn_flash_timer_change
-            elif self.next_turn_flash_timer <= 0:
-                self.next_turn_button.texture = arcade.load_texture(NEXT_TURN_FLASH)
-                self.next_turn_flash_timer_change = -self.next_turn_flash_timer_change
-            self.next_turn_flash_timer += self.next_turn_flash_timer_change
+            if self.next_turn_button not in self.buttons_pressed:
+                if self.next_turn_flash_timer >= 30:
+                    self.next_turn_button.texture = arcade.load_texture(NEXT_TURN)
+                    self.next_turn_flash_timer_change = -self.next_turn_flash_timer_change
+                elif self.next_turn_flash_timer <= 0:
+                    self.next_turn_button.texture = arcade.load_texture(NEXT_TURN_FLASH)
+                    self.next_turn_flash_timer_change = -self.next_turn_flash_timer_change
+                self.next_turn_flash_timer += self.next_turn_flash_timer_change
 
         # Update player box color based on player turn
         if self.player_1_turn:
@@ -657,7 +700,7 @@ class Quiddler(arcade.View):
                 self.held_cards_original_pile: int = pile
 
                 self.piles[pile].remove(self.held_cards[0])
-                self.pull_to_top(self.held_cards[0])
+                self.pull_to_top(self.held_cards[0], self.card_list)
 
                 logging.warning(f'Length of held_cards at the end of mouse_press sequence: {len(self.held_cards)}')
                 logging.debug('-' * 50)
@@ -693,7 +736,8 @@ class Quiddler(arcade.View):
                             undo_card = self.piles[self.current_player.hand_index][-1]
                             self.move_card_to_new_pile(undo_card, self.drawn_card_original_pile,
                                                        self.held_cards_original_pile)
-                            undo_card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
+                            if self.drawn_card_original_pile == FACE_DOWN_PILE:
+                                undo_card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
                             self.has_drawn = False
                             arcade.play_sound(WRONG_WORD_SOUND, volume=0.5)
 
@@ -751,7 +795,10 @@ class Quiddler(arcade.View):
                                 self.current_player = self.player_2
                             else:
                                 self.current_player = self.player_1
-
+                            for pile in self.piles:
+                                for card in pile:
+                                    card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
+                            self.on_draw()
                             game_view = SplashScreen(self, current_player=self.current_player, player_1=self.player_1,
                                                      player_2=self.player_2, rnd_end=False,
                                                      rnd_number=None, score_change_list=self.score_change_list,
@@ -763,7 +810,7 @@ class Quiddler(arcade.View):
                         self.has_drawn = False
                         self.has_discarded = False
                         self.buttons_pressed = []
-                        self.completed_words_list = []
+                        self.completed_words_text_list = []
                         self.next_turn_button.texture = arcade.load_texture(NEXT_TURN_PRESSED)
 
 
@@ -778,8 +825,8 @@ class Quiddler(arcade.View):
                         self.current_player.has_gone_down = True
 
                         self.get_completed_words()
-                        for _ in range(len(self.piles[COMPLETED_CARDS])):
-                            self.piles[COMPLETED_CARDS].pop()
+                        # for _ in range(len(self.piles[COMPLETED_CARDS])):
+                        #     self.piles[COMPLETED_CARDS].pop()
 
                     else:
                         arcade.play_sound(WRONG_WORD_SOUND, volume=0.5)
@@ -836,6 +883,7 @@ class Quiddler(arcade.View):
                     if not self.has_drawn:
                         for card in self.held_cards:
                             self.move_card_to_new_pile(card, self.current_player.hand_index, self.held_cards_original_pile)
+                            card.texture = arcade.load_texture(card.image_file_name)
                         self.has_drawn = True
                         self.drawn_card_original_pile = pile_index
                         self.last_move = self.moves
@@ -975,6 +1023,16 @@ class Quiddler(arcade.View):
             card.center_x += dx
             card.center_y += dy
 
+    def get_small_go_down_card_position(self, index1, index2, current_player):
+        x, y = 0, 0
+        if current_player == self.player_1:
+            x = (350 * self.scale) + (35 * self.scale * index2)
+            y = (self.screen_height - 300 * self.scale) - (100 * self.scale * index1)
+        elif current_player == self.player_2:
+            x = (self.screen_width - (500 * self.scale) + (35 * self.scale * index2))
+            y = (self.screen_height - 300 * self.scale) - (100 * self.scale * index1)
+        return x, y
+
     def get_completed_words(self):
         if len(self.piles[COMPLETED_CARDS]) > self.rnd_hand_count:
             logging.warning("You need to have a discard.")
@@ -984,10 +1042,24 @@ class Quiddler(arcade.View):
         else:
             word_length_list = []
             current_score = 0
-            for word in self.completed_words_list:
+            small_go_down_list = []
+            for index, word in enumerate(self.completed_words_text_list):
                 word_length_list.append(len(word))
                 for letter in word:
                     current_score += CARD_SCORE[letter]
+
+            for index, word in enumerate(self.completed_words_card_list):
+                small_go_down_list.append([])
+                for completed_card in word:
+                    small_card = Card(completed_card.value, scale=.75)
+                    self.small_card_list.append(small_card)
+                    small_go_down_list[index].append(small_card)
+                    small_card.position = self.get_small_go_down_card_position(index,
+                                                                         small_go_down_list[index].index(small_card),
+                                                                         self.current_player)
+                    self.pull_to_top(small_card, self.small_card_list)
+
+            self.completed_words_card_list = []
 
             if len(self.piles[self.current_player.hand_index]) != 0:
                 for card in self.piles[self.current_player.hand_index]:
@@ -999,7 +1071,13 @@ class Quiddler(arcade.View):
             if len(word_length_list) > 0:
                 word_length_list.sort()
                 self.current_player.longest_words[self.rnd] = word_length_list[-1]
+            else:
+                self.current_player.longest_words[self.rnd] = 0
 
+
+
+            for _ in range(len(self.piles[COMPLETED_CARDS])):
+                self.piles[COMPLETED_CARDS].pop()
         arcade.play_sound(GO_DOWN_SOUND, volume=0.2)
 
     def round_end_sequence(self):
@@ -1013,6 +1091,7 @@ class Quiddler(arcade.View):
                     score_list[1] += current_score
                 else:
                     self.score_change_list.append([self.player_1, current_score, 0])
+                    break
 
 
 
@@ -1025,11 +1104,12 @@ class Quiddler(arcade.View):
                     score_list[1] += current_score
                 else:
                     self.score_change_list.append([self.player_2, current_score, 0])
+                    break
 
         if self.rnd < 8:
             self.rnd_hand_count += 1
-        elif self.rnd >= 8:
-            self.rnd_hand_count -=1
+        elif self.rnd > 8:
+            self.rnd_hand_count -= 1
 
         self.rnd += 1
 
@@ -1056,14 +1136,16 @@ class Quiddler(arcade.View):
     def save_word_sequence(self):
         if len(self.go_down_text) > 1:
             if self.go_down_text in WORD_LIST:
+                self.completed_words_card_list.append([])
                 for i in range(len(self.piles[GO_DOWN_PILE])):
                     card = self.piles[GO_DOWN_PILE][0]
                     self.move_card_to_new_pile(card, COMPLETED_CARDS, GO_DOWN_PILE)
+                    self.completed_words_card_list[-1].append(card)
 
-                self.completed_words_list.append(self.go_down_text)
+                self.completed_words_text_list.append(self.go_down_text)
                 arcade.play_sound(SAVE_WORD_SOUND)
 
-                logging.warning(self.completed_words_list)
+                logging.warning(self.completed_words_text_list)
 
             else:
                 print("Sorry, that's not a word. Dumbass.")
@@ -1091,7 +1173,8 @@ class Quiddler(arcade.View):
                                            COMPLETED_CARDS)
 
             arcade.play_sound(WRONG_WORD_SOUND, volume=0.5)
-            self.completed_words_list = []
+            self.completed_words_text_list = []
+            self.completed_words_card_list = []
 
 
     def get_pile_for_card(self, card):
@@ -1130,22 +1213,23 @@ class Quiddler(arcade.View):
                                            GO_DOWN_PILE)
 
         elif key == arcade.key.F10:
-            arcade.close_window()
+            game_view = QuitScreen(self)
+            self.window.show_view(game_view)
+
+        elif key == arcade.key.DELETE:
+            for card in self.card_list:
+                card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
 
     def on_text(self, text):
 
 
         for i in self.card_dict:
 
-            if text in self.card_dict[i]:
+            if text.lower() in self.card_dict[i]:
                 card_input: Card = i
 
                 if card_input in self.piles[self.current_player.hand_index]:
                     self.move_card_to_new_pile(card_input, GO_DOWN_PILE, self.current_player.hand_index)
-                    # self.card_input_original_position = [card_input.position]
-                    # self.piles[GO_DOWN_PILE].append(card_input)
-                    # self.get_go_down_pile_position()
-                    # self.piles[self.current_player.hand_index].remove(card_input)
                     self.go_down_text += text
                     print(self.go_down_text)
                     break
@@ -1156,6 +1240,7 @@ class SplashScreen(arcade.View):
     def __init__(self, game_view, current_player, player_1, player_2, rnd_end, rnd_number, score_change_list, player_1_score_box, player_2_score_box, piles):
         super().__init__()
         self.screen_width, self.screen_height = self.window.get_size()
+        self.scale = min(self.screen_width / 1920, self. screen_height / 1080)
         self.game_view = game_view
         self.current_player = current_player
         self.rnd_end = rnd_end
@@ -1171,17 +1256,17 @@ class SplashScreen(arcade.View):
         arcade.draw_rectangle_filled(
             self.screen_width / 2,
             self.screen_height / 2,
-            400,
-            300,
-            (206, 201, 53, 200)
+            400 * self.scale,
+            300 * self.scale,
+            (94, 123, 128, 300)
         )
         if self.rnd_end:
             arcade.draw_text(
                 f'Round {self.rnd_number}',
                 self.screen_width / 2,
-                self.screen_height / 2 + 100,
+                self.screen_height / 2 + 100 * self.scale,
                 WHITE,
-                font_size=40,
+                font_size=round(40 * self.scale),
                 anchor_x="center",
                 anchor_y="center",
             )
@@ -1189,9 +1274,9 @@ class SplashScreen(arcade.View):
             arcade.draw_text(
                 f"{self.current_player}'s Turn.",
                 self.screen_width / 2,
-                self.screen_height / 2 - 100,
+                self.screen_height / 2 - 100 * self.scale,
                 WHITE,
-                font_size=40,
+                font_size=round(40 * self.scale),
                 anchor_x="center",
                 anchor_y="center",
             )
@@ -1201,7 +1286,7 @@ class SplashScreen(arcade.View):
                 self.screen_width / 2,
                 self.screen_height / 2,
                 WHITE,
-                font_size=40,
+                font_size=round(40 * self.scale),
                 anchor_x="center",
                 anchor_y="center",
             )
@@ -1224,16 +1309,21 @@ class SplashScreen(arcade.View):
                 f'{prefix}{score_list[1]}',
                 x, y,
                 color,
-                font_size=24,
+                font_size=round(24 * self.scale),
                 anchor_x="center",
                 anchor_y="center",
             )
 
-        # for card in self.piles[PLAYER_1_HAND:PLAYER_2_HAND + 1]:
-        #     card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
+        for pile in self.piles:
+            for card in pile:
+                card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
+
 
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+        for pile in self.piles[1:]:
+            for card in pile:
+                card.texture = arcade.load_texture(card.image_file_name)
         self.window.show_view(self.game_view)
 
 
@@ -1242,6 +1332,7 @@ class GameEnd(arcade.View):
     def __init__(self, player_1_score, player_2_score):
         super().__init__()
         self.screen_width, self.screen_height = self.window.get_size()
+        self.scale = min(self.screen_width / 1920, self.screen_height / 1080)
         self.player_1_score = player_1_score
         self.player_2_score = player_2_score
         self.winner = None
@@ -1261,17 +1352,17 @@ class GameEnd(arcade.View):
         arcade.start_render()
         if self.winner:
             arcade.draw_text(f'Congratulations, {self.winner}!\nYou won by {abs(self.player_2_score - self.player_1_score)}.',
-                             self.screen_width / 2, self.screen_height - 100, WHITE, font_size=24, align="center",
+                             self.screen_width / 2, self.screen_height - 100 * self.scale, WHITE, font_size=round(24 * self.scale), align="center",
                              anchor_x="center")
         elif self.draw:
             arcade.draw_text(f'Congratulations, Player 1 and Player 2 - you tied!\nA rematch must be had to determine who is the best Quiddler player!',
-                self.screen_width / 2, self.screen_height - 100, WHITE, font_size=24, align="center",
+                self.screen_width / 2, self.screen_height - 100 * self.scale, WHITE, font_size=round(24 * self.scale), align="center",
                              anchor_x="center")
         arcade.draw_text(f'SCORES\n\nPlayer 1: {self.player_1_score}       Player 2: {self.player_2_score}',
-                             self.screen_width / 2, self.screen_height - 400, WHITE, font_size=24, align="center",
+                             self.screen_width / 2, self.screen_height - 400 * self.scale, WHITE, font_size=round(24 * self.scale), align="center",
                          anchor_x="center")
         arcade.draw_text("Would you like to play again?\nPress 'y' for yes, 'n' for no.",
-                         self.screen_width / 2, self.screen_height - 700, WHITE, font_size=24, align="center",
+                         self.screen_width / 2, self.screen_height - 700 * self.scale, WHITE, font_size=round(24 * self.scale), align="center",
                          anchor_x="center")
 
     def on_key_press(self, key, modifiers: int):
@@ -1279,7 +1370,7 @@ class GameEnd(arcade.View):
             game_view = GameMenu()
             self.window.show_view(game_view)
         elif key == arcade.key.N:
-            exit()
+            arcade.close_window()
 
 
 
@@ -1289,30 +1380,155 @@ class GameMenu(arcade.View):
         super().__init__()
         self.window.set_fullscreen(True)
         self.screen_width, self.screen_height = self.window.get_size()
+        # self.screen_width, self.screen_height = self.screen_width * .8, self.screen_height * .8
+        self.scale = min(self.screen_width / 1920, self.screen_height / 1080)
+
+        self.background = arcade.Sprite(filename="images/quiddler_main_menu_background(2).png",
+                                        scale=self.screen_width / BACKGROUND_IMAGE_WIDTH)
+        self.background.position = self.screen_width / 2, self.screen_height / 2
+
+        self.button_list = arcade.SpriteList()
+
+        self.half_game_button = arcade.Sprite("images/half_game_button.png", scale=self.scale)
+        self.half_game_button.position = self.screen_width / 2, self.screen_height / 2 - 100 * self.scale
+        self.button_list.append(self.half_game_button)
+        self.full_game_button = arcade.Sprite("images/full_game_button.png", scale=self.scale)
+        self.full_game_button.position = self.screen_width / 2, self.screen_height / 2 - 200 * self.scale
+        self.button_list.append(self.full_game_button)
+        self.instructions_button = arcade.Sprite("images/instructions_button.png", scale=self.scale)
+        self.instructions_button.position = self.screen_width / 2, self.screen_height / 2 - 300 * self.scale
+        self.button_list.append(self.instructions_button)
+        self.exit_button = arcade.Sprite(EXIT, scale=self.scale)
+        self.exit_button.position = self.screen_width / 2, self.screen_height / 2 - 400 * self.scale
+        self.button_list.append(self.exit_button)
+
+        self.buttons_pressed = []
 
     def on_show(self):
         """ This is run once when we switch to this view """
-        arcade.set_background_color(arcade.csscolor.DARK_SLATE_BLUE)
+        self.background.draw()
+        self.button_list.draw()
+
+        MAIN_MENU_MUSIC.play(volume=.25)
 
     def on_draw(self):
         """ Draw this view """
         arcade.start_render()
-        arcade.draw_text("QUIDDLER\n", self.screen_width / 2, self.screen_height / 2, WHITE, font_size=100, anchor_x="center")
-        arcade.draw_text("Press '1' for a half-game (up through 10 cards)\n\n"
-                         "Press '2' for a full-game (up to 10 and back down)",
-                         self.screen_width / 2, self.screen_height / 2 - 100, WHITE, font_size=40, anchor_x="center")
+        self.background.draw()
+        self.button_list.draw()
 
-    def on_key_press(self, symbol: int, modifiers: int):
+    def on_update(self, delta_time: float):
+        if MAIN_MENU_MUSIC.is_complete():
+            MAIN_MENU_MUSIC.play(volume=.25)
+
+    def on_key_release(self, symbol: int, modifiers: int):
         if symbol == arcade.key.KEY_1 or symbol == arcade.key.NUM_1:
             game_view = Quiddler(rnd_number=8)
             game_view.setup()
+            MAIN_MENU_MUSIC.stop()
             self.window.show_view(game_view)
         elif symbol == arcade.key.KEY_2 or symbol == arcade.key.NUM_2:
             game_view = Quiddler(rnd_number=16)
             game_view.setup()
+            MAIN_MENU_MUSIC.stop()
             self.window.show_view(game_view)
         elif symbol == arcade.key.F10:
             arcade.close_window()
+
+    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+        if button == arcade.MOUSE_BUTTON_LEFT:
+            self.buttons_pressed = arcade.get_sprites_at_point((x, y,), self.button_list)
+
+            if self.half_game_button in self.buttons_pressed:
+                self.half_game_button.texture = arcade.load_texture("images/half_game_button_pressed.png")
+            elif self.full_game_button in self.buttons_pressed:
+                self.full_game_button.texture = arcade.load_texture("images/full_game_button_pressed.png")
+            elif self.instructions_button in self.buttons_pressed:
+                self.instructions_button.texture = arcade.load_texture("images/instructions_button_pressed.png")
+            elif self.exit_button in self.buttons_pressed:
+                self.exit_button.texture = arcade.load_texture(EXIT_PRESSED)
+
+    def on_mouse_release(self, x: float, y: float, button: int,
+                         modifiers: int):
+
+        button = arcade.get_sprites_at_point((x, y), self.button_list)
+
+        if button:
+            if self.half_game_button in self.buttons_pressed:
+                if self.half_game_button == button[0]:
+
+                    game_view = Quiddler(rnd_number=8)
+                    game_view.setup()
+                    MAIN_MENU_MUSIC.stop()
+                    self.window.show_view(game_view)
+
+            elif self.full_game_button in self.buttons_pressed:
+                if self.full_game_button == button[0]:
+                    game_view = Quiddler(rnd_number=16)
+                    game_view.setup()
+                    MAIN_MENU_MUSIC.stop()
+                    self.window.show_view(game_view)
+
+            elif self.instructions_button in self.buttons_pressed:
+                if self.instructions_button == button[0]:
+                    pass
+
+            elif self.exit_button in self.buttons_pressed:
+                if self.exit_button == button[0]:
+                    arcade.close_window()
+
+
+
+        self.half_game_button.texture = arcade.load_texture("images/half_game_button.png")
+        self.full_game_button.texture = arcade.load_texture("images/full_game_button.png")
+        self.instructions_button.texture = arcade.load_texture("images/instructions_button.png")
+        self.exit_button.texture = arcade.load_texture(EXIT)
+        self.buttons_pressed = []
+
+
+class QuitScreen(arcade.View):
+
+    def __init__(self, game_view):
+        super().__init__()
+        self.game_view = game_view
+        self.screen_width, self.screen_height = self.window.get_size()
+        self.scale = min(self.screen_width / 1920, self.screen_height / 1080)
+
+    def on_show(self):
+        arcade.draw_rectangle_filled(
+            self.screen_width / 2,
+            self.screen_height / 2,
+            800 * self.scale,
+            300 * self.scale,
+            (94, 123, 128, 300)
+        )
+
+        arcade.draw_text(
+            'Are you sure you want to quit?',
+            start_x=self.screen_width / 2,
+            start_y=self.screen_height / 2 + 50 * self.scale,
+            color=WHITE,
+            font_size=round(40 * self.scale),
+            anchor_x="center",
+            anchor_y="center",
+        )
+
+        arcade.draw_text(
+            "Press 'y' for yes, 'n' for no.",
+            start_x=self.screen_width / 2,
+            start_y=self.screen_height / 2 - 50 * self.scale,
+            color=WHITE,
+            font_size=round(32 * self.scale),
+            anchor_x="center",
+            anchor_y="center",
+        )
+
+    def on_key_release(self, key: int, modifiers: int):
+        if key == arcade.key.Y:
+            arcade.close_window()
+        elif key == arcade.key.N:
+            game_view = self.game_view
+            self.window.show_view(game_view)
 
 
 def main():
