@@ -863,7 +863,7 @@ class Quiddler(arcade.View):
             pile, distance = arcade.get_closest_sprite(self.held_cards[0], self.pile_mat_list)
             reset_position = True
 
-            if modifiers and arcade.key.MOD_CTRL and button == arcade.MOUSE_BUTTON_LEFT:
+            if button == arcade.MOUSE_BUTTON_LEFT:
                 pile_index = self.held_cards_original_pile
 
                 if pile_index == self.current_player.hand_index:
@@ -893,7 +893,7 @@ class Quiddler(arcade.View):
 
 
 
-            elif modifiers and arcade.key.MOD_CTRL and button == arcade.MOUSE_BUTTON_RIGHT:
+            elif button == arcade.MOUSE_BUTTON_RIGHT:
                 pile_index = self.held_cards_original_pile
 
                 if pile_index != self.current_player.hand_index:
@@ -1043,7 +1043,7 @@ class Quiddler(arcade.View):
             word_length_list = []
             current_score = 0
             small_go_down_list = []
-            for index, word in enumerate(self.completed_words_text_list):
+            for word in self.completed_words_text_list:
                 word_length_list.append(len(word))
                 for letter in word:
                     current_score += CARD_SCORE[letter]
@@ -1051,14 +1051,20 @@ class Quiddler(arcade.View):
             for index, word in enumerate(self.completed_words_card_list):
                 small_go_down_list.append([])
                 for completed_card in word:
-                    small_card = Card(completed_card.value, scale=.75)
+                    small_card = Card(completed_card.value, scale=.75 * self.scale)
+                    print(small_card.value)
                     self.small_card_list.append(small_card)
                     small_go_down_list[index].append(small_card)
                     small_card.position = self.get_small_go_down_card_position(index,
                                                                          small_go_down_list[index].index(small_card),
                                                                          self.current_player)
-                    self.pull_to_top(small_card, self.small_card_list)
+                    # self.pull_to_top(small_card, self.small_card_list)
 
+            # for word in self.completed_words_card_list:
+            #     for card in word:
+            #         print(card.value)
+            # for card in self.small_card_list:
+            #     print(card.value, card.position)
             self.completed_words_card_list = []
 
             if len(self.piles[self.current_player.hand_index]) != 0:
@@ -1146,6 +1152,7 @@ class Quiddler(arcade.View):
                 arcade.play_sound(SAVE_WORD_SOUND)
 
                 logging.warning(self.completed_words_text_list)
+
 
             else:
                 print("Sorry, that's not a word. Dumbass.")
