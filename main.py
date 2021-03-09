@@ -38,6 +38,10 @@ UNDO = "images/undo.png"
 UNDO_PRESSED = "images/undo_pressed.png"
 EXIT = "images/exit_button.png"
 EXIT_PRESSED = "images/exit_button_pressed.png"
+MENU = "images/menu_button.png"
+MENU_PRESSED = "images/menu_button_pressed.png"
+CANCEL = "images/cancel_button.png"
+CANCEL_BUTTON_PRESSED = "images/cancel_button_pressed.png"
 
 CARD_MOVE_SOUND = arcade.load_sound("sounds/card_move.ogg")
 SAVE_WORD_SOUND = arcade.load_sound("sounds/save_word.ogg")
@@ -83,7 +87,7 @@ class Card(arcade.Sprite):
         """
         self.value = value
 
-        self.image_file_name = f"test_cards/{self.value}.png"
+        self.image_file_name = f"images/{self.value}.png"
 
         super().__init__(self.image_file_name, scale, )
         self.texture = arcade.load_texture(self.image_file_name)
@@ -244,12 +248,12 @@ class Quiddler(arcade.View):
         self.button_list.append(self.next_turn_button)
 
         self.go_down_button = arcade.Sprite(GO_DOWN, self.scale)
-        self.go_down_button.center_x = self.screen_width - 400 * self.scale
+        self.go_down_button.center_x = self.screen_width / 2 + 150 * self.scale
         self.go_down_button.center_y = BUTTON_Y * self.scale
         self.button_list.append(self.go_down_button)
 
         self.save_word_button = arcade.Sprite(SAVE_WORD, self.scale)
-        self.save_word_button.center_x = 150 * self.scale
+        self.save_word_button.center_x = self.screen_width / 2 - 130 * self.scale
         self.save_word_button.center_y = BUTTON_Y * self.scale
         self.button_list.append(self.save_word_button)
 
@@ -260,8 +264,13 @@ class Quiddler(arcade.View):
 
         self.undo_button = arcade.Sprite(UNDO, self.scale)
         self.undo_button.center_x = 150 * self.scale
-        self.undo_button.center_y = self.screen_height - 50 * self.scale
+        self.undo_button.center_y = BUTTON_Y * self.scale
         self.button_list.append(self.undo_button)
+
+        self.menu_button = arcade.Sprite(MENU, self.scale)
+        self.menu_button.center_x = 150 * self.scale
+        self.menu_button.center_y = self.screen_height - 50 * self.scale
+        self.button_list.append(self.menu_button)
 
         # Create a card dictionary with Card keys assigned to letter values
         self.card_dict = {}
@@ -718,6 +727,8 @@ class Quiddler(arcade.View):
                 self.next_turn_button.texture = arcade.load_texture(NEXT_TURN_PRESSED)
             elif self.undo_button in self.buttons_pressed:
                 self.undo_button.texture = arcade.load_texture(UNDO_PRESSED)
+            elif self.menu_button in self.buttons_pressed:
+                self.menu_button.texture = arcade.load_texture(MENU_PRESSED)
 
 
     def on_mouse_release(self, x: float, y: float, button: int,
@@ -730,7 +741,13 @@ class Quiddler(arcade.View):
         if len(self.buttons_pressed) > 0:
             buttons = arcade.get_sprites_at_point((x, y), self.button_list)
             if self.buttons_pressed == buttons:
-                if self.undo_button in self.buttons_pressed:
+                if self.menu_button in self.buttons_pressed:
+                    self.menu_button.texture = arcade.load_texture(MENU)
+                    game_view = PauseMenu(game_view=self)
+                    self.window.show_view(game_view)
+
+
+                elif self.undo_button in self.buttons_pressed:
                     if self.moves == self.last_move + 1:
                         if self.has_drawn and not self.has_discarded:
                             undo_card = self.piles[self.current_player.hand_index][-1]
@@ -749,7 +766,7 @@ class Quiddler(arcade.View):
                             arcade.play_sound(WRONG_WORD_SOUND, volume=0.5)
 
                     self.undo_button.texture = arcade.load_texture(UNDO)
-                if self.next_turn_button in self.buttons_pressed:
+                elif self.next_turn_button in self.buttons_pressed:
                     rnd_end = False
 
                     if self.has_discarded:
@@ -1378,6 +1395,112 @@ class GameEnd(arcade.View):
             self.window.show_view(game_view)
         elif key == arcade.key.N:
             arcade.close_window()
+
+
+class PauseMenu(arcade.View):
+
+    def __init__(self, game_view):
+        super().__init__()
+        self.screen_width, self.screen_height = self.window.get_size()
+        self.scale = min(self.screen_width / 1920, self.screen_height / 1080)
+        self.game_view = game_view
+        self.background = arcade.Sprite(
+            filename="images/game_menu.png",
+            scale=self.scale
+        )
+        self.background.position = self.screen_width / 2, self.screen_height / 2
+
+        self.button_list = arcade.SpriteList()
+        self.cancel_button = arcade.Sprite(CANCEL, scale=self.scale)
+        self.cancel_button.position = self.screen_width/ 2, self.screen_height / 2
+        self.button_list.append(self.cancel_button)
+        self.instructions_button = arcade.Sprite("images/instructions_button.png", scale=self.scale)
+        self.instructions_button.position = self.screen_width / 2, self.screen_height / 2 - 150 * self.scale
+        self.button_list.append(self.instructions_button)
+        self.exit_button = arcade.Sprite(EXIT, scale=self.scale)
+        self.exit_button.position = self.screen_width / 2, self.screen_height / 2 - 300 * self.scale
+        self.button_list.append(self.exit_button)
+
+        self.buttons_pressed = []
+
+    def on_draw(self):
+        arcade.start_render()
+        self.background.draw()
+        self.button_list.draw()
+
+    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+        self.buttons_pressed = arcade.get_sprites_at_point((x, y), self.button_list)
+
+        if self.instructions_button in self.buttons_pressed:
+            self.instructions_button.texture = arcade.load_texture("images/instructions_button_pressed.png")
+        elif self.exit_button in self.buttons_pressed:
+            self.exit_button.texture = arcade.load_texture(EXIT_PRESSED)
+        elif self.cancel_button in self.buttons_pressed:
+            self.cancel_button.texture = arcade.load_texture(CANCEL_BUTTON_PRESSED)
+
+    def on_mouse_release(self, x: float, y: float, button: int,
+                         modifiers: int):
+
+        if self.instructions_button in self.buttons_pressed:
+            pass
+        elif self.exit_button in self.buttons_pressed:
+
+            game_view = ConfirmExit(game_view=self.game_view)
+            self.window.show_view(game_view)
+        elif self.cancel_button in self.buttons_pressed:
+            self.window.show_view(self.game_view)
+
+        self.instructions_button.texture = arcade.load_texture("images/instructions_button.png")
+        self.exit_button.texture = arcade.load_texture(EXIT)
+        self.buttons_pressed = []
+
+
+class ConfirmExit(arcade.View):
+
+    def __init__(self, game_view):
+        super().__init__()
+        self.game_view = game_view
+        self.screen_width, self.screen_height = self.window.get_size()
+        self.scale = min(self.screen_width / 1920, self.screen_height / 1080)
+        self.background = arcade.Sprite(
+            filename="images/confirm_exit.png",
+            scale=self.scale
+        )
+        self.background.position = self.screen_width / 2, self.screen_height / 2
+
+        self.button_list = arcade.SpriteList()
+        self.exit_button = arcade.Sprite(EXIT, scale=self.scale)
+        self.exit_button.position = self.screen_width / 2 - 200 * self.scale, self.screen_height / 2 - 100 * self.scale
+        self.button_list.append(self.exit_button)
+        self.cancel_button = arcade.Sprite(CANCEL, scale=self.scale)
+        self.cancel_button.position = self.screen_width / 2 + 200 * self.scale, self.screen_height / 2 - 100 * self.scale
+        self.button_list.append(self.cancel_button)
+        self.buttons_pressed = []
+
+    def on_draw(self):
+        arcade.start_render()
+        self.background.draw()
+        self.button_list.draw()
+
+    def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+        self.buttons_pressed = arcade.get_sprites_at_point((x, y), self.button_list)
+
+        if self.exit_button in self.buttons_pressed:
+            self.exit_button.texture = arcade.load_texture(EXIT_PRESSED)
+        elif self.cancel_button in self.buttons_pressed:
+            self.cancel_button.texture = arcade.load_texture(CANCEL_BUTTON_PRESSED)
+
+    def on_mouse_release(self, x: float, y: float, button: int,
+                         modifiers: int):
+
+        if self.exit_button in self.buttons_pressed:
+            arcade.close_window()
+        elif self.cancel_button in self.buttons_pressed:
+            self.window.show_view(self.game_view)
+
+        self.exit_button.texture = arcade.load_texture(EXIT)
+        self.cancel_button.texture = arcade.load_texture(CANCEL)
+        self.buttons_pressed = []
 
 
 
