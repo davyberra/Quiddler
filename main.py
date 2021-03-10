@@ -1,6 +1,7 @@
 import arcade
 import random
 import logging
+import shelve
 import time
 
 from word_list import get_word_list
@@ -42,6 +43,10 @@ MENU = "images/menu_button.png"
 MENU_PRESSED = "images/menu_button_pressed.png"
 CANCEL = "images/cancel_button.png"
 CANCEL_BUTTON_PRESSED = "images/cancel_button_pressed.png"
+SAVE = "images/save_game.png"
+SAVE_PRESSED = "images/save_game_pressed.png"
+CONTINUE = "images/continue.png"
+CONTINUE_PRESSED = "images/continue_pressed.png"
 
 CARD_MOVE_SOUND = arcade.load_sound("sounds/card_move.ogg")
 SAVE_WORD_SOUND = arcade.load_sound("sounds/save_word.ogg")
@@ -416,6 +421,17 @@ class Quiddler(arcade.View):
             card_pile[i] = card_pile[i + 1]
         # Put this card at the right-side/top of list
         card_pile[len(card_pile) - 1] = card
+
+    def get_all_card_positions(self):
+        for card in self.piles[FACE_DOWN_PILE]:
+            card.center_x, card.center_y = self.face_down_position_x, self.face_down_position_y
+            card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
+        for card in self.piles[DISCARD_PILE]:
+            card.center_x, card.center_y = self.discard_position_x, self.discard_position_y
+        for card in self.piles[COMPLETED_CARDS]:
+            card.center_x, card.center_y = self.completed_card_position_x, self.completed_card_position_y
+        self.get_go_down_pile_position()
+        self.get_hand_position()
 
     def on_draw(self):
         arcade.start_render()
@@ -1237,7 +1253,7 @@ class Quiddler(arcade.View):
                                            GO_DOWN_PILE)
 
         elif key == arcade.key.F10:
-            game_view = QuitScreen(self)
+            game_view = PauseMenu(self)
             self.window.show_view(game_view)
 
         elif key == arcade.key.DELETE:
@@ -1257,6 +1273,64 @@ class Quiddler(arcade.View):
                     self.go_down_text += text
                     print(self.go_down_text)
                     break
+
+    def save_game(self):
+        file = shelve.open('quiddler_saved_game', protocol=2)
+        file['player_1_score'] = self.player_1.total_score
+        file['player_1_longest_words'] = self.player_1.longest_words
+        file['player_1_has_gone_down'] = self.player_1.has_gone_down
+        file['player_2_score'] = self.player_2.total_score
+        file['player_2_longest_words'] = self.player_2.longest_words
+        file['player_2_has_gone_down'] = self.player_2.has_gone_down
+        file['player_1_turn'] = self.player_1_turn
+        file['round'] = self.rnd
+        file['total_rounds'] = self.rnd_max
+        file['total_cards'] = self.rnd_hand_count
+        file['has_drawn'] = self.has_drawn
+        file['has_discarded'] = self.has_discarded
+        new_piles = [[] for _ in range(PILE_COUNT)]
+        for index, pile in enumerate(self.piles):
+            for card in pile:
+                new_piles[index].append(card.value)
+        print(new_piles)
+        file['piles'] = new_piles
+        file.close()
+
+    def continue_game(self):
+        try:
+            file = shelve.open('quiddler_saved_game', protocol=2)
+            self.player_1.total_score = file['player_1_score']
+            self.player_1.longest_words = file['player_1_longest_words']
+            self.player_1.has_gone_down = file['player_1_has_gone_down']
+
+            self.player_2.total_score = file['player_2_score']
+            self.player_2.longest_words = file['player_2_longest_words']
+            self.player_2.has_gone_down = file['player_1_has_gone_down']
+            self.player_1_turn = file['player_1_turn']
+            if self.player_1_turn:
+                self.current_player = self.player_1
+            else:
+                self.current_player = self.player_2
+            self.rnd = file['round']
+            self.rnd_max = file['total_rounds']
+            self.rnd_hand_count = file['total_cards']
+            self.has_drawn = file['has_drawn']
+            self.has_discarded = file['has_discarded']
+            saved_piles = file['piles']
+            self.card_list = arcade.SpriteList()
+            self.card_dict = {}
+            for index, pile in enumerate(saved_piles):
+                for index2, letter in enumerate(pile):
+                    print(f'saved_piles_letter: {letter}')
+                    card = Card(letter, scale=self.scale)
+                    self.card_list.append(card)
+                    self.card_dict[card] = letter
+                    self.piles[index][index2] = card
+            file.close()
+            self.get_all_card_positions()
+        except:
+            pass
+
 
 
 class SplashScreen(arcade.View):
@@ -1411,8 +1485,11 @@ class PauseMenu(arcade.View):
         self.background.position = self.screen_width / 2, self.screen_height / 2
 
         self.button_list = arcade.SpriteList()
+        self.save_button = arcade.Sprite(SAVE, scale=self.scale)
+        self.save_button.position = self.screen_width / 2, self.screen_height / 2 + 150 * self.scale
+        self.button_list.append(self.save_button)
         self.cancel_button = arcade.Sprite(CANCEL, scale=self.scale)
-        self.cancel_button.position = self.screen_width/ 2, self.screen_height / 2
+        self.cancel_button.position = self.screen_width / 2, self.screen_height / 2
         self.button_list.append(self.cancel_button)
         self.instructions_button = arcade.Sprite("images/instructions_button.png", scale=self.scale)
         self.instructions_button.position = self.screen_width / 2, self.screen_height / 2 - 150 * self.scale
@@ -1437,6 +1514,8 @@ class PauseMenu(arcade.View):
             self.exit_button.texture = arcade.load_texture(EXIT_PRESSED)
         elif self.cancel_button in self.buttons_pressed:
             self.cancel_button.texture = arcade.load_texture(CANCEL_BUTTON_PRESSED)
+        elif self.save_button in self.buttons_pressed:
+            self.save_button.texture = arcade.load_texture(SAVE_PRESSED)
 
     def on_mouse_release(self, x: float, y: float, button: int,
                          modifiers: int):
@@ -1449,7 +1528,12 @@ class PauseMenu(arcade.View):
             self.window.show_view(game_view)
         elif self.cancel_button in self.buttons_pressed:
             self.window.show_view(self.game_view)
+        elif self.save_button in self.buttons_pressed:
+            self.game_view.save_game()
 
+
+
+        self.save_button.texture = arcade.load_texture(SAVE)
         self.instructions_button.texture = arcade.load_texture("images/instructions_button.png")
         self.exit_button.texture = arcade.load_texture(EXIT)
         self.buttons_pressed = []
@@ -1519,6 +1603,9 @@ class GameMenu(arcade.View):
 
         self.button_list = arcade.SpriteList()
 
+        self.continue_button = arcade.Sprite(CONTINUE, scale=self.scale)
+        self.continue_button.position = self.screen_width / 2, self.screen_height / 2 * self.scale
+        self.button_list.append(self.continue_button)
         self.half_game_button = arcade.Sprite("images/half_game_button.png", scale=self.scale)
         self.half_game_button.position = self.screen_width / 2, self.screen_height / 2 - 100 * self.scale
         self.button_list.append(self.half_game_button)
@@ -1577,6 +1664,8 @@ class GameMenu(arcade.View):
                 self.instructions_button.texture = arcade.load_texture("images/instructions_button_pressed.png")
             elif self.exit_button in self.buttons_pressed:
                 self.exit_button.texture = arcade.load_texture(EXIT_PRESSED)
+            elif self.continue_button in self.buttons_pressed:
+                self.continue_button.texture = arcade.load_texture(CONTINUE_PRESSED)
 
     def on_mouse_release(self, x: float, y: float, button: int,
                          modifiers: int):
@@ -1606,6 +1695,14 @@ class GameMenu(arcade.View):
             elif self.exit_button in self.buttons_pressed:
                 if self.exit_button == button[0]:
                     arcade.close_window()
+
+            elif self.continue_button in self.buttons_pressed:
+                if self.continue_button == button[0]:
+                    game_view = Quiddler(rnd_number=8)
+                    game_view.setup()
+                    game_view.continue_game()
+                    MAIN_MENU_MUSIC.stop()
+                    self.window.show_view(game_view)
 
 
 
