@@ -37,9 +37,9 @@ class HighScores(arcade.View):
             arcade.draw_text(
                 f'{score[0]}: {score[1]}',
                 start_x=self.screen_width / 2 + 10 * self.scale,
-                start_y=(self.screen_height - 300 * self.scale) - i * 50 * self.scale,
+                start_y=(self.screen_height - 300) - i * 50 * self.scale,
                 color=arcade.color.WHITE,
-                font_size=40,
+                font_size=round(40 * self.scale),
                 anchor_x="right",
                 anchor_y="center"
             )

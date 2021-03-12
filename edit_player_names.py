@@ -25,7 +25,7 @@ class EditPlayerNames(arcade.View):
         self.ui_manager = UIManager()
         self.player_1_name_box = UIInputBox(
             center_x=self.screen_width / 2,
-            center_y=self.screen_height / 2 + 100,
+            center_y=self.screen_height / 2 + 100 * self.scale,
             width=round(400 * self.scale),
             height=round(100 * self.scale),
             text=f'{self.player_1}',
@@ -34,7 +34,7 @@ class EditPlayerNames(arcade.View):
         self.ui_manager.add_ui_element(self.player_1_name_box)
         self.player_2_name_box = UIInputBox(
             center_x=self.screen_width / 2,
-            center_y=self.screen_height / 2 - 100,
+            center_y=self.screen_height / 2 - 100 * self.scale,
             width=round(400 * self.scale),
             height=round(100 * self.scale),
             text=f'{self.player_2}',
@@ -57,7 +57,7 @@ class EditPlayerNames(arcade.View):
             self.screen_width / 2,
             self.screen_height / 2 + 200 * self.scale,
             color=arcade.color.WHITE,
-            font_size=40,
+            font_size=round(40 * self.scale),
             anchor_x="center",
             anchor_y="center"
         )
@@ -66,7 +66,7 @@ class EditPlayerNames(arcade.View):
             self.screen_width / 2,
             self.screen_height / 2,
             color=arcade.color.WHITE,
-            font_size=40,
+            font_size=round(40 * self.scale),
             anchor_x="center",
             anchor_y="center"
         )

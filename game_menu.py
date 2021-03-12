@@ -24,7 +24,7 @@ class GameMenu(arcade.View):
         self.button_list = arcade.SpriteList()
 
         self.continue_button = arcade.Sprite(CONTINUE, scale=self.scale)
-        self.continue_button.position = self.screen_width / 2, self.screen_height / 2 * self.scale
+        self.continue_button.position = self.screen_width / 2, self.screen_height / 2
         self.button_list.append(self.continue_button)
         self.half_game_button = arcade.Sprite("images/half_game_button.png", scale=self.scale)
         self.half_game_button.position = self.screen_width / 2 - 100 * self.scale, self.screen_height / 2 - 100 * self.scale
@@ -117,7 +117,7 @@ class GameMenu(arcade.View):
             if self.half_game_button in self.buttons_pressed:
                 if self.half_game_button == button[0]:
 
-                    game_view = main.Quiddler(rnd_number=1,
+                    game_view = main.Quiddler(rnd_number=8,
                                               player_1=self.player_1,
                                               player_2=self.player_2)
                     game_view.setup()

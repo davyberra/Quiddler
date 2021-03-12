@@ -23,9 +23,11 @@ imports:
  &#8226;   <a href="#_weakrefset">_weakrefset</a>
  &#8226;   <a href="#abc">abc</a>
  &#8226;   <a href="#arcade">arcade</a>
+ &#8226;   <a href="#card_class">card_class</a>
  &#8226;   <a href="#codecs">codecs</a>
  &#8226;   <a href="#collections">collections</a>
  &#8226;   <a href="#collections.abc">collections.abc</a>
+ &#8226;   <a href="#constants">constants</a>
  &#8226;   <a href="#copyreg">copyreg</a>
  &#8226;   <a href="#encodings">encodings</a>
  &#8226;   <a href="#encodings.aliases">encodings.aliases</a>
@@ -151,6 +153,8 @@ imports:
  &#8226;   <a href="#encodings.zlib_codec">encodings.zlib_codec</a>
  &#8226;   <a href="#enum">enum</a>
  &#8226;   <a href="#functools">functools</a>
+ &#8226;   <a href="#game_end">game_end</a>
+ &#8226;   <a href="#game_menu">game_menu</a>
  &#8226;   <a href="#heapq">heapq</a>
  &#8226;   <a href="#io">io</a>
  &#8226;   <a href="#keyword">keyword</a>
@@ -158,20 +162,22 @@ imports:
  &#8226;   <a href="#locale">locale</a>
  &#8226;   <a href="#logging">logging</a>
  &#8226;   <a href="#operator">operator</a>
+ &#8226;   <a href="#pause_menu">pause_menu</a>
+ &#8226;   <a href="#player">player</a>
  &#8226;   <a href="#pyi_rth_multiprocessing.py">pyi_rth_multiprocessing.py</a>
  &#8226;   <a href="#pyi_rth_pkgres.py">pyi_rth_pkgres.py</a>
  &#8226;   <a href="#random">random</a>
  &#8226;   <a href="#re">re</a>
  &#8226;   <a href="#reprlib">reprlib</a>
+ &#8226;   <a href="#shelve">shelve</a>
+ &#8226;   <a href="#splash_screen">splash_screen</a>
  &#8226;   <a href="#sre_compile">sre_compile</a>
  &#8226;   <a href="#sre_constants">sre_constants</a>
  &#8226;   <a href="#sre_parse">sre_parse</a>
- &#8226;   <a href="#time">time</a>
  &#8226;   <a href="#traceback">traceback</a>
  &#8226;   <a href="#types">types</a>
  &#8226;   <a href="#warnings">warnings</a>
  &#8226;   <a href="#weakref">weakref</a>
- &#8226;   <a href="#word_list">word_list</a>
 
   </div>
 
@@ -627,6 +633,9 @@ imported by:
  &#8226;   <a href="#arcade.drawing_support">arcade.drawing_support</a>
  &#8226;   <a href="#arcade.experimental.gui.button_flat">arcade.experimental.gui.button_flat</a>
  &#8226;   <a href="#arcade.experimental.gui.button_flat_text">arcade.experimental.gui.button_flat_text</a>
+ &#8226;   <a href="#arcade.gui.elements.inputbox">arcade.gui.elements.inputbox</a>
+ &#8226;   <a href="#arcade.gui.elements.toggle">arcade.gui.elements.toggle</a>
+ &#8226;   <a href="#arcade.gui.utils">arcade.gui.utils</a>
  &#8226;   <a href="#arcade.sprite_list">arcade.sprite_list</a>
  &#8226;   <a href="#pyglet.image.codecs.pil">pyglet.image.codecs.pil</a>
 
@@ -1202,6 +1211,8 @@ imported by:
  &#8226;   <a href="#arcade.drawing_support">arcade.drawing_support</a>
  &#8226;   <a href="#arcade.experimental.gui.button_flat">arcade.experimental.gui.button_flat</a>
  &#8226;   <a href="#arcade.experimental.gui.ui_element">arcade.experimental.gui.ui_element</a>
+ &#8226;   <a href="#arcade.gui.elements.toggle">arcade.gui.elements.toggle</a>
+ &#8226;   <a href="#arcade.gui.utils">arcade.gui.utils</a>
  &#8226;   <a href="#arcade.sprite">arcade.sprite</a>
  &#8226;   <a href="#arcade.sprite_list">arcade.sprite_list</a>
  &#8226;   <a href="#arcade.text">arcade.text</a>
@@ -1250,6 +1261,7 @@ imported by:
  &#8226;   <a href="#PIL.ImageDraw2">PIL.ImageDraw2</a>
  &#8226;   <a href="#PIL.ImageOps">PIL.ImageOps</a>
  &#8226;   <a href="#PIL.ImagePalette">PIL.ImagePalette</a>
+ &#8226;   <a href="#arcade.gui.utils">arcade.gui.utils</a>
 
   </div>
 
@@ -1277,6 +1289,9 @@ imported by:
  &#8226;   <a href="#arcade.draw_commands">arcade.draw_commands</a>
  &#8226;   <a href="#arcade.experimental.gui.button_flat">arcade.experimental.gui.button_flat</a>
  &#8226;   <a href="#arcade.experimental.gui.button_flat_text">arcade.experimental.gui.button_flat_text</a>
+ &#8226;   <a href="#arcade.gui.elements.inputbox">arcade.gui.elements.inputbox</a>
+ &#8226;   <a href="#arcade.gui.elements.toggle">arcade.gui.elements.toggle</a>
+ &#8226;   <a href="#arcade.gui.utils">arcade.gui.utils</a>
  &#8226;   <a href="#arcade.text">arcade.text</a>
  &#8226;   <a href="#arcade.texture">arcade.texture</a>
 
@@ -2944,6 +2959,17 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="_dbm"></a>
+  <a target="code" href="" type="text/plain"><tt>_dbm</tt></a>
+<span class="moduletype">MissingModule</span>  <div class="import">
+imported by:
+    <a href="#dbm.ndbm">dbm.ndbm</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="_decimal"></a>
   <tt>_decimal</tt> <span class="moduletype"><tt>c:\users\davy\appdata\local\programs\python\python39\DLLs\_decimal.pyd</tt></span>  <div class="import">
 imported by:
@@ -3017,6 +3043,17 @@ imported by:
   <tt>_functools</tt> <span class="moduletype"><i>(builtin module)</i></span>  <div class="import">
 imported by:
     <a href="#functools">functools</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="_gdbm"></a>
+  <a target="code" href="" type="text/plain"><tt>_gdbm</tt></a>
+<span class="moduletype">MissingModule</span>  <div class="import">
+imported by:
+    <a href="#dbm.gnu">dbm.gnu</a>
 
   </div>
 
@@ -3659,6 +3696,16 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="_yaml"></a>
+  <tt>_yaml</tt> <span class="moduletype"><tt>c:\users\davy\appdata\local\programs\python\python39\lib\site-packages\_yaml.cp39-win_amd64.pyd</tt></span>  <div class="import">
+imported by:
+    <a href="#yaml.cyaml">yaml.cyaml</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="abc"></a>
   <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/abc.py" type="text/plain"><tt>abc</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
@@ -3760,6 +3807,16 @@ imported by:
  &#8226;   <a href="#arcade.experimental.gui.ui_manager">arcade.experimental.gui.ui_manager</a>
  &#8226;   <a href="#arcade.geometry">arcade.geometry</a>
  &#8226;   <a href="#arcade.gl">arcade.gl</a>
+ &#8226;   <a href="#arcade.gui">arcade.gui</a>
+ &#8226;   <a href="#arcade.gui.core">arcade.gui.core</a>
+ &#8226;   <a href="#arcade.gui.elements">arcade.gui.elements</a>
+ &#8226;   <a href="#arcade.gui.elements.flat_button">arcade.gui.elements.flat_button</a>
+ &#8226;   <a href="#arcade.gui.elements.image_button">arcade.gui.elements.image_button</a>
+ &#8226;   <a href="#arcade.gui.elements.inputbox">arcade.gui.elements.inputbox</a>
+ &#8226;   <a href="#arcade.gui.elements.label">arcade.gui.elements.label</a>
+ &#8226;   <a href="#arcade.gui.elements.toggle">arcade.gui.elements.toggle</a>
+ &#8226;   <a href="#arcade.gui.manager">arcade.gui.manager</a>
+ &#8226;   <a href="#arcade.gui.utils">arcade.gui.utils</a>
  &#8226;   <a href="#arcade.isometric">arcade.isometric</a>
  &#8226;   <a href="#arcade.joysticks">arcade.joysticks</a>
  &#8226;   <a href="#arcade.key">arcade.key</a>
@@ -3778,7 +3835,17 @@ imported by:
  &#8226;   <a href="#arcade.utils">arcade.utils</a>
  &#8226;   <a href="#arcade.version">arcade.version</a>
  &#8226;   <a href="#arcade.window_commands">arcade.window_commands</a>
+ &#8226;   <a href="#card_class">card_class</a>
+ &#8226;   <a href="#confirm_exit">confirm_exit</a>
+ &#8226;   <a href="#constants">constants</a>
+ &#8226;   <a href="#edit_player_names">edit_player_names</a>
+ &#8226;   <a href="#game_end">game_end</a>
+ &#8226;   <a href="#game_menu">game_menu</a>
+ &#8226;   <a href="#highscores">highscores</a>
+ &#8226;   <a href="#main">main</a>
  &#8226;   <a href="#main.py">main.py</a>
+ &#8226;   <a href="#pause_menu">pause_menu</a>
+ &#8226;   <a href="#splash_screen">splash_screen</a>
 
   </div>
 
@@ -4615,6 +4682,285 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="arcade.gui"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/arcade/gui/__init__.py" type="text/plain"><tt>arcade.gui</tt></a>
+<span class="moduletype">Package</span>  <div class="import">
+imports:
+    <a href="#arcade">arcade</a>
+ &#8226;   <a href="#arcade.gui">arcade.gui</a>
+ &#8226;   <a href="#arcade.gui.core">arcade.gui.core</a>
+ &#8226;   <a href="#arcade.gui.elements">arcade.gui.elements</a>
+ &#8226;   <a href="#arcade.gui.elements.flat_button">arcade.gui.elements.flat_button</a>
+ &#8226;   <a href="#arcade.gui.elements.image_button">arcade.gui.elements.image_button</a>
+ &#8226;   <a href="#arcade.gui.elements.inputbox">arcade.gui.elements.inputbox</a>
+ &#8226;   <a href="#arcade.gui.elements.label">arcade.gui.elements.label</a>
+ &#8226;   <a href="#arcade.gui.elements.toggle">arcade.gui.elements.toggle</a>
+ &#8226;   <a href="#arcade.gui.manager">arcade.gui.manager</a>
+ &#8226;   <a href="#arcade.gui.utils">arcade.gui.utils</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#arcade.gui">arcade.gui</a>
+ &#8226;   <a href="#arcade.gui.core">arcade.gui.core</a>
+ &#8226;   <a href="#arcade.gui.elements">arcade.gui.elements</a>
+ &#8226;   <a href="#arcade.gui.elements.flat_button">arcade.gui.elements.flat_button</a>
+ &#8226;   <a href="#arcade.gui.elements.image_button">arcade.gui.elements.image_button</a>
+ &#8226;   <a href="#arcade.gui.elements.inputbox">arcade.gui.elements.inputbox</a>
+ &#8226;   <a href="#arcade.gui.elements.toggle">arcade.gui.elements.toggle</a>
+ &#8226;   <a href="#arcade.gui.manager">arcade.gui.manager</a>
+ &#8226;   <a href="#arcade.gui.ui_style">arcade.gui.ui_style</a>
+ &#8226;   <a href="#arcade.gui.utils">arcade.gui.utils</a>
+ &#8226;   <a href="#edit_player_names">edit_player_names</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="arcade.gui.core"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/arcade/gui/core.py" type="text/plain"><tt>arcade.gui.core</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#arcade">arcade</a>
+ &#8226;   <a href="#arcade.gui">arcade.gui</a>
+ &#8226;   <a href="#arcade.gui.ui_style">arcade.gui.ui_style</a>
+ &#8226;   <a href="#typing">typing</a>
+ &#8226;   <a href="#uuid">uuid</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#arcade.gui">arcade.gui</a>
+ &#8226;   <a href="#arcade.gui.manager">arcade.gui.manager</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="arcade.gui.elements"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/arcade/gui/elements/__init__.py" type="text/plain"><tt>arcade.gui.elements</tt></a>
+<span class="moduletype">Package</span>  <div class="import">
+imports:
+    <a href="#arcade">arcade</a>
+ &#8226;   <a href="#arcade.gui">arcade.gui</a>
+ &#8226;   <a href="#arcade.gui.ui_style">arcade.gui.ui_style</a>
+ &#8226;   <a href="#pyglet.event">pyglet.event</a>
+ &#8226;   <a href="#typing">typing</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#arcade.gui">arcade.gui</a>
+ &#8226;   <a href="#arcade.gui.elements.flat_button">arcade.gui.elements.flat_button</a>
+ &#8226;   <a href="#arcade.gui.elements.image_button">arcade.gui.elements.image_button</a>
+ &#8226;   <a href="#arcade.gui.elements.inputbox">arcade.gui.elements.inputbox</a>
+ &#8226;   <a href="#arcade.gui.elements.label">arcade.gui.elements.label</a>
+ &#8226;   <a href="#arcade.gui.elements.toggle">arcade.gui.elements.toggle</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="arcade.gui.elements.flat_button"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/arcade/gui/elements/flat_button.py" type="text/plain"><tt>arcade.gui.elements.flat_button</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#arcade">arcade</a>
+ &#8226;   <a href="#arcade.gui">arcade.gui</a>
+ &#8226;   <a href="#arcade.gui.elements">arcade.gui.elements</a>
+ &#8226;   <a href="#arcade.gui.ui_style">arcade.gui.ui_style</a>
+ &#8226;   <a href="#arcade.gui.utils">arcade.gui.utils</a>
+ &#8226;   <a href="#typing">typing</a>
+ &#8226;   <a href="#uuid">uuid</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#arcade.gui">arcade.gui</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="arcade.gui.elements.image_button"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/arcade/gui/elements/image_button.py" type="text/plain"><tt>arcade.gui.elements.image_button</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#arcade">arcade</a>
+ &#8226;   <a href="#arcade.gui">arcade.gui</a>
+ &#8226;   <a href="#arcade.gui.elements">arcade.gui.elements</a>
+ &#8226;   <a href="#arcade.gui.ui_style">arcade.gui.ui_style</a>
+ &#8226;   <a href="#arcade.gui.utils">arcade.gui.utils</a>
+ &#8226;   <a href="#typing">typing</a>
+ &#8226;   <a href="#uuid">uuid</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#arcade.gui">arcade.gui</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="arcade.gui.elements.inputbox"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/arcade/gui/elements/inputbox.py" type="text/plain"><tt>arcade.gui.elements.inputbox</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#PIL">PIL</a>
+ &#8226;   <a href="#PIL.ImageDraw">PIL.ImageDraw</a>
+ &#8226;   <a href="#arcade">arcade</a>
+ &#8226;   <a href="#arcade.gui">arcade.gui</a>
+ &#8226;   <a href="#arcade.gui.elements">arcade.gui.elements</a>
+ &#8226;   <a href="#arcade.gui.ui_style">arcade.gui.ui_style</a>
+ &#8226;   <a href="#arcade.gui.utils">arcade.gui.utils</a>
+ &#8226;   <a href="#arcade.key">arcade.key</a>
+ &#8226;   <a href="#pyglet">pyglet</a>
+ &#8226;   <a href="#pyglet.window">pyglet.window</a>
+ &#8226;   <a href="#typing">typing</a>
+ &#8226;   <a href="#uuid">uuid</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#arcade.gui">arcade.gui</a>
+ &#8226;   <a href="#edit_player_names">edit_player_names</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="arcade.gui.elements.label"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/arcade/gui/elements/label.py" type="text/plain"><tt>arcade.gui.elements.label</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#arcade">arcade</a>
+ &#8226;   <a href="#arcade.gui.elements">arcade.gui.elements</a>
+ &#8226;   <a href="#arcade.gui.ui_style">arcade.gui.ui_style</a>
+ &#8226;   <a href="#arcade.gui.utils">arcade.gui.utils</a>
+ &#8226;   <a href="#typing">typing</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#arcade.gui">arcade.gui</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="arcade.gui.elements.toggle"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/arcade/gui/elements/toggle.py" type="text/plain"><tt>arcade.gui.elements.toggle</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#PIL">PIL</a>
+ &#8226;   <a href="#PIL.Image">PIL.Image</a>
+ &#8226;   <a href="#PIL.ImageDraw">PIL.ImageDraw</a>
+ &#8226;   <a href="#arcade">arcade</a>
+ &#8226;   <a href="#arcade.gui">arcade.gui</a>
+ &#8226;   <a href="#arcade.gui.elements">arcade.gui.elements</a>
+ &#8226;   <a href="#arcade.gui.ui_style">arcade.gui.ui_style</a>
+ &#8226;   <a href="#typing">typing</a>
+ &#8226;   <a href="#uuid">uuid</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#arcade.gui">arcade.gui</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="arcade.gui.manager"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/arcade/gui/manager.py" type="text/plain"><tt>arcade.gui.manager</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#arcade">arcade</a>
+ &#8226;   <a href="#arcade.gui">arcade.gui</a>
+ &#8226;   <a href="#arcade.gui.core">arcade.gui.core</a>
+ &#8226;   <a href="#pyglet.event">pyglet.event</a>
+ &#8226;   <a href="#pyglet.window">pyglet.window</a>
+ &#8226;   <a href="#typing">typing</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#arcade.gui">arcade.gui</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="arcade.gui.ui_style"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/arcade/gui/ui_style.py" type="text/plain"><tt>arcade.gui.ui_style</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#arcade.gui">arcade.gui</a>
+ &#8226;   <a href="#arcade.gui.utils">arcade.gui.utils</a>
+ &#8226;   <a href="#arcade.resources">arcade.resources</a>
+ &#8226;   <a href="#pathlib">pathlib</a>
+ &#8226;   <a href="#pyglet.event">pyglet.event</a>
+ &#8226;   <a href="#typing">typing</a>
+ &#8226;   <a href="#yaml">yaml</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#arcade.gui.core">arcade.gui.core</a>
+ &#8226;   <a href="#arcade.gui.elements">arcade.gui.elements</a>
+ &#8226;   <a href="#arcade.gui.elements.flat_button">arcade.gui.elements.flat_button</a>
+ &#8226;   <a href="#arcade.gui.elements.image_button">arcade.gui.elements.image_button</a>
+ &#8226;   <a href="#arcade.gui.elements.inputbox">arcade.gui.elements.inputbox</a>
+ &#8226;   <a href="#arcade.gui.elements.label">arcade.gui.elements.label</a>
+ &#8226;   <a href="#arcade.gui.elements.toggle">arcade.gui.elements.toggle</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="arcade.gui.utils"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/arcade/gui/utils.py" type="text/plain"><tt>arcade.gui.utils</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#PIL">PIL</a>
+ &#8226;   <a href="#PIL.Image">PIL.Image</a>
+ &#8226;   <a href="#PIL.ImageColor">PIL.ImageColor</a>
+ &#8226;   <a href="#PIL.ImageDraw">PIL.ImageDraw</a>
+ &#8226;   <a href="#arcade">arcade</a>
+ &#8226;   <a href="#arcade.gui">arcade.gui</a>
+ &#8226;   <a href="#itertools">itertools</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#pathlib">pathlib</a>
+ &#8226;   <a href="#pyglet.font">pyglet.font</a>
+ &#8226;   <a href="#typing">typing</a>
+ &#8226;   <a href="#warnings">warnings</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#arcade.gui">arcade.gui</a>
+ &#8226;   <a href="#arcade.gui.elements.flat_button">arcade.gui.elements.flat_button</a>
+ &#8226;   <a href="#arcade.gui.elements.image_button">arcade.gui.elements.image_button</a>
+ &#8226;   <a href="#arcade.gui.elements.inputbox">arcade.gui.elements.inputbox</a>
+ &#8226;   <a href="#arcade.gui.elements.label">arcade.gui.elements.label</a>
+ &#8226;   <a href="#arcade.gui.ui_style">arcade.gui.ui_style</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="arcade.isometric"></a>
   <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/arcade/isometric.py" type="text/plain"><tt>arcade.isometric</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
@@ -4659,6 +5005,7 @@ imports:
   <div class="import">
 imported by:
     <a href="#arcade">arcade</a>
+ &#8226;   <a href="#arcade.gui.elements.inputbox">arcade.gui.elements.inputbox</a>
 
   </div>
 
@@ -4757,6 +5104,7 @@ imports:
 imported by:
     <a href="#arcade">arcade</a>
  &#8226;   <a href="#arcade.context">arcade.context</a>
+ &#8226;   <a href="#arcade.gui.ui_style">arcade.gui.ui_style</a>
  &#8226;   <a href="#arcade.resources">arcade.resources</a>
  &#8226;   <a href="#arcade.resources.shaders">arcade.resources.shaders</a>
  &#8226;   <a href="#arcade.sound">arcade.sound</a>
@@ -5110,6 +5458,7 @@ imports:
 imported by:
     <a href="#PyInstaller.depend.analysis">PyInstaller.depend.analysis</a>
  &#8226;   <a href="#PyInstaller.lib.modulegraph.modulegraph">PyInstaller.lib.modulegraph.modulegraph</a>
+ &#8226;   <a href="#dbm.dumb">dbm.dumb</a>
  &#8226;   <a href="#inspect">inspect</a>
  &#8226;   <a href="#numpy.core._internal">numpy.core._internal</a>
  &#8226;   <a href="#numpy.lib.utils">numpy.lib.utils</a>
@@ -6330,6 +6679,8 @@ imported by:
  &#8226;   <a href="#ssl">ssl</a>
  &#8226;   <a href="#urllib.request">urllib.request</a>
  &#8226;   <a href="#xmlrpc.client">xmlrpc.client</a>
+ &#8226;   <a href="#yaml.constructor">yaml.constructor</a>
+ &#8226;   <a href="#yaml.representer">yaml.representer</a>
 
   </div>
 
@@ -6373,6 +6724,7 @@ imported by:
  &#8226;   <a href="#quopri">quopri</a>
  &#8226;   <a href="#secrets">secrets</a>
  &#8226;   <a href="#uu">uu</a>
+ &#8226;   <a href="#yaml.constructor">yaml.constructor</a>
  &#8226;   <a href="#zipfile">zipfile</a>
 
   </div>
@@ -6530,6 +6882,23 @@ imported by:
  &#8226;   <a href="#email._parseaddr">email._parseaddr</a>
  &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
  &#8226;   <a href="#ssl">ssl</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="card_class"></a>
+  <a target="code" href="///D:/Python%20Games/Quiddler_Arcade/card_class.py" type="text/plain"><tt>card_class</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#arcade">arcade</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#main">main</a>
+ &#8226;   <a href="#main.py">main.py</a>
 
   </div>
 
@@ -7144,6 +7513,7 @@ imported by:
  &#8226;   <a href="#plistlib">plistlib</a>
  &#8226;   <a href="#tokenize">tokenize</a>
  &#8226;   <a href="#xml.sax.saxutils">xml.sax.saxutils</a>
+ &#8226;   <a href="#yaml.reader">yaml.reader</a>
 
   </div>
 
@@ -7279,6 +7649,7 @@ imported by:
  &#8226;   <a href="#urllib.parse">urllib.parse</a>
  &#8226;   <a href="#wave">wave</a>
  &#8226;   <a href="#xml.etree.ElementTree">xml.etree.ElementTree</a>
+ &#8226;   <a href="#yaml.representer">yaml.representer</a>
 
   </div>
 
@@ -7377,6 +7748,7 @@ imported by:
  &#8226;   <a href="#attr._compat">attr._compat</a>
  &#8226;   <a href="#cgi">cgi</a>
  &#8226;   <a href="#configparser">configparser</a>
+ &#8226;   <a href="#dbm.dumb">dbm.dumb</a>
  &#8226;   <a href="#http.client">http.client</a>
  &#8226;   <a href="#inspect">inspect</a>
  &#8226;   <a href="#logging">logging</a>
@@ -7389,10 +7761,12 @@ imported by:
  &#8226;   <a href="#selectors">selectors</a>
  &#8226;   <a href="#setuptools._vendor.ordered_set">setuptools._vendor.ordered_set</a>
  &#8226;   <a href="#setuptools._vendor.pyparsing">setuptools._vendor.pyparsing</a>
+ &#8226;   <a href="#shelve">shelve</a>
  &#8226;   <a href="#test.support">test.support</a>
  &#8226;   <a href="#tracemalloc">tracemalloc</a>
  &#8226;   <a href="#typing">typing</a>
  &#8226;   <a href="#xml.etree.ElementTree">xml.etree.ElementTree</a>
+ &#8226;   <a href="#yaml.constructor">yaml.constructor</a>
 
   </div>
 
@@ -7580,6 +7954,48 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="confirm_exit"></a>
+  <a target="code" href="///D:/Python%20Games/Quiddler_Arcade/confirm_exit.py" type="text/plain"><tt>confirm_exit</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#arcade">arcade</a>
+ &#8226;   <a href="#constants">constants</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#pause_menu">pause_menu</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="constants"></a>
+  <a target="code" href="///D:/Python%20Games/Quiddler_Arcade/constants.py" type="text/plain"><tt>constants</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#arcade">arcade</a>
+ &#8226;   <a href="#word_list">word_list</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#confirm_exit">confirm_exit</a>
+ &#8226;   <a href="#edit_player_names">edit_player_names</a>
+ &#8226;   <a href="#game_end">game_end</a>
+ &#8226;   <a href="#game_menu">game_menu</a>
+ &#8226;   <a href="#highscores">highscores</a>
+ &#8226;   <a href="#main">main</a>
+ &#8226;   <a href="#main.py">main.py</a>
+ &#8226;   <a href="#pause_menu">pause_menu</a>
+ &#8226;   <a href="#splash_screen">splash_screen</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="contextlib"></a>
   <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/contextlib.py" type="text/plain"><tt>contextlib</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
@@ -7729,6 +8145,7 @@ imported by:
  &#8226;   <a href="#parser">parser</a>
  &#8226;   <a href="#pickle">pickle</a>
  &#8226;   <a href="#re">re</a>
+ &#8226;   <a href="#yaml.representer">yaml.representer</a>
 
   </div>
 
@@ -8136,6 +8553,88 @@ imported by:
  &#8226;   <a href="#setuptools._vendor.pyparsing">setuptools._vendor.pyparsing</a>
  &#8226;   <a href="#test.support.testresult">test.support.testresult</a>
  &#8226;   <a href="#xmlrpc.client">xmlrpc.client</a>
+ &#8226;   <a href="#yaml.constructor">yaml.constructor</a>
+ &#8226;   <a href="#yaml.representer">yaml.representer</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="dbm"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/dbm/__init__.py" type="text/plain"><tt>dbm</tt></a>
+<span class="moduletype">Package</span>  <div class="import">
+imports:
+    <a href="#dbm">dbm</a>
+ &#8226;   <a href="#dbm.ndbm">dbm.ndbm</a>
+ &#8226;   <a href="#io">io</a>
+ &#8226;   <a href="#os">os</a>
+ &#8226;   <a href="#struct">struct</a>
+ &#8226;   <a href="#sys">sys</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#dbm">dbm</a>
+ &#8226;   <a href="#dbm.dumb">dbm.dumb</a>
+ &#8226;   <a href="#dbm.gnu">dbm.gnu</a>
+ &#8226;   <a href="#dbm.ndbm">dbm.ndbm</a>
+ &#8226;   <a href="#shelve">shelve</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="dbm.dumb"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/dbm/dumb.py" type="text/plain"><tt>dbm.dumb</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#ast">ast</a>
+ &#8226;   <a href="#collections.abc">collections.abc</a>
+ &#8226;   <a href="#dbm">dbm</a>
+ &#8226;   <a href="#io">io</a>
+ &#8226;   <a href="#os">os</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#shelve">shelve</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="dbm.gnu"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/dbm/gnu.py" type="text/plain"><tt>dbm.gnu</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#_gdbm">_gdbm</a>
+ &#8226;   <a href="#dbm">dbm</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#shelve">shelve</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="dbm.ndbm"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/dbm/ndbm.py" type="text/plain"><tt>dbm.ndbm</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#_dbm">_dbm</a>
+ &#8226;   <a href="#dbm">dbm</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#dbm">dbm</a>
+ &#8226;   <a href="#shelve">shelve</a>
 
   </div>
 
@@ -9549,6 +10048,27 @@ imported by:
 imported by:
     <a href="#numpy.distutils.ccompiler">numpy.distutils.ccompiler</a>
  &#8226;   <a href="#numpy.distutils.misc_util">numpy.distutils.misc_util</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="edit_player_names"></a>
+  <a target="code" href="///D:/Python%20Games/Quiddler_Arcade/edit_player_names.py" type="text/plain"><tt>edit_player_names</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#arcade">arcade</a>
+ &#8226;   <a href="#arcade.gui">arcade.gui</a>
+ &#8226;   <a href="#arcade.gui.elements.inputbox">arcade.gui.elements.inputbox</a>
+ &#8226;   <a href="#constants">constants</a>
+ &#8226;   <a href="#game_menu">game_menu</a>
+ &#8226;   <a href="#shelve">shelve</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#game_menu">game_menu</a>
 
   </div>
 
@@ -12808,6 +13328,48 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="game_end"></a>
+  <a target="code" href="///D:/Python%20Games/Quiddler_Arcade/game_end.py" type="text/plain"><tt>game_end</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#arcade">arcade</a>
+ &#8226;   <a href="#constants">constants</a>
+ &#8226;   <a href="#game_menu">game_menu</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#main">main</a>
+ &#8226;   <a href="#main.py">main.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="game_menu"></a>
+  <a target="code" href="///D:/Python%20Games/Quiddler_Arcade/game_menu.py" type="text/plain"><tt>game_menu</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#arcade">arcade</a>
+ &#8226;   <a href="#constants">constants</a>
+ &#8226;   <a href="#edit_player_names">edit_player_names</a>
+ &#8226;   <a href="#highscores">highscores</a>
+ &#8226;   <a href="#main">main</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#edit_player_names">edit_player_names</a>
+ &#8226;   <a href="#game_end">game_end</a>
+ &#8226;   <a href="#main">main</a>
+ &#8226;   <a href="#main.py">main.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="gc"></a>
   <tt>gc</tt> <span class="moduletype"><i>(builtin module)</i></span>  <div class="import">
 imports:
@@ -13067,6 +13629,24 @@ imported by:
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#pyglet.clock">pyglet.clock</a>
  &#8226;   <a href="#queue">queue</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="highscores"></a>
+  <a target="code" href="///D:/Python%20Games/Quiddler_Arcade/highscores.py" type="text/plain"><tt>highscores</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#arcade">arcade</a>
+ &#8226;   <a href="#constants">constants</a>
+ &#8226;   <a href="#shelve">shelve</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#game_menu">game_menu</a>
 
   </div>
 
@@ -13671,6 +14251,8 @@ imported by:
  &#8226;   <a href="#cgi">cgi</a>
  &#8226;   <a href="#configparser">configparser</a>
  &#8226;   <a href="#csv">csv</a>
+ &#8226;   <a href="#dbm">dbm</a>
+ &#8226;   <a href="#dbm.dumb">dbm.dumb</a>
  &#8226;   <a href="#dis">dis</a>
  &#8226;   <a href="#distutils.text_file">distutils.text_file</a>
  &#8226;   <a href="#doctest">doctest</a>
@@ -13728,6 +14310,7 @@ imported by:
  &#8226;   <a href="#setuptools.config">setuptools.config</a>
  &#8226;   <a href="#setuptools.dist">setuptools.dist</a>
  &#8226;   <a href="#setuptools.msvc">setuptools.msvc</a>
+ &#8226;   <a href="#shelve">shelve</a>
  &#8226;   <a href="#shlex">shlex</a>
  &#8226;   <a href="#socket">socket</a>
  &#8226;   <a href="#socketserver">socketserver</a>
@@ -13746,6 +14329,7 @@ imported by:
  &#8226;   <a href="#xml.sax">xml.sax</a>
  &#8226;   <a href="#xml.sax.saxutils">xml.sax.saxutils</a>
  &#8226;   <a href="#xmlrpc.client">xmlrpc.client</a>
+ &#8226;   <a href="#yaml">yaml</a>
  &#8226;   <a href="#zipfile">zipfile</a>
  &#8226;   <a href="#zipimport">zipimport</a>
 
@@ -13762,6 +14346,7 @@ imported by:
  &#8226;   <a href="#PIL.TiffImagePlugin">PIL.TiffImagePlugin</a>
  &#8226;   <a href="#_pydecimal">_pydecimal</a>
  &#8226;   <a href="#arcade.buffered_draw_commands">arcade.buffered_draw_commands</a>
+ &#8226;   <a href="#arcade.gui.utils">arcade.gui.utils</a>
  &#8226;   <a href="#arcade.text">arcade.text</a>
  &#8226;   <a href="#asyncio.base_events">asyncio.base_events</a>
  &#8226;   <a href="#asyncio.tasks">asyncio.tasks</a>
@@ -14034,6 +14619,7 @@ imported by:
  &#8226;   <a href="#lib2to3.btm_matcher">lib2to3.btm_matcher</a>
  &#8226;   <a href="#lib2to3.pgen2.driver">lib2to3.pgen2.driver</a>
  &#8226;   <a href="#lib2to3.refactor">lib2to3.refactor</a>
+ &#8226;   <a href="#main">main</a>
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#multiprocessing.util">multiprocessing.util</a>
  &#8226;   <a href="#unittest._log">unittest._log</a>
@@ -14061,6 +14647,32 @@ imported by:
  &#8226;   <a href="#tarfile">tarfile</a>
  &#8226;   <a href="#test.support">test.support</a>
  &#8226;   <a href="#zipfile">zipfile</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="main"></a>
+  <a target="code" href="///D:/Python%20Games/Quiddler_Arcade/main.py" type="text/plain"><tt>main</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#arcade">arcade</a>
+ &#8226;   <a href="#card_class">card_class</a>
+ &#8226;   <a href="#constants">constants</a>
+ &#8226;   <a href="#game_end">game_end</a>
+ &#8226;   <a href="#game_menu">game_menu</a>
+ &#8226;   <a href="#logging">logging</a>
+ &#8226;   <a href="#pause_menu">pause_menu</a>
+ &#8226;   <a href="#player">player</a>
+ &#8226;   <a href="#random">random</a>
+ &#8226;   <a href="#shelve">shelve</a>
+ &#8226;   <a href="#splash_screen">splash_screen</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#game_menu">game_menu</a>
 
   </div>
 
@@ -20002,6 +20614,7 @@ imported by:
  &#8226;   <a href="#PyInstaller.utils.win32.winutils">PyInstaller.utils.win32.winutils</a>
  &#8226;   <a href="#_bootsubprocess">_bootsubprocess</a>
  &#8226;   <a href="#_osx_support">_osx_support</a>
+ &#8226;   <a href="#arcade.gui.utils">arcade.gui.utils</a>
  &#8226;   <a href="#arcade.soloud.soloud">arcade.soloud.soloud</a>
  &#8226;   <a href="#arcade.tilemap">arcade.tilemap</a>
  &#8226;   <a href="#arcade.window_commands">arcade.window_commands</a>
@@ -20029,6 +20642,8 @@ imported by:
  &#8226;   <a href="#ctypes.macholib.dyld">ctypes.macholib.dyld</a>
  &#8226;   <a href="#ctypes.util">ctypes.util</a>
  &#8226;   <a href="#curses">curses</a>
+ &#8226;   <a href="#dbm">dbm</a>
+ &#8226;   <a href="#dbm.dumb">dbm.dumb</a>
  &#8226;   <a href="#distutils._msvccompiler">distutils._msvccompiler</a>
  &#8226;   <a href="#distutils.archive_util">distutils.archive_util</a>
  &#8226;   <a href="#distutils.ccompiler">distutils.ccompiler</a>
@@ -20277,6 +20892,8 @@ imported by:
  &#8226;   <a href="#PyInstaller.utils.hooks">PyInstaller.utils.hooks</a>
  &#8226;   <a href="#arcade.context">arcade.context</a>
  &#8226;   <a href="#arcade.gl.context">arcade.gl.context</a>
+ &#8226;   <a href="#arcade.gui.ui_style">arcade.gui.ui_style</a>
+ &#8226;   <a href="#arcade.gui.utils">arcade.gui.utils</a>
  &#8226;   <a href="#arcade.resources">arcade.resources</a>
  &#8226;   <a href="#arcade.sound">arcade.sound</a>
  &#8226;   <a href="#arcade.texture">arcade.texture</a>
@@ -20286,6 +20903,25 @@ imported by:
  &#8226;   <a href="#pytiled_parser.objects">pytiled_parser.objects</a>
  &#8226;   <a href="#pytiled_parser.xml_parser">pytiled_parser.xml_parser</a>
  &#8226;   <a href="#zipimport">zipimport</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="pause_menu"></a>
+  <a target="code" href="///D:/Python%20Games/Quiddler_Arcade/pause_menu.py" type="text/plain"><tt>pause_menu</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#arcade">arcade</a>
+ &#8226;   <a href="#confirm_exit">confirm_exit</a>
+ &#8226;   <a href="#constants">constants</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#main">main</a>
+ &#8226;   <a href="#main.py">main.py</a>
 
   </div>
 
@@ -20372,6 +21008,7 @@ imported by:
  &#8226;   <a href="#pycparser.ply.yacc">pycparser.ply.yacc</a>
  &#8226;   <a href="#pyglet.media.buffered_logger">pyglet.media.buffered_logger</a>
  &#8226;   <a href="#setuptools.sandbox">setuptools.sandbox</a>
+ &#8226;   <a href="#shelve">shelve</a>
  &#8226;   <a href="#tracemalloc">tracemalloc</a>
 
   </div>
@@ -20990,6 +21627,18 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="player"></a>
+  <a target="code" href="///D:/Python%20Games/Quiddler_Arcade/player.py" type="text/plain"><tt>player</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imported by:
+    <a href="#main">main</a>
+ &#8226;   <a href="#main.py">main.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="plistlib"></a>
   <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/plistlib.py" type="text/plain"><tt>plistlib</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
@@ -21531,6 +22180,7 @@ imported by:
  &#8226;   <a href="#arcade.gl.types">arcade.gl.types</a>
  &#8226;   <a href="#arcade.gl.uniform">arcade.gl.uniform</a>
  &#8226;   <a href="#arcade.gl.vertex_array">arcade.gl.vertex_array</a>
+ &#8226;   <a href="#arcade.gui.elements.inputbox">arcade.gui.elements.inputbox</a>
  &#8226;   <a href="#arcade.text">arcade.text</a>
  &#8226;   <a href="#arcade.window_commands">arcade.window_commands</a>
  &#8226;   <a href="#pyglet">pyglet</a>
@@ -21962,7 +22612,10 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#pyglet">pyglet</a>
+    <a href="#arcade.gui.elements">arcade.gui.elements</a>
+ &#8226;   <a href="#arcade.gui.manager">arcade.gui.manager</a>
+ &#8226;   <a href="#arcade.gui.ui_style">arcade.gui.ui_style</a>
+ &#8226;   <a href="#pyglet">pyglet</a>
  &#8226;   <a href="#pyglet.app.base">pyglet.app.base</a>
  &#8226;   <a href="#pyglet.gui.widgets">pyglet.gui.widgets</a>
  &#8226;   <a href="#pyglet.input.base">pyglet.input.base</a>
@@ -22048,7 +22701,8 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#arcade.text">arcade.text</a>
+    <a href="#arcade.gui.utils">arcade.gui.utils</a>
+ &#8226;   <a href="#arcade.text">arcade.text</a>
  &#8226;   <a href="#pyglet">pyglet</a>
  &#8226;   <a href="#pyglet.font.base">pyglet.font.base</a>
  &#8226;   <a href="#pyglet.font.fontconfig">pyglet.font.fontconfig</a>
@@ -25531,6 +26185,8 @@ imports:
 imported by:
     <a href="#arcade.experimental.gui.ui_manager">arcade.experimental.gui.ui_manager</a>
  &#8226;   <a href="#arcade.gl.context">arcade.gl.context</a>
+ &#8226;   <a href="#arcade.gui.elements.inputbox">arcade.gui.elements.inputbox</a>
+ &#8226;   <a href="#arcade.gui.manager">arcade.gui.manager</a>
  &#8226;   <a href="#pyglet">pyglet</a>
  &#8226;   <a href="#pyglet.app.base">pyglet.app.base</a>
  &#8226;   <a href="#pyglet.canvas.base">pyglet.canvas.base</a>
@@ -26499,6 +27155,7 @@ imported by:
  &#8226;   <a href="#arcade.utils">arcade.utils</a>
  &#8226;   <a href="#email.generator">email.generator</a>
  &#8226;   <a href="#email.utils">email.utils</a>
+ &#8226;   <a href="#main">main</a>
  &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#pyglet.media.synthesis">pyglet.media.synthesis</a>
  &#8226;   <a href="#secrets">secrets</a>
@@ -26704,6 +27361,9 @@ imported by:
  &#8226;   <a href="#warnings">warnings</a>
  &#8226;   <a href="#xml.etree.ElementPath">xml.etree.ElementPath</a>
  &#8226;   <a href="#xml.etree.ElementTree">xml.etree.ElementTree</a>
+ &#8226;   <a href="#yaml.constructor">yaml.constructor</a>
+ &#8226;   <a href="#yaml.reader">yaml.reader</a>
+ &#8226;   <a href="#yaml.resolver">yaml.resolver</a>
 
   </div>
 
@@ -28326,6 +28986,31 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="shelve"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/shelve.py" type="text/plain"><tt>shelve</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#collections.abc">collections.abc</a>
+ &#8226;   <a href="#dbm">dbm</a>
+ &#8226;   <a href="#dbm.dumb">dbm.dumb</a>
+ &#8226;   <a href="#dbm.gnu">dbm.gnu</a>
+ &#8226;   <a href="#dbm.ndbm">dbm.ndbm</a>
+ &#8226;   <a href="#io">io</a>
+ &#8226;   <a href="#pickle">pickle</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#edit_player_names">edit_player_names</a>
+ &#8226;   <a href="#highscores">highscores</a>
+ &#8226;   <a href="#main">main</a>
+ &#8226;   <a href="#main.py">main.py</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="shlex"></a>
   <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/shlex.py" type="text/plain"><tt>shlex</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
@@ -28526,6 +29211,24 @@ imports:
   <div class="import">
 imported by:
     <a href="#http.server">http.server</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="splash_screen"></a>
+  <a target="code" href="///D:/Python%20Games/Quiddler_Arcade/splash_screen.py" type="text/plain"><tt>splash_screen</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#arcade">arcade</a>
+ &#8226;   <a href="#constants">constants</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#main">main</a>
+ &#8226;   <a href="#main.py">main.py</a>
 
   </div>
 
@@ -28770,6 +29473,7 @@ imported by:
  &#8226;   <a href="#chunk">chunk</a>
  &#8226;   <a href="#ctypes">ctypes</a>
  &#8226;   <a href="#ctypes.util">ctypes.util</a>
+ &#8226;   <a href="#dbm">dbm</a>
  &#8226;   <a href="#gettext">gettext</a>
  &#8226;   <a href="#gzip">gzip</a>
  &#8226;   <a href="#multiprocessing.connection">multiprocessing.connection</a>
@@ -28970,6 +29674,7 @@ imported by:
  &#8226;   <a href="#curses">curses</a>
  &#8226;   <a href="#dataclasses">dataclasses</a>
  &#8226;   <a href="#datetime">datetime</a>
+ &#8226;   <a href="#dbm">dbm</a>
  &#8226;   <a href="#dis">dis</a>
  &#8226;   <a href="#distutils">distutils</a>
  &#8226;   <a href="#distutils.archive_util">distutils.archive_util</a>
@@ -29213,6 +29918,7 @@ imported by:
  &#8226;   <a href="#xml.sax.expatreader">xml.sax.expatreader</a>
  &#8226;   <a href="#xml.sax.saxutils">xml.sax.saxutils</a>
  &#8226;   <a href="#xmlrpc.client">xmlrpc.client</a>
+ &#8226;   <a href="#yaml.constructor">yaml.constructor</a>
  &#8226;   <a href="#zipfile">zipfile</a>
  &#8226;   <a href="#zipimport">zipimport</a>
 
@@ -29499,7 +30205,6 @@ imported by:
  &#8226;   <a href="#http.cookiejar">http.cookiejar</a>
  &#8226;   <a href="#http.server">http.server</a>
  &#8226;   <a href="#logging">logging</a>
- &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#multiprocessing.connection">multiprocessing.connection</a>
  &#8226;   <a href="#multiprocessing.managers">multiprocessing.managers</a>
  &#8226;   <a href="#multiprocessing.pool">multiprocessing.pool</a>
@@ -29748,6 +30453,8 @@ imported by:
  &#8226;   <a href="#unittest.case">unittest.case</a>
  &#8226;   <a href="#unittest.loader">unittest.loader</a>
  &#8226;   <a href="#urllib.parse">urllib.parse</a>
+ &#8226;   <a href="#yaml.constructor">yaml.constructor</a>
+ &#8226;   <a href="#yaml.representer">yaml.representer</a>
 
   </div>
 
@@ -29794,6 +30501,16 @@ imported by:
  &#8226;   <a href="#arcade.gl.types">arcade.gl.types</a>
  &#8226;   <a href="#arcade.gl.utils">arcade.gl.utils</a>
  &#8226;   <a href="#arcade.gl.vertex_array">arcade.gl.vertex_array</a>
+ &#8226;   <a href="#arcade.gui.core">arcade.gui.core</a>
+ &#8226;   <a href="#arcade.gui.elements">arcade.gui.elements</a>
+ &#8226;   <a href="#arcade.gui.elements.flat_button">arcade.gui.elements.flat_button</a>
+ &#8226;   <a href="#arcade.gui.elements.image_button">arcade.gui.elements.image_button</a>
+ &#8226;   <a href="#arcade.gui.elements.inputbox">arcade.gui.elements.inputbox</a>
+ &#8226;   <a href="#arcade.gui.elements.label">arcade.gui.elements.label</a>
+ &#8226;   <a href="#arcade.gui.elements.toggle">arcade.gui.elements.toggle</a>
+ &#8226;   <a href="#arcade.gui.manager">arcade.gui.manager</a>
+ &#8226;   <a href="#arcade.gui.ui_style">arcade.gui.ui_style</a>
+ &#8226;   <a href="#arcade.gui.utils">arcade.gui.utils</a>
  &#8226;   <a href="#arcade.particle">arcade.particle</a>
  &#8226;   <a href="#arcade.pymunk_physics_engine">arcade.pymunk_physics_engine</a>
  &#8226;   <a href="#arcade.resources">arcade.resources</a>
@@ -30307,7 +31024,12 @@ imports:
   </div>
   <div class="import">
 imported by:
-    <a href="#attr._make">attr._make</a>
+    <a href="#arcade.gui.core">arcade.gui.core</a>
+ &#8226;   <a href="#arcade.gui.elements.flat_button">arcade.gui.elements.flat_button</a>
+ &#8226;   <a href="#arcade.gui.elements.image_button">arcade.gui.elements.image_button</a>
+ &#8226;   <a href="#arcade.gui.elements.inputbox">arcade.gui.elements.inputbox</a>
+ &#8226;   <a href="#arcade.gui.elements.toggle">arcade.gui.elements.toggle</a>
+ &#8226;   <a href="#attr._make">attr._make</a>
  &#8226;   <a href="#pkg_resources._vendor.pyparsing">pkg_resources._vendor.pyparsing</a>
  &#8226;   <a href="#setuptools._vendor.pyparsing">setuptools._vendor.pyparsing</a>
 
@@ -30355,6 +31077,7 @@ imported by:
  &#8226;   <a href="#PyInstaller.lib.modulegraph.modulegraph">PyInstaller.lib.modulegraph.modulegraph</a>
  &#8226;   <a href="#PyInstaller.lib.modulegraph.util">PyInstaller.lib.modulegraph.util</a>
  &#8226;   <a href="#arcade.gl.context">arcade.gl.context</a>
+ &#8226;   <a href="#arcade.gui.utils">arcade.gui.utils</a>
  &#8226;   <a href="#arcade.sprite">arcade.sprite</a>
  &#8226;   <a href="#arcade.text">arcade.text</a>
  &#8226;   <a href="#arcade.texture">arcade.texture</a>
@@ -30495,6 +31218,7 @@ imported by:
  &#8226;   <a href="#urllib.request">urllib.request</a>
  &#8226;   <a href="#xml.dom.pulldom">xml.dom.pulldom</a>
  &#8226;   <a href="#xml.etree.ElementTree">xml.etree.ElementTree</a>
+ &#8226;   <a href="#yaml">yaml</a>
  &#8226;   <a href="#zipfile">zipfile</a>
 
   </div>
@@ -30717,7 +31441,7 @@ imported by:
   <a target="code" href="///D:/Python%20Games/Quiddler_Arcade/word_list.py" type="text/plain"><tt>word_list</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imported by:
-    <a href="#main.py">main.py</a>
+    <a href="#constants">constants</a>
 
   </div>
 
@@ -31080,6 +31804,379 @@ imports:
   <div class="import">
 imported by:
     <a href="#multiprocessing.connection">multiprocessing.connection</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="yaml"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/yaml/__init__.py" type="text/plain"><tt>yaml</tt></a>
+<span class="moduletype">Package</span>  <div class="import">
+imports:
+    <a href="#io">io</a>
+ &#8226;   <a href="#warnings">warnings</a>
+ &#8226;   <a href="#yaml.cyaml">yaml.cyaml</a>
+ &#8226;   <a href="#yaml.dumper">yaml.dumper</a>
+ &#8226;   <a href="#yaml.error">yaml.error</a>
+ &#8226;   <a href="#yaml.events">yaml.events</a>
+ &#8226;   <a href="#yaml.loader">yaml.loader</a>
+ &#8226;   <a href="#yaml.nodes">yaml.nodes</a>
+ &#8226;   <a href="#yaml.tokens">yaml.tokens</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#arcade.gui.ui_style">arcade.gui.ui_style</a>
+ &#8226;   <a href="#yaml.composer">yaml.composer</a>
+ &#8226;   <a href="#yaml.constructor">yaml.constructor</a>
+ &#8226;   <a href="#yaml.cyaml">yaml.cyaml</a>
+ &#8226;   <a href="#yaml.dumper">yaml.dumper</a>
+ &#8226;   <a href="#yaml.emitter">yaml.emitter</a>
+ &#8226;   <a href="#yaml.error">yaml.error</a>
+ &#8226;   <a href="#yaml.events">yaml.events</a>
+ &#8226;   <a href="#yaml.loader">yaml.loader</a>
+ &#8226;   <a href="#yaml.nodes">yaml.nodes</a>
+ &#8226;   <a href="#yaml.parser">yaml.parser</a>
+ &#8226;   <a href="#yaml.reader">yaml.reader</a>
+ &#8226;   <a href="#yaml.representer">yaml.representer</a>
+ &#8226;   <a href="#yaml.resolver">yaml.resolver</a>
+ &#8226;   <a href="#yaml.scanner">yaml.scanner</a>
+ &#8226;   <a href="#yaml.serializer">yaml.serializer</a>
+ &#8226;   <a href="#yaml.tokens">yaml.tokens</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="yaml.composer"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/yaml/composer.py" type="text/plain"><tt>yaml.composer</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#yaml">yaml</a>
+ &#8226;   <a href="#yaml.error">yaml.error</a>
+ &#8226;   <a href="#yaml.events">yaml.events</a>
+ &#8226;   <a href="#yaml.nodes">yaml.nodes</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#yaml.loader">yaml.loader</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="yaml.constructor"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/yaml/constructor.py" type="text/plain"><tt>yaml.constructor</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#base64">base64</a>
+ &#8226;   <a href="#binascii">binascii</a>
+ &#8226;   <a href="#collections.abc">collections.abc</a>
+ &#8226;   <a href="#datetime">datetime</a>
+ &#8226;   <a href="#re">re</a>
+ &#8226;   <a href="#sys">sys</a>
+ &#8226;   <a href="#types">types</a>
+ &#8226;   <a href="#yaml">yaml</a>
+ &#8226;   <a href="#yaml.error">yaml.error</a>
+ &#8226;   <a href="#yaml.nodes">yaml.nodes</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#yaml.cyaml">yaml.cyaml</a>
+ &#8226;   <a href="#yaml.loader">yaml.loader</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="yaml.cyaml"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/yaml/cyaml.py" type="text/plain"><tt>yaml.cyaml</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#_yaml">_yaml</a>
+ &#8226;   <a href="#yaml">yaml</a>
+ &#8226;   <a href="#yaml.constructor">yaml.constructor</a>
+ &#8226;   <a href="#yaml.representer">yaml.representer</a>
+ &#8226;   <a href="#yaml.resolver">yaml.resolver</a>
+ &#8226;   <a href="#yaml.serializer">yaml.serializer</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#yaml">yaml</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="yaml.dumper"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/yaml/dumper.py" type="text/plain"><tt>yaml.dumper</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#yaml">yaml</a>
+ &#8226;   <a href="#yaml.emitter">yaml.emitter</a>
+ &#8226;   <a href="#yaml.representer">yaml.representer</a>
+ &#8226;   <a href="#yaml.resolver">yaml.resolver</a>
+ &#8226;   <a href="#yaml.serializer">yaml.serializer</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#yaml">yaml</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="yaml.emitter"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/yaml/emitter.py" type="text/plain"><tt>yaml.emitter</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#yaml">yaml</a>
+ &#8226;   <a href="#yaml.error">yaml.error</a>
+ &#8226;   <a href="#yaml.events">yaml.events</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#yaml.dumper">yaml.dumper</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="yaml.error"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/yaml/error.py" type="text/plain"><tt>yaml.error</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#yaml">yaml</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#yaml">yaml</a>
+ &#8226;   <a href="#yaml.composer">yaml.composer</a>
+ &#8226;   <a href="#yaml.constructor">yaml.constructor</a>
+ &#8226;   <a href="#yaml.emitter">yaml.emitter</a>
+ &#8226;   <a href="#yaml.parser">yaml.parser</a>
+ &#8226;   <a href="#yaml.reader">yaml.reader</a>
+ &#8226;   <a href="#yaml.representer">yaml.representer</a>
+ &#8226;   <a href="#yaml.resolver">yaml.resolver</a>
+ &#8226;   <a href="#yaml.scanner">yaml.scanner</a>
+ &#8226;   <a href="#yaml.serializer">yaml.serializer</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="yaml.events"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/yaml/events.py" type="text/plain"><tt>yaml.events</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#yaml">yaml</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#yaml">yaml</a>
+ &#8226;   <a href="#yaml.composer">yaml.composer</a>
+ &#8226;   <a href="#yaml.emitter">yaml.emitter</a>
+ &#8226;   <a href="#yaml.parser">yaml.parser</a>
+ &#8226;   <a href="#yaml.serializer">yaml.serializer</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="yaml.loader"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/yaml/loader.py" type="text/plain"><tt>yaml.loader</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#yaml">yaml</a>
+ &#8226;   <a href="#yaml.composer">yaml.composer</a>
+ &#8226;   <a href="#yaml.constructor">yaml.constructor</a>
+ &#8226;   <a href="#yaml.parser">yaml.parser</a>
+ &#8226;   <a href="#yaml.reader">yaml.reader</a>
+ &#8226;   <a href="#yaml.resolver">yaml.resolver</a>
+ &#8226;   <a href="#yaml.scanner">yaml.scanner</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#yaml">yaml</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="yaml.nodes"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/yaml/nodes.py" type="text/plain"><tt>yaml.nodes</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#yaml">yaml</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#yaml">yaml</a>
+ &#8226;   <a href="#yaml.composer">yaml.composer</a>
+ &#8226;   <a href="#yaml.constructor">yaml.constructor</a>
+ &#8226;   <a href="#yaml.representer">yaml.representer</a>
+ &#8226;   <a href="#yaml.resolver">yaml.resolver</a>
+ &#8226;   <a href="#yaml.serializer">yaml.serializer</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="yaml.parser"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/yaml/parser.py" type="text/plain"><tt>yaml.parser</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#yaml">yaml</a>
+ &#8226;   <a href="#yaml.error">yaml.error</a>
+ &#8226;   <a href="#yaml.events">yaml.events</a>
+ &#8226;   <a href="#yaml.scanner">yaml.scanner</a>
+ &#8226;   <a href="#yaml.tokens">yaml.tokens</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#yaml.loader">yaml.loader</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="yaml.reader"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/yaml/reader.py" type="text/plain"><tt>yaml.reader</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#codecs">codecs</a>
+ &#8226;   <a href="#re">re</a>
+ &#8226;   <a href="#yaml">yaml</a>
+ &#8226;   <a href="#yaml.error">yaml.error</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#yaml.loader">yaml.loader</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="yaml.representer"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/yaml/representer.py" type="text/plain"><tt>yaml.representer</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#base64">base64</a>
+ &#8226;   <a href="#collections">collections</a>
+ &#8226;   <a href="#copyreg">copyreg</a>
+ &#8226;   <a href="#datetime">datetime</a>
+ &#8226;   <a href="#types">types</a>
+ &#8226;   <a href="#yaml">yaml</a>
+ &#8226;   <a href="#yaml.error">yaml.error</a>
+ &#8226;   <a href="#yaml.nodes">yaml.nodes</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#yaml.cyaml">yaml.cyaml</a>
+ &#8226;   <a href="#yaml.dumper">yaml.dumper</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="yaml.resolver"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/yaml/resolver.py" type="text/plain"><tt>yaml.resolver</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#re">re</a>
+ &#8226;   <a href="#yaml">yaml</a>
+ &#8226;   <a href="#yaml.error">yaml.error</a>
+ &#8226;   <a href="#yaml.nodes">yaml.nodes</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#yaml.cyaml">yaml.cyaml</a>
+ &#8226;   <a href="#yaml.dumper">yaml.dumper</a>
+ &#8226;   <a href="#yaml.loader">yaml.loader</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="yaml.scanner"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/yaml/scanner.py" type="text/plain"><tt>yaml.scanner</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#yaml">yaml</a>
+ &#8226;   <a href="#yaml.error">yaml.error</a>
+ &#8226;   <a href="#yaml.tokens">yaml.tokens</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#yaml.loader">yaml.loader</a>
+ &#8226;   <a href="#yaml.parser">yaml.parser</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="yaml.serializer"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/yaml/serializer.py" type="text/plain"><tt>yaml.serializer</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#yaml">yaml</a>
+ &#8226;   <a href="#yaml.error">yaml.error</a>
+ &#8226;   <a href="#yaml.events">yaml.events</a>
+ &#8226;   <a href="#yaml.nodes">yaml.nodes</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#yaml.cyaml">yaml.cyaml</a>
+ &#8226;   <a href="#yaml.dumper">yaml.dumper</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="yaml.tokens"></a>
+  <a target="code" href="///C:/users/davy/appdata/local/programs/python/python39/lib/site-packages/yaml/tokens.py" type="text/plain"><tt>yaml.tokens</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#yaml">yaml</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#yaml">yaml</a>
+ &#8226;   <a href="#yaml.parser">yaml.parser</a>
+ &#8226;   <a href="#yaml.scanner">yaml.scanner</a>
 
   </div>
 
