@@ -21,16 +21,16 @@ class PauseMenu(arcade.View):
 
         self.button_list = arcade.SpriteList()
         self.sound_on_button = arcade.Sprite(ON, scale=self.scale)
-        self.sound_on_button.position = self.screen_width / 2 - 100 * self.scale, 500 * self.scale
+        self.sound_on_button.position = self.screen_width / 2 - 100 * self.scale, 400 * self.scale
         self.button_list.append(self.sound_on_button)
         self.sound_off_button = arcade.Sprite(OFF, scale=self.scale)
-        self.sound_off_button.position = self.screen_width / 2 + 100 * self.scale, 500 * self.scale
+        self.sound_off_button.position = self.screen_width / 2 + 100 * self.scale, 400 * self.scale
         self.button_list.append(self.sound_off_button)
         self.save_button = arcade.Sprite(SAVE, scale=self.scale)
-        self.save_button.position = self.screen_width / 2, 400 * self.scale
+        self.save_button.position = self.screen_width / 2, 300 * self.scale
         self.button_list.append(self.save_button)
         self.cancel_button = arcade.Sprite(CANCEL, scale=self.scale)
-        self.cancel_button.position = self.screen_width / 2, 300 * self.scale
+        self.cancel_button.position = self.screen_width / 2, 600 * self.scale
         self.button_list.append(self.cancel_button)
         self.instructions_button = arcade.Sprite("images/instructions_button.png", scale=self.scale)
         self.instructions_button.position = self.screen_width / 2, 200 * self.scale
@@ -42,16 +42,18 @@ class PauseMenu(arcade.View):
         self.buttons_pressed = []
 
         self.background_music = BACKGROUND_MUSIC
+        arcade.set_background_color(arcade.color.BLACK)
 
     def on_draw(self):
         arcade.start_render()
+
         self.background.draw()
         self.button_list.draw()
 
         arcade.draw_text(
             'Music:',
             self.screen_width / 2,
-            575 * self.scale,
+            475 * self.scale,
             color=WHITE,
             font_size=40,
             anchor_x="center",

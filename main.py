@@ -17,7 +17,7 @@ class Quiddler(arcade.View):
     Main application class.
     """
 
-    def __init__(self, rnd_number):
+    def __init__(self, rnd_number, player_1, player_2):
         super().__init__()
         # Initialize Players and add them to a list of all players
         self.screen_width, self.screen_height = self.window.get_size()
@@ -41,12 +41,12 @@ class Quiddler(arcade.View):
         }
 
         self.player_list = []
-        self.player_1 = player.Player('Player 1')
+        self.player_1 = player.Player(player_name=player_1)
         self.player_1.hand_index = PLAYER_1_HAND
         self.player_1.pile_numbers_list = [0, 1, 2, 3, 5]
         self.player_1.color = WHITE_TRANSPARENT
         self.player_list.append(self.player_1)
-        self.player_2 = player.Player('Player 2')
+        self.player_2 = player.Player(player_name=player_2)
         self.player_2.hand_index = PLAYER_2_HAND
         self.player_2.pile_numbers_list = [0, 1, 2, 4, 5]
         self.player_2.color = WHITE_TRANSPARENT
@@ -760,6 +760,7 @@ class Quiddler(arcade.View):
                         self.current_player.has_gone_down = True
 
                         self.get_completed_words()
+                        arcade.play_sound(self.go_down_sound, volume=0.2)
                         # for _ in range(len(self.piles[COMPLETED_CARDS])):
                         #     self.piles[COMPLETED_CARDS].pop()
 
@@ -1019,7 +1020,7 @@ class Quiddler(arcade.View):
 
             for _ in range(len(self.piles[COMPLETED_CARDS])):
                 self.piles[COMPLETED_CARDS].pop()
-        arcade.play_sound(self.go_down_sound, volume=0.2)
+
 
     def round_end_sequence(self):
 
@@ -1056,7 +1057,12 @@ class Quiddler(arcade.View):
 
         self.buttons_pressed = []
         if self.rnd > self.rnd_max:
-            game_view = game_end.GameEnd(player_1_score=self.player_1.total_score, player_2_score=self.player_2.total_score)
+            self.get_highscores()
+            self.background_music.stop()
+            game_view = game_end.GameEnd(player_1_name=self.player_1.player_name,
+                                         player_1_score=self.player_1.total_score,
+                                         player_2_name=self.player_2.player_name,
+                                         player_2_score=self.player_2.total_score)
             self.window.show_view(game_view)
         else:
             if self.rnd % 2 == 1:
@@ -1118,6 +1124,20 @@ class Quiddler(arcade.View):
             self.completed_words_text_list = []
             self.completed_words_card_list = []
 
+    def get_highscores(self):
+        file = shelve.open('quiddler_highscores', protocol=2)
+        try:
+            temp_score_list = file['scores']
+        except KeyError:
+            temp_score_list = []
+        if self.player_1.total_score > self.player_2.total_score:
+            temp_score_list.append([self.player_1.player_name, self.player_1.total_score])
+        elif self.player_2.total_score > self.player_1.total_score:
+            temp_score_list.append([self.player_2.player_name, self.player_2.total_score])
+        if len(temp_score_list) > 10:
+            temp_score_list.pop()
+        file['scores'] = temp_score_list
+        file.close()
 
     def get_pile_for_card(self, card):
 
@@ -1178,9 +1198,11 @@ class Quiddler(arcade.View):
 
     def save_game(self):
         file = shelve.open('quiddler_saved_game', protocol=2)
+        file['player_1_name'] = self.player_1.player_name
         file['player_1_score'] = self.player_1.total_score
         file['player_1_longest_words'] = self.player_1.longest_words
         file['player_1_has_gone_down'] = self.player_1.has_gone_down
+        file['player_2_name'] = self.player_2.player_name
         file['player_2_score'] = self.player_2.total_score
         file['player_2_longest_words'] = self.player_2.longest_words
         file['player_2_has_gone_down'] = self.player_2.has_gone_down
@@ -1201,10 +1223,12 @@ class Quiddler(arcade.View):
     def continue_game(self):
         try:
             file = shelve.open('quiddler_saved_game', protocol=2)
+            self.player_1.player_name = file['player_1_name']
             self.player_1.total_score = file['player_1_score']
             self.player_1.longest_words = file['player_1_longest_words']
             self.player_1.has_gone_down = file['player_1_has_gone_down']
 
+            self.player_2.player_name = file['player_2_name']
             self.player_2.total_score = file['player_2_score']
             self.player_2.longest_words = file['player_2_longest_words']
             self.player_2.has_gone_down = file['player_1_has_gone_down']
@@ -1250,7 +1274,18 @@ class Quiddler(arcade.View):
 def main():
     window = arcade.Window(fullscreen=True, title="Quiddler")
     window.center_window()
-    start_view = game_menu.GameMenu()
+    file = shelve.open(filename='players', protocol=2)
+    try:
+        player_1 = file['player_1']
+        player_2 = file['player_2']
+    except:
+        player_1 = 'Player 1'
+        player_2 = 'Player 2'
+        file['player_1'] = player_1
+        file['player_2'] = player_2
+    file.close()
+    start_view = game_menu.GameMenu(player_1=player_1,
+                                    player_2=player_2)
     window.show_view(start_view)
 
     arcade.run()
