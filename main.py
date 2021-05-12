@@ -1108,7 +1108,7 @@ class Quiddler(arcade.View):
 
 
         else:
-            print("Sorry, your word needs to be at least 2 letters long. Dumbass.")
+            print("Sorry, your word needs to be at least 2 letters long.")
             arcade.play_sound(self.wrong_word_sound, volume=0.5)
             for card in self.piles[GO_DOWN_PILE]:
                 self.move_card_to_new_pile(card, self.current_player.hand_index, GO_DOWN_PILE)
