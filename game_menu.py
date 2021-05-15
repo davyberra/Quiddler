@@ -2,6 +2,7 @@ import arcade
 import main
 import edit_player_names
 import highscores
+import instructions
 from constants import BACKGROUND_IMAGE_WIDTH, CONTINUE, EXIT, MAIN_MENU_MUSIC, EXIT_PRESSED, CONTINUE_PRESSED, \
     HIGHSCORES_BUTTON, HIGHSCORES_BUTTON_PRESSED, EDIT_NAMES, EDIT_NAMES_PRESSED
 
@@ -135,7 +136,10 @@ class GameMenu(arcade.View):
 
             elif self.instructions_button in self.buttons_pressed:
                 if self.instructions_button == button[0]:
-                    pass
+                    game_view = instructions.InstructionsMenu1(game_view=self)
+                    game_view.setup()
+
+                    self.window.show_view(game_view)
 
             elif self.exit_button in self.buttons_pressed:
                 if self.exit_button == button[0]:

@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+
+.idea
+
+# Remove .xcf originals
+.xcf
+
 # C extensions
 *.so
 
