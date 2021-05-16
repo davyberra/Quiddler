@@ -1,3 +1,6 @@
+"""
+Gets the word list from scrabble_word_list.txt.
+"""
 def get_word_list():
 
     with open('scrabble_word_list.txt') as word_file:

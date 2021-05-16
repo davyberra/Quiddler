@@ -1,3 +1,9 @@
+"""
+Includes classes for buttons.
+
+NavButton - a user-defined class for navigation functions that overrides arcade.gui.UIImageButton.
+"""
+
 import arcade
 
 import arcade.gui

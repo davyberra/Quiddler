@@ -1,3 +1,6 @@
+"""
+View for editing player names from Game Menu.
+"""
 import arcade
 import game_menu
 import shelve

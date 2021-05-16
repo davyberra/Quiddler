@@ -6,7 +6,9 @@ from constants import WHITE, BACKGROUND_MUSIC, EXIT, EXIT_PRESSED, CANCEL, CANCE
 
 
 class PauseMenu(arcade.View):
-
+    """"
+    Pause Menu View.
+    """
     def __init__(self, game_view, sound_list):
         super().__init__()
         self.screen_width, self.screen_height = self.window.get_size()
@@ -20,6 +22,7 @@ class PauseMenu(arcade.View):
 
         self.sound_list = sound_list
 
+        # Create list of buttons
         self.button_list = arcade.SpriteList()
         self.sound_on_button = arcade.Sprite(ON, scale=self.scale)
         self.sound_on_button.position = self.screen_width / 2 - 100 * self.scale, 400 * self.scale

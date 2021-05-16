@@ -1,3 +1,9 @@
+"""
+Includes views for each instructions page.
+
+InstructionsMenu - basic class that defines main instruction menu functionality,
+subclassed by each InstructionMenu class.
+"""
 import arcade
 import buttons
 

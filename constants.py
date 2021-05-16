@@ -1,3 +1,6 @@
+"""
+List of constants used in the Quiddler namespace.
+"""
 import arcade
 from word_list import get_word_list
 

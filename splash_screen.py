@@ -1,10 +1,26 @@
+"""
+Splash Screen called between player turns.
+"""
 import arcade
+
 from constants import WHITE, FACE_DOWN_IMAGE
 
 
 class SplashScreen(arcade.View):
 
-    def __init__(self, game_view, current_player, player_1, player_2, rnd_end, rnd_number, score_change_list, player_1_score_box, player_2_score_box, piles):
+    # Persists game state between views.
+    def __init__(self,
+                 game_view,
+                 current_player,
+                 player_1,
+                 player_2,
+                 rnd_end,
+                 rnd_number,
+                 score_change_list,
+                 player_1_score_box,
+                 player_2_score_box,
+                 piles
+                 ):
         super().__init__()
         self.screen_width, self.screen_height = self.window.get_size()
         self.scale = min(self.screen_width / 1920, self. screen_height / 1080)
@@ -84,8 +100,6 @@ class SplashScreen(arcade.View):
         for pile in self.piles:
             for card in pile:
                 card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
-
-
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         for pile in self.piles[1:]:

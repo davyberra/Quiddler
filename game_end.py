@@ -1,3 +1,6 @@
+"""
+View called after a game is finished.
+"""
 import arcade
 import game_menu
 from constants import WHITE, GAME_END_THEME, GAME_END_BACKGROUND, GAME_END_BACKGROUND_WIDTH, YES, YES_PRESSED,\
@@ -43,7 +46,6 @@ class GameEnd(arcade.View):
     def on_show(self):
 
         self.background_music.play(volume=0.25)
-
 
     def on_draw(self):
         arcade.start_render()

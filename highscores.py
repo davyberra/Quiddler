@@ -1,7 +1,11 @@
+"""
+View that displays high scores.
+"""
 import arcade
 import shelve
 
 from constants import HIGHSCORES_BACKGROUND, BACK, BACK_PRESSED
+
 
 class HighScores(arcade.View):
 

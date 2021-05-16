@@ -1,4 +1,8 @@
+"""
+Class for Card Sprite.
+"""
 import arcade
+
 
 class Card(arcade.Sprite):
     """

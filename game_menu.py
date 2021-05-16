@@ -1,3 +1,6 @@
+"""
+Main Menu for Quiddler - called on application start.
+"""
 import arcade
 import main
 import edit_player_names
@@ -13,7 +16,6 @@ class GameMenu(arcade.View):
         super().__init__()
         self.window.set_fullscreen(True)
         self.screen_width, self.screen_height = self.window.get_size()
-        # self.screen_width, self.screen_height = self.screen_width * .8, self.screen_height * .8
         self.scale = min(self.screen_width / 1920, self.screen_height / 1080)
         self.player_1 = player_1
         self.player_2 = player_2
@@ -55,8 +57,6 @@ class GameMenu(arcade.View):
         """ This is run once when we switch to this view """
         self.background.draw()
         self.button_list.draw()
-
-
 
     def on_draw(self):
         """ Draw this view """
@@ -166,7 +166,6 @@ class GameMenu(arcade.View):
                 if self.highscores_button == button[0]:
                     game_view = highscores.HighScores(game_view=self)
                     self.window.show_view(game_view)
-
 
         self.highscores_button.texture = arcade.load_texture(HIGHSCORES_BUTTON)
         self.edit_names_button.texture = arcade.load_texture(EDIT_NAMES)
