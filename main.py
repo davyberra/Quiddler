@@ -1,3 +1,7 @@
+"""
+Quiddler - a word game using cards for two people.
+Run main.py to play the game.
+"""
 import arcade
 import random
 import logging
@@ -10,18 +14,6 @@ import splash_screen
 import player
 import card_class
 from constants import *
-
-
-# def pull_to_top(card, card_pile):
-#     """
-#     For rendering purposes. Ensures that the held card appears above
-#     all other elements on the screen.
-#     """
-#     # Loop and pull all the other cards down towards the zero end
-#     for i in range(len(card_pile) - 1):
-#         card_pile[i] = card_pile[i + 1]
-#     # Put this card at the right-side/top of list
-#     card_pile[len(card_pile) - 1] = card
 
 
 class Quiddler(arcade.View):
