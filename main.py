@@ -1406,7 +1406,7 @@ class Quiddler(arcade.View):
 
 def main():
     """
-    Main method function.
+    Main function.
     """
     window = arcade.Window(fullscreen=True, title="Quiddler")
     window.center_window()
