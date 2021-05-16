@@ -18,7 +18,7 @@ class PauseMenu(arcade.View):
         )
         self.background.position = self.screen_width / 2, self.screen_height / 2
 
-        self.sound_list = sound_list0
+        self.sound_list = sound_list
 
         self.button_list = arcade.SpriteList()
         self.sound_on_button = arcade.Sprite(ON, scale=self.scale)
