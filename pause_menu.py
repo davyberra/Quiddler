@@ -1,5 +1,6 @@
 import arcade
 import confirm_exit
+import instructions
 from constants import WHITE, BACKGROUND_MUSIC, EXIT, EXIT_PRESSED, CANCEL, CANCEL_BUTTON_PRESSED, SAVE, SAVE_PRESSED,\
     ON, ON_PRESSED, OFF, OFF_PRESSED
 
@@ -17,7 +18,7 @@ class PauseMenu(arcade.View):
         )
         self.background.position = self.screen_width / 2, self.screen_height / 2
 
-        self.sound_list = sound_list
+        self.sound_list = sound_list0
 
         self.button_list = arcade.SpriteList()
         self.sound_on_button = arcade.Sprite(ON, scale=self.scale)
@@ -80,7 +81,10 @@ class PauseMenu(arcade.View):
                          modifiers: int):
 
         if self.instructions_button in self.buttons_pressed:
-            pass
+            game_view = instructions.InstructionsMenu1(game_view=self)
+            game_view.setup()
+
+            self.window.show_view(game_view)
         elif self.exit_button in self.buttons_pressed:
 
             game_view = confirm_exit.ConfirmExit(game_view=self.game_view)

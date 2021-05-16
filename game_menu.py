@@ -25,25 +25,25 @@ class GameMenu(arcade.View):
         self.button_list = arcade.SpriteList()
 
         self.continue_button = arcade.Sprite(CONTINUE, scale=self.scale)
-        self.continue_button.position = self.screen_width / 2, self.screen_height / 2
+        self.continue_button.position = self.screen_width / 2, self.screen_height / 2 + 100 * self.scale
         self.button_list.append(self.continue_button)
         self.half_game_button = arcade.Sprite("images/half_game_button.png", scale=self.scale)
-        self.half_game_button.position = self.screen_width / 2 - 100 * self.scale, self.screen_height / 2 - 100 * self.scale
+        self.half_game_button.position = self.screen_width / 2 - 100 * self.scale, self.screen_height / 2
         self.button_list.append(self.half_game_button)
         self.full_game_button = arcade.Sprite("images/full_game_button.png", scale=self.scale)
-        self.full_game_button.position = self.screen_width / 2 + 100 * self.scale, self.screen_height / 2 - 100 * self.scale
+        self.full_game_button.position = self.screen_width / 2 + 100 * self.scale, self.screen_height / 2
         self.button_list.append(self.full_game_button)
         self.edit_names_button = arcade.Sprite(EDIT_NAMES, scale=self.scale)
-        self.edit_names_button.position = self.screen_width / 2, self.screen_height / 2 - 200 * self.scale
+        self.edit_names_button.position = self.screen_width / 2, self.screen_height / 2 - 100 * self.scale
         self.button_list.append(self.edit_names_button)
         self.highscores_button = arcade.Sprite(HIGHSCORES_BUTTON, scale=self.scale)
-        self.highscores_button.position = self.screen_width / 2, self.screen_height / 2 - 300 * self.scale
+        self.highscores_button.position = self.screen_width / 2, self.screen_height / 2 - 200 * self.scale
         self.button_list.append(self.highscores_button)
         self.instructions_button = arcade.Sprite("images/instructions_button.png", scale=self.scale)
-        self.instructions_button.position = self.screen_width / 2, self.screen_height / 2 - 400 * self.scale
+        self.instructions_button.position = self.screen_width / 2, self.screen_height / 2 - 300 * self.scale
         self.button_list.append(self.instructions_button)
         self.exit_button = arcade.Sprite(EXIT, scale=self.scale)
-        self.exit_button.position = self.screen_width / 2, self.screen_height / 2 - 500 * self.scale
+        self.exit_button.position = self.screen_width / 2, self.screen_height / 2 - 400 * self.scale
         self.button_list.append(self.exit_button)
 
         self.buttons_pressed = []
