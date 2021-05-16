@@ -7,7 +7,12 @@ __pycache__/
 .idea
 
 # Remove .xcf originals
-.xcf
+*.xcf
+
+# Save Data
+*.bak
+*.dir
+*.dat
 
 # C extensions
 *.so
