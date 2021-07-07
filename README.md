@@ -14,3 +14,5 @@ I do not claim to own any rights to this game.
 ![Gameplay1](https://imgur.com/7Ra8Hse.jpg)
 ![Gameplay2](https://imgur.com/ncdH5no.jpg)
 ![In-Game Menu](https://imgur.com/1IUyozf.jpg)
+## Gameplay Video
+![Gameplay Video](/doc/Quiddler%202021-07-06%2017-27-01.gif)
