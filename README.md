@@ -10,7 +10,7 @@ This was created using the Arcade module for Python, with the art/music created 
 I do not claim to own any rights to this game.
 
 ## Gameplay Demo
-![Gameplay Video](/doc/2021-07-07 19-59-07.gif)
+![Gameplay Video](/doc/quiddler_demo.gif)
 ## Screenshots
 ![Main Menu](https://imgur.com/pVIrn2M.jpg)
 ![Gameplay1](https://imgur.com/7Ra8Hse.jpg)
