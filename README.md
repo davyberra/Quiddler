@@ -44,7 +44,7 @@ Players can make words in multiple ways, with only a couple of caveats:
 <li>Words must be <strong>at least 2-letters</strong> long</li>
 <li>Words must use <strong>at least 2 cards</strong> (some cards have two letters instead of just one and can't be used on their own to make a word)</li>
 <li>You can use your cards to make <strong>as many words as you like</strong>, as long as each word fits the above criteria</li>
-
+<br>
 Once a player is able to successfully go down, play moves on to the other player, who has one full turn to make whatever
 words they can before the round ends. In this case, the player doesn't have to use all their cards - they can go down with
 whatever they have, and any leftover cards will count against them when tallying the score for the round.
@@ -78,5 +78,5 @@ go down for the round</li>
 <li>Click "Next Turn" to pass play onto the next player</li>
 <li>Click "Recall" to return all saved words back into your hand</li>
 <li>Click "Undo" to undo a draw/discard move (Only works if you haven't made any moves since the draw/discard)</li>
-
+<br>
 Hope you enjoy, and let me know of any issues you may encounter!
