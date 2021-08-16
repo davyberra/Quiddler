@@ -596,73 +596,88 @@ class Quiddler(arcade.View):
         Does not track which button is pressed.
         """
         pile = arcade.get_sprites_at_point((x, y), self.pile_mat_list)
+        buttons = arcade.get_sprites_at_point((x, y), self.button_list)
         cards = None
-        if pile:
-            for value in pile:
-                logging.debug(f'Pile #: {self.pile_mat_list.index(value)}')
-            if len(pile) > 1:
-                pile.remove(pile[-1])
-            if self.pile_mat_list.index(pile[0]) == FACE_DOWN_PILE:
-                cards = arcade.get_sprites_at_point((x, y), self.piles[FACE_DOWN_PILE])
-            elif self.pile_mat_list.index(pile[0]) == DISCARD_PILE:
-                cards = arcade.get_sprites_at_point((x, y), self.piles[DISCARD_PILE])
-            elif self.pile_mat_list.index(pile[0]) == PLAYER_1_HAND or pile == PLAYER_2_HAND:
-                cards = arcade.get_sprites_at_point((x, y), self.piles[self.current_player.hand_index])
-            elif self.pile_mat_list.index(pile[0]) == GO_DOWN_PILE:
-                cards = arcade.get_sprites_at_point((x, y), self.piles[GO_DOWN_PILE])
-            elif self.pile_mat_list.index(pile[0]) == COMPLETED_CARDS:
-                pass
 
+        if pile:
+            cards = self.get_clicked_pile(cards, pile, x, y)
         else:
             cards = []
-        buttons = arcade.get_sprites_at_point((x, y), self.button_list)
 
         # Get only top card of pile
         if len(cards) > 0:
-            self.held_cards = cards
-            for card in self.held_cards:
-                if card in self.piles[COMPLETED_CARDS]:
-                    self.held_cards = []
-
-            # Ensure player isn't grabbing cards from other player's hand
-            if len(self.held_cards) > 0:
-                if self.current_player == self.player_1:
-                    for i in range(len(self.held_cards)):
-                        if i < len(self.held_cards):
-                            for card in self.piles[PLAYER_2_HAND]:
-                                if id(self.held_cards[i]) == id(card):
-                                    self.held_cards.remove(self.held_cards[i])
-                if self.current_player == self.player_2:
-                    for i in range(len(self.held_cards)):
-                        if i < len(self.held_cards):
-                            for card in self.piles[PLAYER_1_HAND]:
-                                if id(self.held_cards[i]) == id(card):
-                                    self.held_cards.remove(self.held_cards[i])
-
-                for _ in range(len(self.held_cards) - 1):
-                    self.held_cards.remove(self.held_cards[0])
-
-                pile = self.get_pile_for_card(self.held_cards[0])
-                self.held_cards_original_pile: int = pile
-
-                self.piles[pile].remove(self.held_cards[0])
+            self.get_top_card(cards)
 
         # Get buttons pressed
         if len(buttons) > 0:
-            self.buttons_pressed = buttons
+            self.get_buttons_pressed(buttons)
 
-            if self.go_down_button in self.buttons_pressed:
-                self.go_down_button.texture = arcade.load_texture(GO_DOWN_PRESSED)
-            elif self.save_word_button in self.buttons_pressed:
-                self.save_word_button.texture = arcade.load_texture(SAVE_WORD_PRESSED)
-            elif self.recall_button in self.buttons_pressed:
-                self.recall_button.texture = arcade.load_texture(RECALL_PRESSED)
-            elif self.next_turn_button in self.buttons_pressed:
-                self.next_turn_button.texture = arcade.load_texture(NEXT_TURN_PRESSED)
-            elif self.undo_button in self.buttons_pressed:
-                self.undo_button.texture = arcade.load_texture(UNDO_PRESSED)
-            elif self.menu_button in self.buttons_pressed:
-                self.menu_button.texture = arcade.load_texture(MENU_PRESSED)
+    def get_clicked_pile(self, cards, pile, x, y):
+        """ Sets 'cards' variable to only the cards in the selected pile. """
+        for value in pile:
+            logging.debug(f'Pile #: {self.pile_mat_list.index(value)}')
+        if len(pile) > 1:
+            pile.remove(pile[-1])
+        if self.pile_mat_list.index(pile[0]) == FACE_DOWN_PILE:
+            cards = arcade.get_sprites_at_point((x, y), self.piles[FACE_DOWN_PILE])
+        elif self.pile_mat_list.index(pile[0]) == DISCARD_PILE:
+            cards = arcade.get_sprites_at_point((x, y), self.piles[DISCARD_PILE])
+        elif self.pile_mat_list.index(pile[0]) == PLAYER_1_HAND or pile == PLAYER_2_HAND:
+            cards = arcade.get_sprites_at_point((x, y), self.piles[self.current_player.hand_index])
+        elif self.pile_mat_list.index(pile[0]) == GO_DOWN_PILE:
+            cards = arcade.get_sprites_at_point((x, y), self.piles[GO_DOWN_PILE])
+        elif self.pile_mat_list.index(pile[0]) == COMPLETED_CARDS:
+            pass
+        return cards
+
+    def get_buttons_pressed(self, buttons):
+        """ Gets buttons pressed, and updates button UI accordingly. """
+        self.buttons_pressed = buttons
+        if self.go_down_button in self.buttons_pressed:
+            self.go_down_button.texture = arcade.load_texture(GO_DOWN_PRESSED)
+        elif self.save_word_button in self.buttons_pressed:
+            self.save_word_button.texture = arcade.load_texture(SAVE_WORD_PRESSED)
+        elif self.recall_button in self.buttons_pressed:
+            self.recall_button.texture = arcade.load_texture(RECALL_PRESSED)
+        elif self.next_turn_button in self.buttons_pressed:
+            self.next_turn_button.texture = arcade.load_texture(NEXT_TURN_PRESSED)
+        elif self.undo_button in self.buttons_pressed:
+            self.undo_button.texture = arcade.load_texture(UNDO_PRESSED)
+        elif self.menu_button in self.buttons_pressed:
+            self.menu_button.texture = arcade.load_texture(MENU_PRESSED)
+
+    def get_top_card(self, cards):
+        """
+        Selects only the topmost card in the UI, and ensures
+        player isn't grabbing any cards from the other player's hand.
+        """
+        self.held_cards = cards
+        for card in self.held_cards:
+            if card in self.piles[COMPLETED_CARDS]:
+                self.held_cards = []
+
+        # Ensure player isn't grabbing cards from other player's hand
+        if len(self.held_cards) > 0:
+            if self.current_player == self.player_1:
+                for i in range(len(self.held_cards)):
+                    if i < len(self.held_cards):
+                        for card in self.piles[PLAYER_2_HAND]:
+                            if id(self.held_cards[i]) == id(card):
+                                self.held_cards.remove(self.held_cards[i])
+            if self.current_player == self.player_2:
+                for i in range(len(self.held_cards)):
+                    if i < len(self.held_cards):
+                        for card in self.piles[PLAYER_1_HAND]:
+                            if id(self.held_cards[i]) == id(card):
+                                self.held_cards.remove(self.held_cards[i])
+
+            for _ in range(len(self.held_cards) - 1):
+                self.held_cards.remove(self.held_cards[0])
+
+            pile = self.get_pile_for_card(self.held_cards[0])
+            self.held_cards_original_pile: int = pile
+
+            self.piles[pile].remove(self.held_cards[0])
 
     def on_mouse_release(self, x: float, y: float, button: int, modifiers: int):
         """
@@ -680,121 +695,18 @@ class Quiddler(arcade.View):
             # Ensure mouse is still over the same button that was pressed when mouse is released.
             buttons = arcade.get_sprites_at_point((x, y), self.button_list)
             if self.buttons_pressed == buttons:
+
+                # Call methods for each button.
                 if self.menu_button in self.buttons_pressed:
-                    self.menu_button.texture = arcade.load_texture(MENU)
-                    game_view = pause_menu.PauseMenu(
-                        game_view=self,
-                        sound_list=self.sound_list,
-                        sound_player=self.sound_player
-                    )
-                    self.window.show_view(game_view)
+                    self.handle_menu_button_click()
 
                 elif self.undo_button in self.buttons_pressed:
-                    if self.moves == self.last_move + 1:
-                        if self.has_drawn and not self.has_discarded:
-                            undo_card = self.piles[self.current_player.hand_index][-1]
-                            self.move_card_to_new_pile(undo_card, self.drawn_card_original_pile,
-                                                       self.held_cards_original_pile)
-                            if self.drawn_card_original_pile == FACE_DOWN_PILE:
-                                undo_card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
-                            self.has_drawn = False
-                            arcade.play_sound(self.wrong_word_sound, volume=0.5)
-
-                        elif self.has_discarded:
-                            undo_card = self.piles[DISCARD_PILE][-1]
-                            self.move_card_to_new_pile(undo_card, self.current_player.hand_index, DISCARD_PILE)
-                            self.has_discarded = False
-                            self.next_turn_button.texture = arcade.load_texture(NEXT_TURN_PRESSED)
-                            arcade.play_sound(self.wrong_word_sound, volume=0.5)
-
-                    self.undo_button.texture = arcade.load_texture(UNDO)
+                    self.handle_undo_button_click()
                 elif self.next_turn_button in self.buttons_pressed:
-                    rnd_end = False
-
-                    if self.has_discarded:
-                        self.next_turn_button.texture = arcade.load_texture(NEXT_TURN)
-
-                        if self.player_1_turn:
-                            if self.player_2.has_gone_down:
-
-                                # Round end is called only if both players have gone down
-                                self.current_player.has_gone_down = True
-                                if len(self.piles[COMPLETED_CARDS]) != 0 \
-                                        or len(self.piles[self.current_player.hand_index]) != 0:
-                                    self.get_completed_words()
-                                rnd_end = True
-                                self.round_end_sequence()
-
-                        elif not self.player_1_turn:
-                            if self.player_1.has_gone_down:
-
-                                # Round end is called only if both players have gone down
-                                self.current_player.has_gone_down = True
-                                if len(self.piles[COMPLETED_CARDS]) != 0 \
-                                        or len(self.piles[self.current_player.hand_index]) != 0:
-                                    self.get_completed_words()
-                                rnd_end = True
-                                self.round_end_sequence()
-
-                        if len(self.piles[COMPLETED_CARDS]) != 0:
-                            for _ in range(len(self.piles[COMPLETED_CARDS])):
-                                self.move_card_to_new_pile(
-                                    self.piles[COMPLETED_CARDS][0], 
-                                    self.current_player.hand_index,
-                                    COMPLETED_CARDS
-                                )
-                        if len(self.piles[GO_DOWN_PILE]) != 0:
-                            for _ in range(len(self.piles[GO_DOWN_PILE])):
-                                self.move_card_to_new_pile(
-                                    self.piles[GO_DOWN_PILE][0], 
-                                    self.current_player.hand_index,
-                                    GO_DOWN_PILE
-                                )
-
-                        if not rnd_end:
-                            self.player_1_turn = not self.player_1_turn
-                            if not self.player_1_turn:
-                                self.current_player = self.player_2
-                            else:
-                                self.current_player = self.player_1
-                            for pile in self.piles:
-                                for card in pile:
-                                    card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
-                            self.on_draw()
-                            game_view = splash_screen.SplashScreen(
-                                self, 
-                                current_player=self.current_player, 
-                                player_1=self.player_1,
-                                player_2=self.player_2, 
-                                rnd_end=False,
-                                rnd_number=None, 
-                                score_change_list=self.score_change_list,
-                                player_1_score_box=self.player_1_score_box,
-                                player_2_score_box=self.player_2_score_box,
-                                piles=self.piles
-                            )
-                            self.window.show_view(game_view)
-
-                        self.has_drawn = False
-                        self.has_discarded = False
-                        self.buttons_pressed = []
-                        self.completed_words_text_list = []
-                        self.next_turn_button.texture = arcade.load_texture(NEXT_TURN_PRESSED)
-
-                    else:
-                        pass
+                    self.handle_next_turn_button_click()
 
                 elif self.go_down_button in self.buttons_pressed:
-                    self.go_down_button.texture = arcade.load_texture(GO_DOWN)
-                    if len(self.piles[GO_DOWN_PILE]) == 0 and len(self.piles[self.current_player.hand_index]) == 0:
-                        self.current_player.has_gone_down = True
-
-                        self.get_completed_words()
-                        arcade.play_sound(self.go_down_sound, volume=0.2)
-
-                    else:
-                        arcade.play_sound(self.wrong_word_sound, volume=0.5)
-                        logging.warning("You can't go down yet.")
+                    self.handle_go_down_button_click()
 
                 elif self.save_word_button in self.buttons_pressed:
                     self.save_word_button.texture = arcade.load_texture(SAVE_WORD)
@@ -996,6 +908,125 @@ class Quiddler(arcade.View):
         # Resets cards held and buttons pressed after all logic is accounted for.
         self.held_cards = []
         self.buttons_pressed = []
+
+    def handle_go_down_button_click(self):
+        """ Called when Go Down button is clicked and released. """
+        self.go_down_button.texture = arcade.load_texture(GO_DOWN)
+        if len(self.piles[GO_DOWN_PILE]) == 0 and len(self.piles[self.current_player.hand_index]) == 0:
+            self.current_player.has_gone_down = True
+
+            self.get_completed_words()
+            arcade.play_sound(self.go_down_sound, volume=0.2)
+
+        else:
+            arcade.play_sound(self.wrong_word_sound, volume=0.5)
+            logging.warning("You can't go down yet.")
+
+    def handle_next_turn_button_click(self):
+        """ Called when Next Turn button is clicked and released. """
+        rnd_end = False
+        if self.has_discarded:
+            self.next_turn_button.texture = arcade.load_texture(NEXT_TURN)
+
+            if self.player_1_turn:
+                if self.player_2.has_gone_down:
+
+                    # Round end is called only if both players have gone down
+                    self.current_player.has_gone_down = True
+                    if len(self.piles[COMPLETED_CARDS]) != 0 \
+                            or len(self.piles[self.current_player.hand_index]) != 0:
+                        self.get_completed_words()
+                    rnd_end = True
+                    self.round_end_sequence()
+
+            elif not self.player_1_turn:
+                if self.player_1.has_gone_down:
+
+                    # Round end is called only if both players have gone down
+                    self.current_player.has_gone_down = True
+                    if len(self.piles[COMPLETED_CARDS]) != 0 \
+                            or len(self.piles[self.current_player.hand_index]) != 0:
+                        self.get_completed_words()
+                    rnd_end = True
+                    self.round_end_sequence()
+
+            if len(self.piles[COMPLETED_CARDS]) != 0:
+                for _ in range(len(self.piles[COMPLETED_CARDS])):
+                    self.move_card_to_new_pile(
+                        self.piles[COMPLETED_CARDS][0],
+                        self.current_player.hand_index,
+                        COMPLETED_CARDS
+                    )
+            if len(self.piles[GO_DOWN_PILE]) != 0:
+                for _ in range(len(self.piles[GO_DOWN_PILE])):
+                    self.move_card_to_new_pile(
+                        self.piles[GO_DOWN_PILE][0],
+                        self.current_player.hand_index,
+                        GO_DOWN_PILE
+                    )
+
+            if not rnd_end:
+                self.player_1_turn = not self.player_1_turn
+                if not self.player_1_turn:
+                    self.current_player = self.player_2
+                else:
+                    self.current_player = self.player_1
+                for pile in self.piles:
+                    for card in pile:
+                        card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
+                self.on_draw()
+                game_view = splash_screen.SplashScreen(
+                    self,
+                    current_player=self.current_player,
+                    player_1=self.player_1,
+                    player_2=self.player_2,
+                    rnd_end=False,
+                    rnd_number=None,
+                    score_change_list=self.score_change_list,
+                    player_1_score_box=self.player_1_score_box,
+                    player_2_score_box=self.player_2_score_box,
+                    piles=self.piles
+                )
+                self.window.show_view(game_view)
+
+            self.has_drawn = False
+            self.has_discarded = False
+            self.buttons_pressed = []
+            self.completed_words_text_list = []
+            self.next_turn_button.texture = arcade.load_texture(NEXT_TURN_PRESSED)
+
+        else:
+            pass
+
+    def handle_undo_button_click(self):
+        """ Called when Undo button is clicked and released. """
+        if self.moves == self.last_move + 1:
+            if self.has_drawn and not self.has_discarded:
+                undo_card = self.piles[self.current_player.hand_index][-1]
+                self.move_card_to_new_pile(undo_card, self.drawn_card_original_pile,
+                                           self.held_cards_original_pile)
+                if self.drawn_card_original_pile == FACE_DOWN_PILE:
+                    undo_card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
+                self.has_drawn = False
+                arcade.play_sound(self.wrong_word_sound, volume=0.5)
+
+            elif self.has_discarded:
+                undo_card = self.piles[DISCARD_PILE][-1]
+                self.move_card_to_new_pile(undo_card, self.current_player.hand_index, DISCARD_PILE)
+                self.has_discarded = False
+                self.next_turn_button.texture = arcade.load_texture(NEXT_TURN_PRESSED)
+                arcade.play_sound(self.wrong_word_sound, volume=0.5)
+        self.undo_button.texture = arcade.load_texture(UNDO)
+
+    def handle_menu_button_click(self):
+        """ Called when menu button is clicked and released. """
+        self.menu_button.texture = arcade.load_texture(MENU)
+        game_view = pause_menu.PauseMenu(
+            game_view=self,
+            sound_list=self.sound_list,
+            sound_player=self.sound_player
+        )
+        self.window.show_view(game_view)
 
     def on_mouse_motion(self, x, y, dx: float, dy: float):
         """
