@@ -421,8 +421,12 @@ class Quiddler(arcade.View):
         elif self.menu_button in self.buttons_pressed:
             self.menu_button.texture = arcade.load_texture(MENU_PRESSED)
 
-    def get_clicked_pile(self, cards, pile, x, y):
-        """ Sets 'cards' variable to only the cards in the selected pile. """
+    def get_clicked_pile(self, pile, x, y):
+        """
+        Sets 'cards' variable to only the cards in the selected pile.
+        pile: List[Sprite]
+        """
+        cards = []
         for value in pile:
             logging.debug(f'Pile #: {self.pile_mat_list.index(value)}')
         if len(pile) > 1:
@@ -914,12 +918,10 @@ class Quiddler(arcade.View):
         """
         pile = arcade.get_sprites_at_point((x, y), self.pile_mat_list)
         buttons = arcade.get_sprites_at_point((x, y), self.button_list)
-        cards = None
+        cards = []
 
         if pile:
-            cards = self.get_clicked_pile(cards, pile, x, y)
-        else:
-            cards = []
+            cards = self.get_clicked_pile(pile, x, y)
 
         # Get only top card of pile
         if len(cards) > 0:
