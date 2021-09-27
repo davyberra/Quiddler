@@ -9,7 +9,7 @@ class Card(arcade.Sprite):
     Class for each card sprite.
     """
 
-    def __init__(self, value, scale=1):
+    def __init__(self, value: str, scale=1):
         """
         Assigns the letter value to the card, and creates the appropriate image.
         :param value: Letter(s) on card

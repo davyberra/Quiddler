@@ -3,6 +3,7 @@ Main Menu for Quiddler - called on application start.
 """
 import arcade
 import main
+import single_player
 import edit_player_names
 import highscores
 import instructions
@@ -29,30 +30,36 @@ class GameMenu(arcade.View):
         self.continue_button = arcade.Sprite(CONTINUE, scale=self.scale)
         self.continue_button.position = self.screen_width / 2, self.screen_height / 2 + 100 * self.scale
         self.button_list.append(self.continue_button)
+        self.solo_half_game_button = arcade.Sprite("images/half_game_button.png", scale=self.scale)
+        self.solo_half_game_button.position = self.screen_width / 2 - 100 * self.scale, self.screen_height / 2
+        self.button_list.append(self.solo_half_game_button)
+        self.solo_full_game_button = arcade.Sprite("images/full_game_button.png", scale=self.scale)
+        self.solo_full_game_button.position = self.screen_width / 2 + 100 * self.scale, self.screen_height / 2
+        self.button_list.append(self.solo_full_game_button)
         self.half_game_button = arcade.Sprite("images/half_game_button.png", scale=self.scale)
-        self.half_game_button.position = self.screen_width / 2 - 100 * self.scale, self.screen_height / 2
+        self.half_game_button.position = self.screen_width / 2 - 100 * self.scale, self.screen_height / 2 - 100 * self.scale
         self.button_list.append(self.half_game_button)
         self.full_game_button = arcade.Sprite("images/full_game_button.png", scale=self.scale)
-        self.full_game_button.position = self.screen_width / 2 + 100 * self.scale, self.screen_height / 2
+        self.full_game_button.position = self.screen_width / 2 + 100 * self.scale, self.screen_height / 2 - 100 * self.scale
         self.button_list.append(self.full_game_button)
         self.edit_names_button = arcade.Sprite(EDIT_NAMES, scale=self.scale)
-        self.edit_names_button.position = self.screen_width / 2, self.screen_height / 2 - 100 * self.scale
+        self.edit_names_button.position = self.screen_width / 2, self.screen_height / 2 - 200 * self.scale
         self.button_list.append(self.edit_names_button)
         self.highscores_button = arcade.Sprite(HIGHSCORES_BUTTON, scale=self.scale)
-        self.highscores_button.position = self.screen_width / 2, self.screen_height / 2 - 200 * self.scale
+        self.highscores_button.position = self.screen_width / 2, self.screen_height / 2 - 300 * self.scale
         self.button_list.append(self.highscores_button)
         self.instructions_button = arcade.Sprite("images/instructions_button.png", scale=self.scale)
-        self.instructions_button.position = self.screen_width / 2, self.screen_height / 2 - 300 * self.scale
+        self.instructions_button.position = self.screen_width / 2, self.screen_height / 2 - 400 * self.scale
         self.button_list.append(self.instructions_button)
         self.exit_button = arcade.Sprite(EXIT, scale=self.scale)
-        self.exit_button.position = self.screen_width / 2, self.screen_height / 2 - 400 * self.scale
+        self.exit_button.position = self.screen_width / 2, self.screen_height / 2 - 500 * self.scale
         self.button_list.append(self.exit_button)
 
         self.buttons_pressed = []
 
         self.main_menu_music = MAIN_MENU_MUSIC
         self.sound_player = None
-        self.sound_player = self.main_menu_music.play(volume=.25, loop=True)
+        self.sound_player = self.main_menu_music.play(volume=.50, loop=True)
 
     def on_show(self):
         """ This is run once when we switch to this view """
@@ -64,32 +71,37 @@ class GameMenu(arcade.View):
         arcade.start_render()
         self.background.draw()
         self.button_list.draw()
+        arcade.draw_text(
+            "Solo:",
+            self.screen_width / 2 - 225 * self.scale,
+            self.screen_height / 2,
+            arcade.color.WHITE,
+            50,
+            anchor_x='right',
+            anchor_y='center'
+        )
+        arcade.draw_text(
+            "2-P:",
+            self.screen_width / 2 - 225 * self.scale,
+            self.screen_height / 2 - 100 * self.scale,
+            arcade.color.WHITE,
+            50,
+            anchor_x='right',
+            anchor_y='center'
+        )
 
     # def on_update(self, delta_time: float):
         # if self.main_menu_music.is_complete(self.sound_player):
         #     self.main_menu_music.play(volume=.25)
 
-    # def on_key_release(self, symbol: int, modifiers: int):
-    #     if symbol == arcade.key.KEY_1 or symbol == arcade.key.NUM_1:
-    #         game_view = main.Quiddler(rnd_number=8)
-    #         game_view.setup()
-    #         self.main_menu_music.stop()
-    #         self.window.show_view(game_view)
-    #     elif symbol == arcade.key.KEY_2 or symbol == arcade.key.NUM_2:
-    #         game_view = main.Quiddler(rnd_number=16)
-    #         game_view.setup()
-    #         self.main_menu_music.stop()
-    #         self.window.show_view(game_view)
-    #     elif symbol == arcade.key.F10:
-    #         arcade.close_window()
-    #     elif symbol == arcade.key.F9:
-    #         game_view = edit_player_names.EditPlayerNames(player_1=self.player_1,
-    #                                                       player_2=self.player_2,
-    #                                                       game_view=self)
-    #         self.window.show_view(game_view)
-    #     elif symbol == arcade.key.F8:
-    #         game_view = highscores.HighScores(game_view=self)
-    #         self.window.show_view(game_view)
+    def on_key_release(self, symbol: int, modifiers: int):
+        if symbol == arcade.key.F10:
+            arcade.close_window()
+        elif symbol == arcade.key.F9:
+            game_view = single_player.QuiddlerSolo(rnd_number=8, player_1=self.player_1)
+            game_view.setup()
+            self.main_menu_music.stop(self.sound_player)
+            self.window.show_view(game_view)
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         if button == arcade.MOUSE_BUTTON_LEFT:
@@ -97,6 +109,10 @@ class GameMenu(arcade.View):
 
             if self.half_game_button in self.buttons_pressed:
                 self.half_game_button.texture = arcade.load_texture("images/half_game_button_pressed.png")
+            elif self.solo_half_game_button in self.buttons_pressed:
+                self.solo_half_game_button.texture = arcade.load_texture("images/half_game_button_pressed.png")
+            elif self.solo_full_game_button in self.buttons_pressed:
+                self.solo_full_game_button.texture = arcade.load_texture("images/full_game_button_pressed.png")
             elif self.full_game_button in self.buttons_pressed:
                 self.full_game_button.texture = arcade.load_texture("images/full_game_button_pressed.png")
             elif self.instructions_button in self.buttons_pressed:
@@ -131,6 +147,20 @@ class GameMenu(arcade.View):
                     game_view = main.Quiddler(rnd_number=16,
                                               player_1=self.player_1,
                                               player_2=self.player_2)
+                    game_view.setup()
+                    self.main_menu_music.stop(self.sound_player)
+                    self.window.show_view(game_view)
+
+            elif self.solo_half_game_button in self.buttons_pressed:
+                if self.solo_half_game_button == button[0]:
+                    game_view = single_player.QuiddlerSolo(rnd_number=8, player_1=self.player_1)
+                    game_view.setup()
+                    self.main_menu_music.stop(self.sound_player)
+                    self.window.show_view(game_view)
+
+            elif self.solo_full_game_button in self.buttons_pressed:
+                if self.solo_full_game_button == button[0]:
+                    game_view = single_player.QuiddlerSolo(rnd_number=16, player_1=self.player_1)
                     game_view.setup()
                     self.main_menu_music.stop(self.sound_player)
                     self.window.show_view(game_view)

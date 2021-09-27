@@ -42,10 +42,11 @@ class GameEnd(arcade.View):
                                         scale=self.screen_width / GAME_END_BACKGROUND_WIDTH)
         self.background.position = self.screen_width / 2, self.screen_height / 2
         self.background_music = GAME_END_THEME
+        self.sound_player = None
 
     def on_show(self):
 
-        self.background_music.play(volume=0.25)
+        self.sound_player = self.background_music.play(volume=0.25, loop=True)
 
     def on_draw(self):
         arcade.start_render()
@@ -103,7 +104,7 @@ class GameEnd(arcade.View):
 
         if button:
             if self.yes in self.buttons_pressed and self.yes == button[0]:
-                self.background_music.stop()
+                self.background_music.stop(self.sound_player)
                 game_view = game_menu.GameMenu(player_1=self.player_1,
                                                player_2=self.player_2)
                 self.window.show_view(game_view)

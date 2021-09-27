@@ -92,8 +92,8 @@ class EditPlayerNames(arcade.View):
             file['player_1'] = self.player_1_name_box.text
             file['player_2'] = self.player_2_name_box.text
             file.close()
-            self.game_view.player_1 = self.player_1_name_box.text
-            self.game_view.player_2 = self.player_2_name_box.text
+            self.game_view.player = self.player_1_name_box.text
+            self.game_view.computer = self.player_2_name_box.text
             self.window.show_view(self.game_view)
 
         self.back.texture = arcade.load_texture(BACK)
@@ -104,6 +104,6 @@ class EditPlayerNames(arcade.View):
             file['player_1'] = self.player_1_name_box.text
             file['player_2'] = self.player_2_name_box.text
             file.close()
-            self.game_view.player_1 = self.player_1_name_box.text
-            self.game_view.player_2 = self.player_2_name_box.text
+            self.game_view.player = self.player_1_name_box.text
+            self.game_view.computer = self.player_2_name_box.text
             self.window.show_view(self.game_view)

@@ -1,7 +1,11 @@
 """
 Splash Screen called between player turns.
 """
+import time
+
 import arcade
+import single_player
+import player
 
 from constants import WHITE, FACE_DOWN_IMAGE
 
@@ -10,8 +14,8 @@ class SplashScreen(arcade.View):
 
     # Persists game state between views.
     def __init__(self,
-                 game_view,
-                 current_player,
+                 game_view: single_player.QuiddlerSolo,
+                 current_player: player.Player,
                  player_1,
                  player_2,
                  rnd_end,
@@ -36,6 +40,7 @@ class SplashScreen(arcade.View):
         self.piles = piles
 
     def on_show(self):
+        print(f"Called splash screen before {self.current_player} turn.")
         arcade.draw_rectangle_filled(
             self.screen_width / 2,
             self.screen_height / 2,
@@ -102,6 +107,8 @@ class SplashScreen(arcade.View):
                 card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
+        if self.current_player.player_name == "Computer":
+            self.game_view.take_computer_turn()
         for pile in self.piles[1:]:
             for card in pile:
                 card.texture = arcade.load_texture(card.image_file_name)
