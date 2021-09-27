@@ -20,7 +20,7 @@ pip install arcade
 ```
 In the "/src" directory, run "main.py" to play the game.
 ```bash
-python main.py
+python two_player.py
 ```
 
 ## How to Play

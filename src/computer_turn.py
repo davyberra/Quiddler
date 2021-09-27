@@ -67,12 +67,53 @@ class ComputerTurn:
                             result.append(word)
                             return self.valid_playable_hand(new_cards, result)
 
-    def take_turn(
-            self,
-            face_down_pile: List[Card],
-            discard_pile: List[Card],
-            computer_hand: List[Card]
-    ) -> list:
+    def valid_last_hand (self, cards: List[Card], result: List[List[Card]]):
+        """
+        Allow the computer to go down with the valid words available on the final turn.
+        Return the words if true, and return None if false.
+        :param cards: List[Card]
+        :param result: List[List[Card]]
+        """
+        if len(cards) > 3 and len(cards) != 5:
+            for i in range(len(cards)):
+                for j in range(i + 1, len(cards)):
+                    for k in range(j + 1, len(cards)):
+                        word = self.three_letter_valid(cards[i], cards[j], cards[k])
+                        if word:
+                            new_cards = cards[:]
+                            for card in word:
+                                new_cards.remove(card)
+                            if len(new_cards) == 1:
+                                result.append(word)
+                                return result
+                            elif len(new_cards) > 2:
+                                result.append(word)
+                                return self.valid_last_hand(new_cards, result)
+                            elif len(new_cards) == 2:
+                                result.append(word)
+                                return result
+
+        elif len(cards) > 2 and len(cards) != 4:
+            for i in range(len(cards)):
+                for j in range(i + 1, len(cards)):
+                    word = self.two_letter_valid(cards[i], cards[j])
+                    if word:
+                        new_cards = cards[:]
+                        for card in word:
+                            new_cards.remove(card)
+                        if len(new_cards) == 1:
+                            result.append(word)
+                            return result
+                        elif len(new_cards) > 2:
+                            result.append(word)
+                            return self.valid_last_hand(new_cards, result)
+                        elif len(new_cards) == 2:
+                            result.append(word)
+                            return result
+
+        return result
+
+    def take_turn(self, face_down_pile: List[Card], discard_pile: List[Card], computer_hand: List[Card], final_turn: bool) -> list:
         """
         Main method for computer player's turn sequence.
         1. Draws from face-down pile
@@ -83,7 +124,10 @@ class ComputerTurn:
         """
         drawn_card = face_down_pile.pop()
         computer_hand.append(drawn_card)
-        valid_hand = self.valid_playable_hand(computer_hand, [])
+        if final_turn:
+            valid_hand = self.valid_last_hand(computer_hand, [])
+        else:
+            valid_hand = self.valid_playable_hand(computer_hand, [])
         discard = computer_hand
         if valid_hand:
             for word in valid_hand:
@@ -97,13 +141,13 @@ class ComputerTurn:
         return [face_down_pile, discard_pile, computer_hand, valid_hand]
 
 # c = ComputerTurn()
-# letters = ['t','b','a','x','a','e','g','g','a','q','i']
+# letters = ['t','b','a','x','a','e','g','g','a','q','q']
 # cards = []
 # for letter in letters:
 #     card = Card(letter)
 #     cards.append(card)
 #
-# result = c.valid_playable_hand(cards, [])
+# result = c.valid_last_hand(cards, [])
 # if result:
 #     for word in result:
 #         w = ""
