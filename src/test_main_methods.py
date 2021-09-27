@@ -7,7 +7,7 @@ from constants import *
 
 
 class GetClickedPileTest(unittest.TestCase):
-    """ Tests methods within main application class. """
+    """ Tests get_clicked_pile method. """
 
     def setUp(self):
         self.window = arcade.Window(fullscreen=True, title="Quiddler")
@@ -29,6 +29,20 @@ class GetClickedPileTest(unittest.TestCase):
         for card in self.quiddler.piles[FACE_DOWN_PILE]:
             returned_cards.append(card)
         self.assertEqual(cards, returned_cards)
+
+
+class GetCompletedWordsTest(unittest.TestCase):
+    """ Tests get_completed_words. """
+
+    def setUp(self):
+        self.window = arcade.Window(fullscreen=True, title="Quiddler")
+        self.quiddler = Quiddler(
+            rnd_number=16,
+            player_1="Player 1",
+            player_2="Player 2"
+        )
+        self.quiddler.setup()
+
 
 
 class GetButtonsPressedTest(unittest.TestCase):
@@ -62,6 +76,9 @@ class GetButtonsPressedTest(unittest.TestCase):
         )
         self.quiddler.get_buttons_pressed(buttons)
         self.assertEqual(self.quiddler.next_turn_button.texture, arcade.load_texture(NEXT_TURN_PRESSED))
+
+    def tearDown(self):
+        arcade.close_window()
 
 class FileMethodsTest(unittest.TestCase):
     """ Tests main methods dealing with reading/writing of game files. """
