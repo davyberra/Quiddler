@@ -1,3 +1,7 @@
+"""
+Quiddler - a word game using cards for two people.
+Run two_player.py to play the game.
+"""
 import arcade
 import random
 import logging
@@ -9,16 +13,15 @@ import pause_menu
 import splash_screen
 import player
 import card_class
-import computer_turn
 from constants import *
 
 
-class QuiddlerSolo(arcade.View):
+class Quiddler(arcade.View):
     """
     Main application class.
     """
 
-    def __init__(self, rnd_number, player_1):
+    def __init__(self, rnd_number, player_1, player_2):
         super().__init__()
 
         # Initialize screen size and scale to be applied to screen elements
@@ -32,13 +35,13 @@ class QuiddlerSolo(arcade.View):
             (self.screen_width / 2) + 70 * self.scale, self.screen_height - self.screen_height / 4
         self.completed_card_position_x, self.completed_card_position_y = \
             150 * self.scale, self.screen_height - 250 * self.scale
-        self.player_score_box = {
+        self.player_1_score_box = {
             'center_x': (self.screen_width / 2) - 450 * self.scale,
             'center_y': self.screen_height - 125 * self.scale,
             'width': 400 * self.scale,
             'height': 200 * self.scale
         }
-        self.computer_score_box = {
+        self.player_2_score_box = {
             'center_x': (self.screen_width / 2) + 450 * self.scale,
             'center_y': self.screen_height - 125 * self.scale,
             'width': 400 * self.scale,
@@ -47,18 +50,16 @@ class QuiddlerSolo(arcade.View):
 
         # Initialize players
         self.player_list = []
-        self.player = player.Player(player_name=player_1)
-        self.player.hand_index = S_PLAYER_HAND
-        self.player.pile_numbers_list = [0, 1, 2, 3, 5]
-        self.player.color = WHITE_TRANSPARENT
-        self.player_list.append(self.player)
-        self.computer = player.Player(player_name="Computer")
-        self.computer.hand_index = S_COMPUTER_HAND
-        self.computer.pile_numbers_list = [0, 1, 2, 4, 5]
-        self.computer.color = WHITE_TRANSPARENT
-        self.player_list.append(self.computer)
-
-        self.computer_turn = computer_turn.ComputerTurn()
+        self.player_1 = player.Player(player_name=player_1)
+        self.player_1.hand_index = PLAYER_1_HAND
+        self.player_1.pile_numbers_list = [0, 1, 2, 3, 5]
+        self.player_1.color = WHITE_TRANSPARENT
+        self.player_list.append(self.player_1)
+        self.player_2 = player.Player(player_name=player_2)
+        self.player_2.hand_index = PLAYER_2_HAND
+        self.player_2.pile_numbers_list = [0, 1, 2, 4, 5]
+        self.player_2.color = WHITE_TRANSPARENT
+        self.player_list.append(self.player_2)
 
         # Initialize round variables
         self.rnd = 1
@@ -72,7 +73,7 @@ class QuiddlerSolo(arcade.View):
         self.held_cards = None
         self.held_cards_original_position = None
         self.piles = None
-        self.player_turn = None
+        self.player_1_turn = None
         self.card_dict = None
         self.pile_mat_list = None
         self.has_drawn = False
@@ -85,9 +86,9 @@ class QuiddlerSolo(arcade.View):
         self.moves = None
         self.last_move = None
         self.score_change_list = None
-        self.current_player = None
 
         # Initialize buttons
+        self.current_player = None
         self.next_turn_button = None
         self.go_down_button = None
         self.save_word_button = None
@@ -122,7 +123,7 @@ class QuiddlerSolo(arcade.View):
         self.sound_player = None
 
         # Start playing background music
-        self.sound_player = self.background_music.play(volume=.50, loop=True)
+        self.sound_player = self.background_music.play(volume=.25)
 
     def setup(self):
         """
@@ -169,8 +170,8 @@ class QuiddlerSolo(arcade.View):
         self.piles[FACE_DOWN_PILE] = arcade.SpriteList()
         self.piles[DISCARD_PILE] = arcade.SpriteList()
         self.piles[GO_DOWN_PILE] = arcade.SpriteList()
-        self.piles[S_PLAYER_HAND] = arcade.SpriteList()
-        self.piles[S_COMPUTER_HAND] = arcade.SpriteList()
+        self.piles[PLAYER_1_HAND] = arcade.SpriteList()
+        self.piles[PLAYER_2_HAND] = arcade.SpriteList()
         self.piles[COMPLETED_CARDS] = arcade.SpriteList()
 
         # Create buttons -----------------------------------------------------------------------------------------------
@@ -277,21 +278,21 @@ class QuiddlerSolo(arcade.View):
         # Create Both Player Hands
         for _ in range(self.rnd_hand_count):
             card = self.piles[FACE_DOWN_PILE].pop()
-            self.piles[S_PLAYER_HAND].append(card)
+            self.piles[PLAYER_1_HAND].append(card)
 
         for _ in range(self.rnd_hand_count):
             card = self.piles[FACE_DOWN_PILE].pop()
-            self.piles[S_COMPUTER_HAND].append(card)
+            self.piles[PLAYER_2_HAND].append(card)
 
         # Position card in each hand
-        for i in range(len(self.piles[S_PLAYER_HAND])):
-            card = self.piles[S_PLAYER_HAND][i]
-            card.center_x = self.straight_line(i, S_PLAYER_HAND)
+        for i in range(len(self.piles[PLAYER_1_HAND])):
+            card = self.piles[PLAYER_1_HAND][i]
+            card.center_x = self.straight_line(i, PLAYER_1_HAND)
             card.center_y = PLAYER_HAND_Y * self.scale
 
-        for i in range(len(self.piles[S_COMPUTER_HAND])):
-            card = self.piles[S_COMPUTER_HAND][i]
-            card.center_x = self.straight_line(i, S_COMPUTER_HAND)
+        for i in range(len(self.piles[PLAYER_2_HAND])):
+            card = self.piles[PLAYER_2_HAND][i]
+            card.center_x = self.straight_line(i, PLAYER_2_HAND)
             card.center_y = PLAYER_HAND_Y * self.scale
 
         # Pop top card into discard pile
@@ -300,11 +301,11 @@ class QuiddlerSolo(arcade.View):
 
         # Initiate player turn, depending on rnd
         if self.rnd % 2 == 1:
-            self.current_player = self.player
-            self.player_turn = True
+            self.current_player = self.player_1
+            self.player_1_turn = True
         else:
-            self.current_player = self.computer
-            self.player_turn = False
+            self.current_player = self.player_2
+            self.player_1_turn = False
 
         # Initialize round-state variables
         self.has_drawn = False
@@ -326,9 +327,6 @@ class QuiddlerSolo(arcade.View):
         )
         self.background.position = self.screen_width / 2, self.screen_height / 2
 
-        if self.current_player == self.computer:
-            self.take_computer_turn()
-
     def add_bonus_to_score(self, cur_player: player.Player):
         """ Adds longest word bonus to player's round score. """
         bonus = 10
@@ -346,20 +344,20 @@ class QuiddlerSolo(arcade.View):
         """
         try:
             file = shelve.open('quiddler_saved_game', protocol=2)
-            self.player.player_name = file['player_1_name']
-            self.player.total_score = file['player_1_score']
-            self.player.longest_words = file['player_1_longest_words']
-            self.player.has_gone_down = file['player_1_has_gone_down']
+            self.player_1.player_name = file['player_1_name']
+            self.player_1.total_score = file['player_1_score']
+            self.player_1.longest_words = file['player_1_longest_words']
+            self.player_1.has_gone_down = file['player_1_has_gone_down']
 
-            self.computer.player_name = file['player_2_name']
-            self.computer.total_score = file['player_2_score']
-            self.computer.longest_words = file['player_2_longest_words']
-            self.computer.has_gone_down = file['player_1_has_gone_down']
-            self.player_turn = file['player_1_turn']
-            if self.player_turn:
-                self.current_player = self.player
+            self.player_2.player_name = file['player_2_name']
+            self.player_2.total_score = file['player_2_score']
+            self.player_2.longest_words = file['player_2_longest_words']
+            self.player_2.has_gone_down = file['player_1_has_gone_down']
+            self.player_1_turn = file['player_1_turn']
+            if self.player_1_turn:
+                self.current_player = self.player_1
             else:
-                self.current_player = self.computer
+                self.current_player = self.player_2
             self.rnd = file['round']
             self.rnd_max = file['total_rounds']
             self.rnd_hand_count = file['total_cards']
@@ -370,8 +368,8 @@ class QuiddlerSolo(arcade.View):
             self.piles[FACE_DOWN_PILE] = arcade.SpriteList()
             self.piles[DISCARD_PILE] = arcade.SpriteList()
             self.piles[GO_DOWN_PILE] = arcade.SpriteList()
-            self.piles[S_PLAYER_HAND] = arcade.SpriteList()
-            self.piles[S_COMPUTER_HAND] = arcade.SpriteList()
+            self.piles[PLAYER_1_HAND] = arcade.SpriteList()
+            self.piles[PLAYER_2_HAND] = arcade.SpriteList()
             self.piles[COMPLETED_CARDS] = arcade.SpriteList()
             self.card_list = arcade.SpriteList()
             self.card_dict = {}
@@ -437,7 +435,7 @@ class QuiddlerSolo(arcade.View):
             cards = arcade.get_sprites_at_point((x, y), self.piles[FACE_DOWN_PILE])
         elif self.pile_mat_list.index(pile[0]) == DISCARD_PILE:
             cards = arcade.get_sprites_at_point((x, y), self.piles[DISCARD_PILE])
-        elif self.pile_mat_list.index(pile[0]) == S_PLAYER_HAND or pile == S_COMPUTER_HAND:
+        elif self.pile_mat_list.index(pile[0]) == PLAYER_1_HAND or pile == PLAYER_2_HAND:
             cards = arcade.get_sprites_at_point((x, y), self.piles[self.current_player.hand_index])
         elif self.pile_mat_list.index(pile[0]) == GO_DOWN_PILE:
             cards = arcade.get_sprites_at_point((x, y), self.piles[GO_DOWN_PILE])
@@ -455,7 +453,7 @@ class QuiddlerSolo(arcade.View):
             self.recall_sequence()
 
         # Does nothing if completed cards pile and player hand are empty.
-        elif len(self.piles[COMPLETED_CARDS]) == 0 and len(self.piles[self.current_player.hand_index]) == 0 and self.current_player == self.player:
+        elif len(self.piles[COMPLETED_CARDS]) == 0 and len(self.piles[self.current_player.hand_index]) == 0:
             pass
         else:
 
@@ -473,6 +471,7 @@ class QuiddlerSolo(arcade.View):
                 small_go_down_list.append([])
                 for completed_card in word:
                     small_card = card_class.Card(completed_card.value, scale=.75 * self.scale)
+                    print(small_card.value)
                     self.small_card_list.append(small_card)
                     small_go_down_list[index].append(small_card)
                     small_card.position = self.get_small_go_down_card_position(
@@ -515,14 +514,14 @@ class QuiddlerSolo(arcade.View):
         """
         Positions the cards in the player's hand.
         """
-        for i in range(len(self.piles[S_PLAYER_HAND])):
-            card = self.piles[S_PLAYER_HAND][i]
-            card.center_x = self.straight_line(i, S_PLAYER_HAND)
+        for i in range(len(self.piles[PLAYER_1_HAND])):
+            card = self.piles[PLAYER_1_HAND][i]
+            card.center_x = self.straight_line(i, PLAYER_1_HAND)
             card.center_y = PLAYER_HAND_Y * self.scale
 
-        for i in range(len(self.piles[S_COMPUTER_HAND])):
-            card = self.piles[S_COMPUTER_HAND][i]
-            card.center_x = self.straight_line(i, S_COMPUTER_HAND)
+        for i in range(len(self.piles[PLAYER_2_HAND])):
+            card = self.piles[PLAYER_2_HAND][i]
+            card.center_x = self.straight_line(i, PLAYER_2_HAND)
             card.center_y = PLAYER_HAND_Y * self.scale
 
     def get_high_scores(self):
@@ -534,10 +533,10 @@ class QuiddlerSolo(arcade.View):
             temp_score_list = file['scores']
         except KeyError:
             temp_score_list = []
-        if self.player.total_score > self.computer.total_score:
-            temp_score_list.append([self.player.player_name, self.player.total_score])
-        elif self.computer.total_score > self.player.total_score:
-            temp_score_list.append([self.computer.player_name, self.computer.total_score])
+        if self.player_1.total_score > self.player_2.total_score:
+            temp_score_list.append([self.player_1.player_name, self.player_1.total_score])
+        elif self.player_2.total_score > self.player_1.total_score:
+            temp_score_list.append([self.player_2.player_name, self.player_2.total_score])
         if len(temp_score_list) > 10:
             temp_score_list.pop()
         file['scores'] = temp_score_list
@@ -556,10 +555,10 @@ class QuiddlerSolo(arcade.View):
         Positioning for completed cards display after a player has gone down.
         """
         x, y = 0, 0
-        if current_player == self.player:
+        if current_player == self.player_1:
             x = (350 * self.scale) + (35 * self.scale * index2)
             y = (self.screen_height - 300 * self.scale) - (100 * self.scale * index1)
-        elif current_player == self.computer:
+        elif current_player == self.player_2:
             x = (self.screen_width - (500 * self.scale) + (35 * self.scale * index2))
             y = (self.screen_height - 300 * self.scale) - (100 * self.scale * index1)
         return x, y
@@ -576,10 +575,16 @@ class QuiddlerSolo(arcade.View):
 
         # Ensure player isn't grabbing cards from other player's hand
         if len(self.held_cards) > 0:
-            if self.current_player == self.player:
+            if self.current_player == self.player_1:
                 for i in range(len(self.held_cards)):
                     if i < len(self.held_cards):
-                        for card in self.piles[S_COMPUTER_HAND]:
+                        for card in self.piles[PLAYER_2_HAND]:
+                            if id(self.held_cards[i]) == id(card):
+                                self.held_cards.remove(self.held_cards[i])
+            if self.current_player == self.player_2:
+                for i in range(len(self.held_cards)):
+                    if i < len(self.held_cards):
+                        for card in self.piles[PLAYER_1_HAND]:
                             if id(self.held_cards[i]) == id(card):
                                 self.held_cards.remove(self.held_cards[i])
 
@@ -613,10 +618,10 @@ class QuiddlerSolo(arcade.View):
             self.current_player.has_gone_down = True
 
             self.get_completed_words()
-            arcade.play_sound(self.go_down_sound, volume=0.3)
+            arcade.play_sound(self.go_down_sound, volume=0.2)
 
         else:
-            arcade.play_sound(self.wrong_word_sound, volume=0.2)
+            arcade.play_sound(self.wrong_word_sound, volume=0.5)
             logging.warning("You can't go down yet.")
 
     def handle_menu_button_click(self):
@@ -635,8 +640,8 @@ class QuiddlerSolo(arcade.View):
         if self.has_discarded:
             self.next_turn_button.texture = arcade.load_texture(NEXT_TURN)
 
-            if self.player_turn and self.computer.has_gone_down \
-                    or not self.player_turn and self.player.has_gone_down:
+            if self.player_1_turn and self.player_2.has_gone_down \
+                    or not self.player_1_turn and self.player_1.has_gone_down:
 
                 # Round end is called only if both players have gone down
                 self.current_player.has_gone_down = True
@@ -662,24 +667,25 @@ class QuiddlerSolo(arcade.View):
                     )
 
             if not rnd_end:
-                self.player_turn = not self.player_turn
-                if not self.player_turn:
-                    self.current_player = self.computer
+                self.player_1_turn = not self.player_1_turn
+                if not self.player_1_turn:
+                    self.current_player = self.player_2
                 else:
-                    self.current_player = self.player
+                    self.current_player = self.player_1
                 for pile in self.piles:
                     for card in pile:
                         card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
+                self.on_draw()
                 game_view = splash_screen.SplashScreen(
                     self,
                     current_player=self.current_player,
-                    player_1=self.player,
-                    player_2=self.computer,
+                    player_1=self.player_1,
+                    player_2=self.player_2,
                     rnd_end=False,
                     rnd_number=None,
                     score_change_list=self.score_change_list,
-                    player_1_score_box=self.player_score_box,
-                    player_2_score_box=self.computer_score_box,
+                    player_1_score_box=self.player_1_score_box,
+                    player_2_score_box=self.player_2_score_box,
                     piles=self.piles
                 )
                 self.window.show_view(game_view)
@@ -689,9 +695,6 @@ class QuiddlerSolo(arcade.View):
             self.buttons_pressed = []
             self.completed_words_text_list = []
             self.next_turn_button.texture = arcade.load_texture(NEXT_TURN_PRESSED)
-
-            # if not self.player_turn:
-            #     self.take_computer_turn()
 
         else:
             pass
@@ -706,14 +709,14 @@ class QuiddlerSolo(arcade.View):
                 if self.drawn_card_original_pile == FACE_DOWN_PILE:
                     undo_card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
                 self.has_drawn = False
-                arcade.play_sound(self.wrong_word_sound, volume=0.2)
+                arcade.play_sound(self.wrong_word_sound, volume=0.5)
 
             elif self.has_discarded:
                 undo_card = self.piles[DISCARD_PILE][-1]
                 self.move_card_to_new_pile(undo_card, self.current_player.hand_index, DISCARD_PILE)
                 self.has_discarded = False
                 self.next_turn_button.texture = arcade.load_texture(NEXT_TURN_PRESSED)
-                arcade.play_sound(self.wrong_word_sound, volume=0.2)
+                arcade.play_sound(self.wrong_word_sound, volume=0.5)
         self.undo_button.texture = arcade.load_texture(UNDO)
 
     def move_card_to_new_pile(self, card, pile_index, held_cards_original_pile):
@@ -728,9 +731,9 @@ class QuiddlerSolo(arcade.View):
         self.piles[pile_index].append(card)
 
         if held_cards_original_pile != pile_index:
-            if pile_index == S_PLAYER_HAND or pile_index == S_COMPUTER_HAND \
+            if pile_index == PLAYER_1_HAND or pile_index == PLAYER_2_HAND \
                     or pile_index == DISCARD_PILE or pile_index == GO_DOWN_PILE:
-                arcade.play_sound(self.card_move_sound, volume=0.5)
+                arcade.play_sound(self.card_move_sound)
 
     def on_draw(self):
         """
@@ -742,18 +745,18 @@ class QuiddlerSolo(arcade.View):
 
         # Draw player score boxes
         arcade.draw_rectangle_filled(
-            center_x=self.player_score_box['center_x'],
-            center_y=self.player_score_box['center_y'],
-            width=self.player_score_box['width'],
-            height=self.player_score_box['height'],
-            color=self.player.color
+            center_x=self.player_1_score_box['center_x'],
+            center_y=self.player_1_score_box['center_y'],
+            width=self.player_1_score_box['width'],
+            height=self.player_1_score_box['height'],
+            color=self.player_1.color
         )
         arcade.draw_rectangle_filled(
-            center_x=self.computer_score_box['center_x'],
-            center_y=self.computer_score_box['center_y'],
-            width=self.computer_score_box['width'],
-            height=self.computer_score_box['height'],
-            color=self.computer.color
+            center_x=self.player_2_score_box['center_x'],
+            center_y=self.player_2_score_box['center_y'],
+            width=self.player_2_score_box['width'],
+            height=self.player_2_score_box['height'],
+            color=self.player_2.color
         )
 
         # Draw cards/buttons
@@ -767,36 +770,36 @@ class QuiddlerSolo(arcade.View):
 
         # Draw Player Scores
         arcade.draw_text(
-            f'{self.player}',
-            self.player_score_box['center_x'],
-            self.player_score_box['center_y'] + 50 * self.scale,
+            f'{self.player_1}',
+            self.player_1_score_box['center_x'],
+            self.player_1_score_box['center_y'] + 50 * self.scale,
             WHITE,
             font_size=round(40 * self.scale),
             anchor_x="center",
             anchor_y="center",
         )
         arcade.draw_text(
-            f'{self.player.total_score}',
-            self.player_score_box['center_x'],
-            self.player_score_box['center_y'] - 50 * self.scale,
+            f'{self.player_1.total_score}',
+            self.player_1_score_box['center_x'],
+            self.player_1_score_box['center_y'] - 50 * self.scale,
             WHITE,
             font_size=round(24 * self.scale),
             anchor_x="center",
             anchor_y="center",
         )
         arcade.draw_text(
-            f'{self.computer}',
-            self.computer_score_box['center_x'],
-            self.computer_score_box['center_y'] + 50 * self.scale,
+            f'{self.player_2}',
+            self.player_2_score_box['center_x'],
+            self.player_2_score_box['center_y'] + 50 * self.scale,
             WHITE,
             font_size=round(40 * self.scale),
             anchor_x="center",
             anchor_y="center",
         )
         arcade.draw_text(
-            f'{self.computer.total_score}',
-            self.computer_score_box['center_x'],
-            self.computer_score_box['center_y'] - 50 * self.scale,
+            f'{self.player_2.total_score}',
+            self.player_2_score_box['center_x'],
+            self.player_2_score_box['center_y'] - 50 * self.scale,
             WHITE,
             font_size=round(24 * self.scale),
             anchor_x="center",
@@ -826,8 +829,8 @@ class QuiddlerSolo(arcade.View):
         )
 
         # Draw 'final turn' when other player has gone down
-        if self.player_turn:
-            if self.computer.has_gone_down:
+        if self.player_1_turn:
+            if self.player_2.has_gone_down:
                 arcade.draw_text(
                     "Final Turn!",
                     self.screen_width - 150 * self.scale,
@@ -837,8 +840,8 @@ class QuiddlerSolo(arcade.View):
                     anchor_x="center"
                 )
 
-        elif not self.player_turn:
-            if self.player.has_gone_down:
+        elif not self.player_1_turn:
+            if self.player_1.has_gone_down:
                 arcade.draw_text(
                     "Final Turn!",
                     self.screen_width - 150 * self.scale,
@@ -851,10 +854,10 @@ class QuiddlerSolo(arcade.View):
         # Draw score-change animations
         for score_list in self.score_change_list:
             x, y, color, prefix = 0, 0, None, None
-            if score_list[0] == self.player:
-                x, y = self.player_score_box['center_x'], self.player_score_box['center_y']
-            elif score_list[0] == self.computer:
-                x, y = self.computer_score_box['center_x'], self.computer_score_box['center_y']
+            if score_list[0] == self.player_1:
+                x, y = self.player_1_score_box['center_x'], self.player_1_score_box['center_y']
+            elif score_list[0] == self.player_2:
+                x, y = self.player_2_score_box['center_x'], self.player_2_score_box['center_y']
 
             if score_list[1] >= 0:
                 color = arcade.color.GREEN
@@ -878,13 +881,7 @@ class QuiddlerSolo(arcade.View):
         Events are triggered on key press, not key release.
         """
         if key == arcade.key.ENTER:
-
-            if len(self.piles[COMPLETED_CARDS]) == self.rnd_hand_count and self.has_discarded:
-                self.handle_go_down_button_click()
-            elif self.has_discarded:
-                self.handle_next_turn_button_click()
-            else:
-                self.save_word_sequence()
+            self.save_word_sequence()
 
         elif key == arcade.key.ESCAPE:
             self.recall_sequence()
@@ -904,48 +901,6 @@ class QuiddlerSolo(arcade.View):
         elif key == arcade.key.DELETE:
             for card in self.card_list:
                 card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
-
-        elif key == arcade.key.LSHIFT:
-            if not self.has_drawn:
-                card = self.piles[DISCARD_PILE][-1]
-                self.move_card_to_new_pile(
-                    card,
-                    self.current_player.hand_index,
-                    self.held_cards_original_pile
-                )
-                card.texture = arcade.load_texture(card.image_file_name)
-                self.has_drawn = True
-                self.drawn_card_original_pile = DISCARD_PILE
-                self.last_move = self.moves
-                self.moves += 1
-
-        elif key == arcade.key.SPACE:
-            if not self.has_drawn:
-                card = self.piles[FACE_DOWN_PILE][-1]
-                self.move_card_to_new_pile(
-                    card,
-                    self.current_player.hand_index,
-                    self.held_cards_original_pile
-                )
-                card.texture = arcade.load_texture(card.image_file_name)
-                self.has_drawn = True
-                self.drawn_card_original_pile = FACE_DOWN_PILE
-                self.last_move = self.moves
-                self.moves += 1
-            elif not self.has_discarded:
-                if len(self.piles[PLAYER_1_HAND]) == 1:
-                    card = self.piles[PLAYER_1_HAND][0]
-                    self.move_card_to_new_pile(card, DISCARD_PILE, self.held_cards_original_pile)
-                    self.has_discarded = True
-                    self.last_move = self.moves
-                    self.moves += 1
-                    self.next_turn_button.texture = arcade.load_texture(NEXT_TURN)
-
-    def on_key_release(self, _key: int, _modifiers: int):
-        if _key == arcade.key.ENTER:
-            if not self.player_turn:
-                self.handle_next_turn_button_click()
-                return
 
     def on_mouse_motion(self, x, y, dx: float, dy: float):
         """
@@ -981,10 +936,6 @@ class QuiddlerSolo(arcade.View):
         Handles events on mouse release. Button/card events are triggered here instead of
         on_mouse_press().
         """
-
-        if not self.player_turn:
-            self.handle_next_turn_button_click()
-            return
 
         # Check if any cards are held or buttons are pressed
         if len(self.held_cards) == 0 and len(self.buttons_pressed) == 0:
@@ -1193,12 +1144,12 @@ class QuiddlerSolo(arcade.View):
                 self.next_turn_flash_timer += self.next_turn_flash_timer_change
 
         # Update player box color based on player turn
-        if self.player_turn:
-            self.player.color = GOLD_TRANSPARENT
-            self.computer.color = WHITE_TRANSPARENT
-        elif not self.player_turn:
-            self.player.color = WHITE_TRANSPARENT
-            self.computer.color = GOLD_TRANSPARENT
+        if self.player_1_turn:
+            self.player_1.color = GOLD_TRANSPARENT
+            self.player_2.color = WHITE_TRANSPARENT
+        elif not self.player_1_turn:
+            self.player_1.color = WHITE_TRANSPARENT
+            self.player_2.color = GOLD_TRANSPARENT
 
     def recall_sequence(self):
         """
@@ -1214,7 +1165,7 @@ class QuiddlerSolo(arcade.View):
                     self.current_player.hand_index,
                     COMPLETED_CARDS
                 )
-            arcade.play_sound(self.wrong_word_sound, volume=0.2)
+            arcade.play_sound(self.wrong_word_sound, volume=0.5)
             self.completed_words_text_list = []
             self.completed_words_card_list = []
 
@@ -1236,10 +1187,10 @@ class QuiddlerSolo(arcade.View):
         """
 
         # Determine which player gets bonus for longest word
-        if self.player.longest_words[self.rnd] > self.computer.longest_words[self.rnd]:
-            self.add_bonus_to_score(cur_player=self.player)
-        elif self.player.longest_words[self.rnd] < self.computer.longest_words[self.rnd]:
-            self.add_bonus_to_score(cur_player=self.computer)
+        if self.player_1.longest_words[self.rnd] > self.player_2.longest_words[self.rnd]:
+            self.add_bonus_to_score(cur_player=self.player_1)
+        elif self.player_1.longest_words[self.rnd] < self.player_2.longest_words[self.rnd]:
+            self.add_bonus_to_score(cur_player=self.player_2)
 
         # Determines whether the hand count should increase or decrease
         # depending on whether the game is in the first half or last half
@@ -1257,30 +1208,30 @@ class QuiddlerSolo(arcade.View):
         if self.rnd > self.rnd_max:
             self.get_high_scores()
             self.background_music.stop(self.sound_player)
-            game_view = game_end.GameEnd(player_1_name=self.player.player_name,
-                                         player_1_score=self.player.total_score,
-                                         player_2_name=self.computer.player_name,
-                                         player_2_score=self.computer.total_score,)
+            game_view = game_end.GameEnd(player_1_name=self.player_1.player_name,
+                                         player_1_score=self.player_1.total_score,
+                                         player_2_name=self.player_2.player_name,
+                                         player_2_score=self.player_2.total_score)
             self.window.show_view(game_view)
 
         # Else, reset the board for the next round, with the dealer rotating to the next player
         else:
             if self.rnd % 2 == 1:
-                self.current_player = self.player
-                self.player_turn = True
+                self.current_player = self.player_1
+                self.player_1_turn = True
             else:
-                self.current_player = self.computer
-                self.player_turn = False
+                self.current_player = self.player_2
+                self.player_1_turn = False
             game_view = splash_screen.SplashScreen(
                 self,
                 self.current_player,
-                player_1=self.player,
-                player_2=self.computer,
+                player_1=self.player_1,
+                player_2=self.player_2,
                 rnd_end=True,
                 rnd_number=self.rnd,
                 score_change_list=self.score_change_list,
-                player_1_score_box=self.player_score_box,
-                player_2_score_box=self.computer_score_box,
+                player_1_score_box=self.player_1_score_box,
+                player_2_score_box=self.player_2_score_box,
                 piles=self.piles
             )
             self.window.show_view(game_view)
@@ -1292,15 +1243,15 @@ class QuiddlerSolo(arcade.View):
         Save variable states to a file for future loading.
         """
         file = shelve.open('quiddler_saved_game', protocol=2)
-        file['player_1_name'] = self.player.player_name
-        file['player_1_score'] = self.player.total_score
-        file['player_1_longest_words'] = self.player.longest_words
-        file['player_1_has_gone_down'] = self.player.has_gone_down
-        file['player_2_name'] = self.computer.player_name
-        file['player_2_score'] = self.computer.total_score
-        file['player_2_longest_words'] = self.computer.longest_words
-        file['player_2_has_gone_down'] = self.computer.has_gone_down
-        file['player_1_turn'] = self.player_turn
+        file['player_1_name'] = self.player_1.player_name
+        file['player_1_score'] = self.player_1.total_score
+        file['player_1_longest_words'] = self.player_1.longest_words
+        file['player_1_has_gone_down'] = self.player_1.has_gone_down
+        file['player_2_name'] = self.player_2.player_name
+        file['player_2_score'] = self.player_2.total_score
+        file['player_2_longest_words'] = self.player_2.longest_words
+        file['player_2_has_gone_down'] = self.player_2.has_gone_down
+        file['player_1_turn'] = self.player_1_turn
         file['round'] = self.rnd
         file['total_rounds'] = self.rnd_max
         file['total_cards'] = self.rnd_hand_count
@@ -1343,7 +1294,7 @@ class QuiddlerSolo(arcade.View):
 
             # Else, return cards to player hand
             else:
-                arcade.play_sound(self.wrong_word_sound, volume=0.2)
+                arcade.play_sound(self.wrong_word_sound, volume=0.5)
                 for _ in range(len(self.piles[GO_DOWN_PILE])):
                     card = self.piles[GO_DOWN_PILE][0]
                     self.move_card_to_new_pile(
@@ -1358,7 +1309,7 @@ class QuiddlerSolo(arcade.View):
 
         # Return cards to player hand if the word is too short
         else:
-            arcade.play_sound(self.wrong_word_sound, volume=0.2)
+            arcade.play_sound(self.wrong_word_sound, volume=0.5)
             for card in self.piles[GO_DOWN_PILE]:
                 self.move_card_to_new_pile(
                     card,
@@ -1374,44 +1325,8 @@ class QuiddlerSolo(arcade.View):
         return 110 * self.scale * i - \
                ((((len(self.piles[current_player_hand])) - 1) * 110 * self.scale) / 2) + self.screen_width / 2
 
-    def take_computer_turn(self):
-        if not self.player.has_gone_down:
-            self.piles[FACE_DOWN_PILE], self.piles[DISCARD_PILE], self.piles[S_COMPUTER_HAND], result = \
-                self.computer_turn.take_turn(self.piles[FACE_DOWN_PILE], self.piles[DISCARD_PILE],
-                                             self.piles[S_COMPUTER_HAND], False)
-        else:
-            self.piles[FACE_DOWN_PILE], self.piles[DISCARD_PILE], self.piles[S_COMPUTER_HAND], result = \
-                self.computer_turn.take_turn(self.piles[FACE_DOWN_PILE], self.piles[DISCARD_PILE],
-                                             self.piles[S_COMPUTER_HAND], True)
-        self.has_drawn = True
-        self.has_discarded = True
-        if result:
-            self.completed_words_card_list = result
-            for card in self.piles[S_COMPUTER_HAND]:
-                self.move_card_to_new_pile(card, COMPLETED_CARDS, self.piles[S_COMPUTER_HAND])
-            for word in result:
-                w = ""
-                for card in word:
-                    w += card.value
-                self.completed_words_text_list.append(w)
-            self.get_completed_words()
-            self.computer.has_gone_down = True
 
 
 
 
-
-
-def get_player_names(filename):
-    file = shelve.open(filename=filename, protocol=2)
-    try:
-        player_1 = file['player_1']
-        player_2 = file['player_2']
-    except KeyError:
-        player_1 = 'Player 1'
-        player_2 = 'Player 2'
-        file['player_1'] = player_1
-        file['player_2'] = player_2
-    file.close()
-    return player_1, player_2
 

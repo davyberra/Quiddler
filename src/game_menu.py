@@ -2,7 +2,7 @@
 Main Menu for Quiddler - called on application start.
 """
 import arcade
-import main
+import two_player
 import single_player
 import edit_player_names
 import highscores
@@ -135,18 +135,18 @@ class GameMenu(arcade.View):
             if self.half_game_button in self.buttons_pressed:
                 if self.half_game_button == button[0]:
 
-                    game_view = main.Quiddler(rnd_number=8,
-                                              player_1=self.player_1,
-                                              player_2=self.player_2)
+                    game_view = two_player.Quiddler(rnd_number=8,
+                                                    player_1=self.player_1,
+                                                    player_2=self.player_2)
                     game_view.setup()
                     self.main_menu_music.stop(self.sound_player)
                     self.window.show_view(game_view)
 
             elif self.full_game_button in self.buttons_pressed:
                 if self.full_game_button == button[0]:
-                    game_view = main.Quiddler(rnd_number=16,
-                                              player_1=self.player_1,
-                                              player_2=self.player_2)
+                    game_view = two_player.Quiddler(rnd_number=16,
+                                                    player_1=self.player_1,
+                                                    player_2=self.player_2)
                     game_view.setup()
                     self.main_menu_music.stop(self.sound_player)
                     self.window.show_view(game_view)
@@ -178,9 +178,9 @@ class GameMenu(arcade.View):
 
             elif self.continue_button in self.buttons_pressed:
                 if self.continue_button == button[0]:
-                    game_view = main.Quiddler(rnd_number=8,
-                                              player_1=self.player_1,
-                                              player_2=self.player_2)
+                    game_view = two_player.Quiddler(rnd_number=8,
+                                                    player_1=self.player_1,
+                                                    player_2=self.player_2)
                     game_view.setup()
                     game_view.continue_game()
                     self.main_menu_music.stop(self.sound_player)

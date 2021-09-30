@@ -41,13 +41,23 @@ class SplashScreen(arcade.View):
 
     def on_show(self):
         print(f"Called splash screen before {self.current_player} turn.")
-        arcade.draw_rectangle_filled(
-            self.screen_width / 2,
-            self.screen_height / 2,
-            400 * self.scale,
-            300 * self.scale,
-            (94, 123, 128, 300)
-        )
+        if self.current_player == self.player_1:
+            arcade.draw_rectangle_filled(
+                self.screen_width / 2,
+                self.screen_height / 2,
+                400 * self.scale,
+                300 * self.scale,
+                (56, 174, 207, 300)
+            )
+        else:
+            arcade.draw_rectangle_filled(
+                self.screen_width / 2,
+                self.screen_height / 2,
+                400 * self.scale,
+                300 * self.scale,
+                (196, 77, 79, 300)
+            )
+
         if self.rnd_end:
             arcade.draw_text(
                 f'Round {self.rnd_number}',
@@ -113,3 +123,12 @@ class SplashScreen(arcade.View):
             for card in pile:
                 card.texture = arcade.load_texture(card.image_file_name)
         self.window.show_view(self.game_view)
+
+    def on_key_press(self, symbol: int, modifiers: int):
+        if symbol == arcade.key.ENTER:
+            if self.current_player.player_name == "Computer":
+                self.game_view.take_computer_turn()
+            for pile in self.piles[1:]:
+                for card in pile:
+                    card.texture = arcade.load_texture(card.image_file_name)
+            self.window.show_view(self.game_view)

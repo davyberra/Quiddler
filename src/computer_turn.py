@@ -1,7 +1,8 @@
 import random
+import time
 from typing import List
 
-from constants import WORD_LIST
+from constants import WORD_LIST, CARD_SCORE
 from card_class import Card
 
 class ComputerTurn:
@@ -67,12 +68,94 @@ class ComputerTurn:
                             result.append(word)
                             return self.valid_playable_hand(new_cards, result)
 
-    def take_turn(
-            self,
-            face_down_pile: List[Card],
-            discard_pile: List[Card],
-            computer_hand: List[Card]
-    ) -> list:
+    def valid_last_hand (self, cards: List[Card], result: List[List[Card]]):
+        """
+        Allow the computer to go down with the valid words available on the final turn.
+        Return the words if true, and return None if false.
+        :param cards: List[Card]
+        :param result: List[List[Card]]
+        """
+        if len(cards) > 3 and len(cards) != 5:
+            for i in range(len(cards)):
+                for j in range(i + 1, len(cards)):
+                    for k in range(j + 1, len(cards)):
+                        word = self.three_letter_valid(cards[i], cards[j], cards[k])
+                        if word:
+                            new_cards = cards[:]
+                            for card in word:
+                                new_cards.remove(card)
+                            if len(new_cards) == 1:
+                                result.append(word)
+                                return result
+                            elif len(new_cards) > 2:
+                                result.append(word)
+                                return self.valid_last_hand(new_cards, result)
+                            elif len(new_cards) == 2:
+                                result.append(word)
+                                return result
+
+        elif len(cards) > 2 and len(cards) != 4:
+            for i in range(len(cards)):
+                for j in range(i + 1, len(cards)):
+                    word = self.two_letter_valid(cards[i], cards[j])
+                    if word:
+                        new_cards = cards[:]
+                        for card in word:
+                            new_cards.remove(card)
+                        if len(new_cards) == 1:
+                            result.append(word)
+                            return result
+                        elif len(new_cards) > 2:
+                            result.append(word)
+                            return self.valid_last_hand(new_cards, result)
+                        elif len(new_cards) == 2:
+                            result.append(word)
+                            return result
+
+        return result
+
+    def valid_hand_random(self, cards: List[Card]):
+        """
+        Select cards at random with random ranges to find words.
+        """
+        print("Called random computer hand method.")
+        start_time = time.time()
+        end_time = start_time
+        cur_result = []
+        result = []
+        cur_cards = cards[:]
+        while end_time < start_time + 2:
+            cur_word_list = []
+            try:
+                word_length = random.randrange(2, len(cur_cards) + 1)
+            except ValueError:
+                print(cur_cards, cur_result)
+                return
+            indices_left = [i for i in range(len(cur_cards))]
+            while len(indices_left) > len(cur_cards) - word_length:
+                rand_i = random.randrange(0, len(cards) + 1)
+                if rand_i in indices_left:
+                    cur_word_list.append(cur_cards[rand_i])
+                    indices_left.remove(rand_i)
+            cur_word = ""
+            for val in cur_word_list:
+                cur_word += val.value
+            if cur_word in WORD_LIST:
+                cur_result.append(cur_word_list)
+                for card in cur_word_list:
+                    cur_cards.remove(card)
+                if len(cur_cards) == 1:
+                    return cur_result
+                elif len(cur_cards) == 2 or len(cur_cards) == 0:
+                    print(f"got here with: {cur_word}")
+                    cur_cards = cards[:]
+                    result = cur_result[:]
+                    cur_result = []
+            end_time = time.time()
+
+        return result
+
+    def take_turn(self, face_down_pile: List[Card], discard_pile: List[Card], computer_hand: List[Card], final_turn: bool) -> list:
         """
         Main method for computer player's turn sequence.
         1. Draws from face-down pile
@@ -83,13 +166,32 @@ class ComputerTurn:
         """
         drawn_card = face_down_pile.pop()
         computer_hand.append(drawn_card)
-        valid_hand = self.valid_playable_hand(computer_hand, [])
+        if final_turn:
+            valid_hand = self.valid_last_hand(computer_hand, [])
+        else:
+            valid_hand = self.valid_hand_random(computer_hand)
+            if valid_hand:
+                card_count = 0
+                for word in valid_hand:
+                    for card in word:
+                        card_count += 1
+                if card_count != len(computer_hand) - 1:
+                    print(f'valid hand: {card_count} computer hand: {len(computer_hand)}')
+                    valid_hand = None
         discard = computer_hand
         if valid_hand:
             for word in valid_hand:
                 for card in word:
                     discard.remove(card)
-            discard = discard[0]
+
+            if len(discard) > 1:
+                max_score = [0, None]
+                for i, card in enumerate(discard):
+                    if CARD_SCORE[card.value] > max_score[0]:
+                        max_score = [CARD_SCORE[card.value], i]
+                discard = discard[max_score[1]]
+            else:
+                discard = discard[0]
         else:
             discard = computer_hand[random.randrange(len(computer_hand))]
         discard_pile.append(discard)
@@ -98,12 +200,13 @@ class ComputerTurn:
 
 # c = ComputerTurn()
 # letters = ['t','b','a','x','a','e','g','g','a','q','i']
+# letters2 = ['g','r','e','a','t']
 # cards = []
-# for letter in letters:
+# for letter in letters2:
 #     card = Card(letter)
 #     cards.append(card)
 #
-# result = c.valid_playable_hand(cards, [])
+# result = c.valid_hand_random(cards)
 # if result:
 #     for word in result:
 #         w = ""
