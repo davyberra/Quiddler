@@ -473,7 +473,6 @@ class QuiddlerSolo(arcade.View):
                 small_go_down_list.append([])
                 for completed_card in word:
                     small_card = card_class.Card(completed_card.value, scale=.75 * self.scale)
-                    print(small_card.value)
                     self.small_card_list.append(small_card)
                     small_go_down_list[index].append(small_card)
                     small_card.position = self.get_small_go_down_card_position(
@@ -617,7 +616,7 @@ class QuiddlerSolo(arcade.View):
             arcade.play_sound(self.go_down_sound, volume=0.3)
 
         else:
-            arcade.play_sound(self.wrong_word_sound, volume=0.4)
+            arcade.play_sound(self.wrong_word_sound, volume=0.2)
             logging.warning("You can't go down yet.")
 
     def handle_menu_button_click(self):
@@ -707,14 +706,14 @@ class QuiddlerSolo(arcade.View):
                 if self.drawn_card_original_pile == FACE_DOWN_PILE:
                     undo_card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
                 self.has_drawn = False
-                arcade.play_sound(self.wrong_word_sound, volume=0.4)
+                arcade.play_sound(self.wrong_word_sound, volume=0.2)
 
             elif self.has_discarded:
                 undo_card = self.piles[DISCARD_PILE][-1]
                 self.move_card_to_new_pile(undo_card, self.current_player.hand_index, DISCARD_PILE)
                 self.has_discarded = False
                 self.next_turn_button.texture = arcade.load_texture(NEXT_TURN_PRESSED)
-                arcade.play_sound(self.wrong_word_sound, volume=0.4)
+                arcade.play_sound(self.wrong_word_sound, volume=0.2)
         self.undo_button.texture = arcade.load_texture(UNDO)
 
     def move_card_to_new_pile(self, card, pile_index, held_cards_original_pile):
@@ -731,7 +730,7 @@ class QuiddlerSolo(arcade.View):
         if held_cards_original_pile != pile_index:
             if pile_index == S_PLAYER_HAND or pile_index == S_COMPUTER_HAND \
                     or pile_index == DISCARD_PILE or pile_index == GO_DOWN_PILE:
-                arcade.play_sound(self.card_move_sound, volume=0.75)
+                arcade.play_sound(self.card_move_sound, volume=0.5)
 
     def on_draw(self):
         """
@@ -879,7 +878,13 @@ class QuiddlerSolo(arcade.View):
         Events are triggered on key press, not key release.
         """
         if key == arcade.key.ENTER:
-            self.save_word_sequence()
+
+            if len(self.piles[COMPLETED_CARDS]) == self.rnd_hand_count and self.has_discarded:
+                self.handle_go_down_button_click()
+            elif self.has_discarded:
+                self.handle_next_turn_button_click()
+            else:
+                self.save_word_sequence()
 
         elif key == arcade.key.ESCAPE:
             self.recall_sequence()
@@ -899,6 +904,48 @@ class QuiddlerSolo(arcade.View):
         elif key == arcade.key.DELETE:
             for card in self.card_list:
                 card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
+
+        elif key == arcade.key.LSHIFT:
+            if not self.has_drawn:
+                card = self.piles[DISCARD_PILE][-1]
+                self.move_card_to_new_pile(
+                    card,
+                    self.current_player.hand_index,
+                    self.held_cards_original_pile
+                )
+                card.texture = arcade.load_texture(card.image_file_name)
+                self.has_drawn = True
+                self.drawn_card_original_pile = DISCARD_PILE
+                self.last_move = self.moves
+                self.moves += 1
+
+        elif key == arcade.key.SPACE:
+            if not self.has_drawn:
+                card = self.piles[FACE_DOWN_PILE][-1]
+                self.move_card_to_new_pile(
+                    card,
+                    self.current_player.hand_index,
+                    self.held_cards_original_pile
+                )
+                card.texture = arcade.load_texture(card.image_file_name)
+                self.has_drawn = True
+                self.drawn_card_original_pile = FACE_DOWN_PILE
+                self.last_move = self.moves
+                self.moves += 1
+            elif not self.has_discarded:
+                if len(self.piles[PLAYER_1_HAND]) == 1:
+                    card = self.piles[PLAYER_1_HAND][0]
+                    self.move_card_to_new_pile(card, DISCARD_PILE, self.held_cards_original_pile)
+                    self.has_discarded = True
+                    self.last_move = self.moves
+                    self.moves += 1
+                    self.next_turn_button.texture = arcade.load_texture(NEXT_TURN)
+
+    def on_key_release(self, _key: int, _modifiers: int):
+        if _key == arcade.key.ENTER:
+            if not self.player_turn:
+                self.handle_next_turn_button_click()
+                return
 
     def on_mouse_motion(self, x, y, dx: float, dy: float):
         """
@@ -1167,7 +1214,7 @@ class QuiddlerSolo(arcade.View):
                     self.current_player.hand_index,
                     COMPLETED_CARDS
                 )
-            arcade.play_sound(self.wrong_word_sound, volume=0.4)
+            arcade.play_sound(self.wrong_word_sound, volume=0.2)
             self.completed_words_text_list = []
             self.completed_words_card_list = []
 
@@ -1296,7 +1343,7 @@ class QuiddlerSolo(arcade.View):
 
             # Else, return cards to player hand
             else:
-                arcade.play_sound(self.wrong_word_sound, volume=0.4)
+                arcade.play_sound(self.wrong_word_sound, volume=0.2)
                 for _ in range(len(self.piles[GO_DOWN_PILE])):
                     card = self.piles[GO_DOWN_PILE][0]
                     self.move_card_to_new_pile(
@@ -1311,7 +1358,7 @@ class QuiddlerSolo(arcade.View):
 
         # Return cards to player hand if the word is too short
         else:
-            arcade.play_sound(self.wrong_word_sound, volume=0.4)
+            arcade.play_sound(self.wrong_word_sound, volume=0.2)
             for card in self.piles[GO_DOWN_PILE]:
                 self.move_card_to_new_pile(
                     card,
