@@ -2,7 +2,6 @@ import unittest
 import os
 import arcade
 
-from two_player import get_player_names, Quiddler
 from constants import *
 
 
