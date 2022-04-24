@@ -2,8 +2,10 @@
 Defines Player object.
 """
 class Player:
-    def __init__(self, player_name):
+    def __init__(self, player_name, player_number: int, is_computer: bool):
         self.player_name = player_name
+        self.player_number = player_number
+        self.is_computer = is_computer
 
         self.pile_numbers_list = []
 

@@ -10,7 +10,15 @@ import arcade.gui
 from arcade.gui import UIManager
 from constants import BACKGROUND_MUSIC, BACK, BACK_PRESSED
 
-
+class NextTurnButton(arcade.gui.UIImageButton):
+    def __init__(self, center_x, center_y, hover_texture, normal_texture, press_texture):
+        super().__init__(
+            center_x=center_x,
+            center_y=center_y,
+            hover_texture=hover_texture,
+            normal_texture=normal_texture,
+            press_texture=press_texture
+        )
 class NavButton(arcade.gui.UIImageButton):
     def __init__(self, center_x, center_y, hover_texture, normal_texture, press_texture, game_view, window):
         super().__init__(

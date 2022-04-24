@@ -4,17 +4,17 @@ Splash Screen called between player turns.
 import time
 
 import arcade
-import single_player
 import player
 
 from constants import WHITE, FACE_DOWN_IMAGE
+from src import quiddler
 
 
 class SplashScreen(arcade.View):
 
     # Persists game state between views.
     def __init__(self,
-                 game_view: single_player.QuiddlerSolo,
+                 game_view: quiddler.Quiddler,
                  current_player: player.Player,
                  player_1,
                  player_2,
@@ -117,18 +117,16 @@ class SplashScreen(arcade.View):
                 card.texture = arcade.load_texture(FACE_DOWN_IMAGE)
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
-        if self.current_player.player_name == "Computer":
-            self.game_view.take_computer_turn()
-        for pile in self.piles[1:]:
-            for card in pile:
-                card.texture = arcade.load_texture(card.image_file_name)
-        self.window.show_view(self.game_view)
+        self.change_turn()
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.ENTER:
-            if self.current_player.player_name == "Computer":
-                self.game_view.take_computer_turn()
-            for pile in self.piles[1:]:
-                for card in pile:
-                    card.texture = arcade.load_texture(card.image_file_name)
-            self.window.show_view(self.game_view)
+            self.change_turn()
+
+    def change_turn(self):
+        if self.current_player.is_computer:
+            self.game_view.take_computer_turn(self.current_player)
+        for pile in self.piles[1:]:
+            for card in pile:
+                card.flip_up()
+        self.window.show_view(self.game_view)

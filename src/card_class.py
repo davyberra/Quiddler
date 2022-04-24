@@ -2,6 +2,7 @@
 Class for Card Sprite.
 """
 import arcade
+from constants import FACE_DOWN_IMAGE
 
 
 class Card(arcade.Sprite):
@@ -16,8 +17,14 @@ class Card(arcade.Sprite):
         :param scale: Scaled size of card
         """
         self.value = value
+        self.face_up_texture = f"images/{self.value}.png"
+        self.face_down_texture  = FACE_DOWN_IMAGE
+        super().__init__(self.face_up_texture, scale)
+        self.texture = arcade.load_texture(self.face_up_texture)
 
-        self.image_file_name = f"images/{self.value}.png"
+    def flip_up(self):
+        self.texture = arcade.load_texture(self.face_up_texture)
 
-        super().__init__(self.image_file_name, scale, )
-        self.texture = arcade.load_texture(self.image_file_name)
+    def flip_down(self):
+        self.texture = arcade.load_texture(self.face_down_texture)
+

@@ -2,8 +2,7 @@
 Main Menu for Quiddler - called on application start.
 """
 import arcade
-import two_player
-import single_player
+import quiddler
 import edit_player_names
 import highscores
 import instructions
@@ -98,7 +97,19 @@ class GameMenu(arcade.View):
         if symbol == arcade.key.F10:
             arcade.close_window()
         elif symbol == arcade.key.F9:
-            game_view = single_player.QuiddlerSolo(rnd_number=8, player_1=self.player_1)
+            game_view = quiddler.Quiddler(
+                rnd_number=8,
+                players=[
+                    {
+                        'player_name': self.player_1,
+                        'is_computer': False
+                    },
+                    {
+                        'player_name': 'Computer',
+                        'is_computer': True
+                    }
+                ]
+            )
             game_view.setup()
             self.main_menu_music.stop(self.sound_player)
             self.window.show_view(game_view)
@@ -117,6 +128,7 @@ class GameMenu(arcade.View):
                 self.full_game_button.texture = arcade.load_texture("images/full_game_button_pressed.png")
             elif self.instructions_button in self.buttons_pressed:
                 self.instructions_button.texture = arcade.load_texture("images/instructions_button_pressed.png")
+
             elif self.exit_button in self.buttons_pressed:
                 self.exit_button.texture = arcade.load_texture(EXIT_PRESSED)
             elif self.continue_button in self.buttons_pressed:
@@ -134,33 +146,76 @@ class GameMenu(arcade.View):
         if button:
             if self.half_game_button in self.buttons_pressed:
                 if self.half_game_button == button[0]:
-
-                    game_view = two_player.Quiddler(rnd_number=8,
-                                                    player_1=self.player_1,
-                                                    player_2=self.player_2)
+                    game_view = quiddler.Quiddler(
+                        rnd_number=8,
+                        players=[
+                            {
+                                'player_name': self.player_1,
+                                'is_computer': False
+                            },
+                            {
+                                'player_name': self.player_2,
+                                'is_computer': False
+                            }
+                        ]
+                    )
                     game_view.setup()
                     self.main_menu_music.stop(self.sound_player)
                     self.window.show_view(game_view)
 
             elif self.full_game_button in self.buttons_pressed:
                 if self.full_game_button == button[0]:
-                    game_view = two_player.Quiddler(rnd_number=16,
-                                                    player_1=self.player_1,
-                                                    player_2=self.player_2)
+                    game_view = quiddler.Quiddler(
+                        rnd_number=16,
+                        players=[
+                            {
+                                'player_name': self.player_1,
+                                'is_computer': False
+                            },
+                            {
+                                'player_name': self.player_2,
+                                'is_computer': False
+                            }
+                        ]
+                    )
                     game_view.setup()
                     self.main_menu_music.stop(self.sound_player)
                     self.window.show_view(game_view)
 
             elif self.solo_half_game_button in self.buttons_pressed:
                 if self.solo_half_game_button == button[0]:
-                    game_view = single_player.QuiddlerSolo(rnd_number=8, player_1=self.player_1)
+                    game_view = quiddler.Quiddler(
+                        rnd_number=8,
+                        players=[
+                            {
+                                'player_name': self.player_1,
+                                'is_computer': False
+                            },
+                            {
+                                'player_name': 'Computer',
+                                'is_computer': True
+                            }
+                        ]
+                    )
                     game_view.setup()
                     self.main_menu_music.stop(self.sound_player)
                     self.window.show_view(game_view)
 
             elif self.solo_full_game_button in self.buttons_pressed:
                 if self.solo_full_game_button == button[0]:
-                    game_view = single_player.QuiddlerSolo(rnd_number=16, player_1=self.player_1)
+                    game_view = quiddler.Quiddler(
+                        rnd_number=16,
+                        players=[
+                            {
+                                'player_name': self.player_1,
+                                'is_computer': False
+                            },
+                            {
+                                'player_name': 'Computer',
+                                'is_computer': True
+                            }
+                        ]
+                    )
                     game_view.setup()
                     self.main_menu_music.stop(self.sound_player)
                     self.window.show_view(game_view)
@@ -178,9 +233,19 @@ class GameMenu(arcade.View):
 
             elif self.continue_button in self.buttons_pressed:
                 if self.continue_button == button[0]:
-                    game_view = two_player.Quiddler(rnd_number=8,
-                                                    player_1=self.player_1,
-                                                    player_2=self.player_2)
+                    game_view = quiddler.Quiddler(
+                        rnd_number=8,
+                        players=[
+                            {
+                                'player_name': self.player_1,
+                                'is_computer': False
+                            },
+                            {
+                                'player_name': self.player_2,
+                                'is_computer': False
+                            }
+                        ]
+                    )
                     game_view.setup()
                     game_view.continue_game()
                     self.main_menu_music.stop(self.sound_player)

@@ -68,6 +68,12 @@ CARD_MOVE_SOUND = arcade.load_sound("sounds/card_move.ogg")
 SAVE_WORD_SOUND = arcade.load_sound("sounds/save_word.ogg")
 GO_DOWN_SOUND = arcade.load_sound("sounds/go_down.ogg")
 WRONG_WORD_SOUND = arcade.load_sound("sounds/wrong_word.ogg")
+SOUND_LIST = [
+    CARD_MOVE_SOUND,
+    SAVE_WORD_SOUND,
+    GO_DOWN_SOUND,
+    WRONG_WORD_SOUND
+]
 BACKGROUND_MUSIC = arcade.load_sound("sounds/quiddler_theme_2.ogg")
 MAIN_MENU_MUSIC = arcade.load_sound("sounds/quiddler_theme_1.ogg")
 GAME_END_THEME = arcade.load_sound("sounds/game_end_theme.mp3")
@@ -82,9 +88,15 @@ PILE_COUNT = 6
 FACE_DOWN_PILE = 0
 DISCARD_PILE = 1
 GO_DOWN_PILE = 2
-PLAYER_1_HAND = 3
-PLAYER_2_HAND = 4
-COMPLETED_CARDS = 5
+COMPLETED_CARDS = 3
+PLAYER_1_HAND = 4
+PLAYER_2_HAND = 5
+OTHER_PILES = [
+    FACE_DOWN_PILE,
+    DISCARD_PILE,
+    GO_DOWN_PILE,
+    COMPLETED_CARDS
+]
 
 S_PILE_COUNT = 6
 S_FACE_DOWN_PILE = 0
