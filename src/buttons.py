@@ -7,8 +7,7 @@ NavButton - a user-defined class for navigation functions that overrides arcade.
 import arcade
 
 import arcade.gui
-from arcade.gui import UIManager
-from constants import BACKGROUND_MUSIC, BACK, BACK_PRESSED
+from constants import BACK, BACK_PRESSED
 
 class NextTurnButton(arcade.gui.UIImageButton):
     def __init__(self, center_x, center_y, hover_texture, normal_texture, press_texture):

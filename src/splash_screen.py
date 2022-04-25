@@ -1,7 +1,6 @@
 """
 Splash Screen called between player turns.
 """
-import time
 
 import arcade
 import player
@@ -20,9 +19,6 @@ class SplashScreen(arcade.View):
                  player_2,
                  rnd_end,
                  rnd_number,
-                 score_change_list,
-                 player_1_score_box,
-                 player_2_score_box,
                  piles
                  ):
         super().__init__()
@@ -32,11 +28,8 @@ class SplashScreen(arcade.View):
         self.current_player = current_player
         self.rnd_end = rnd_end
         self.rnd_number = rnd_number
-        self.score_change_list = score_change_list
         self.player_1 = player_1
         self.player_2 = player_2
-        self.player_1_score_box = player_1_score_box
-        self.player_2_score_box = player_2_score_box
         self.piles = piles
 
     def on_show(self):
@@ -78,6 +71,7 @@ class SplashScreen(arcade.View):
                 anchor_x="center",
                 anchor_y="center",
             )
+
         else:
             arcade.draw_text(
                 f"{self.current_player}'s Turn.",
@@ -85,29 +79,6 @@ class SplashScreen(arcade.View):
                 self.screen_height / 2,
                 WHITE,
                 font_size=round(40 * self.scale),
-                anchor_x="center",
-                anchor_y="center",
-            )
-
-        for score_list in self.score_change_list:
-            x, y, color, prefix = 0, 0, None, None
-            if score_list[0] == self.player_1:
-                x, y = self.player_1_score_box['center_x'], self.player_1_score_box['center_y']
-            elif score_list[0] == self.player_2:
-                x, y = self.player_2_score_box['center_x'], self.player_2_score_box['center_y']
-
-            if score_list[1] >= 0:
-                color = arcade.color.GREEN
-                prefix = '+'
-            elif score_list[1] < 0:
-                color = arcade.color.RED
-                prefix = ''
-
-            arcade.draw_text(
-                f'{prefix}{score_list[1]}',
-                x, y,
-                color,
-                font_size=round(24 * self.scale),
                 anchor_x="center",
                 anchor_y="center",
             )
@@ -126,7 +97,5 @@ class SplashScreen(arcade.View):
     def change_turn(self):
         if self.current_player.is_computer:
             self.game_view.take_computer_turn(self.current_player)
-        for pile in self.piles[1:]:
-            for card in pile:
-                card.flip_up()
+        self.game_view.turn_start_sequence()
         self.window.show_view(self.game_view)
