@@ -1,6 +1,6 @@
 import random
 
-import card_class
+from src.utils import card_class
 
 
 def create_cards(card_values, position, scale):

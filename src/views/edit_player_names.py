@@ -2,12 +2,10 @@
 View for editing player names from Game Menu.
 """
 import arcade
-import game_menu
 import shelve
 
-from arcade.gui import UIManager
-from arcade.gui.elements.inputbox import UIInputBox
-from constants import GAME_MENU_BASE_BACKGROUND, BACK, BACK_PRESSED
+from arcade.gui import UIManager, UIInputText
+from src.utils.constants import GAME_MENU_BASE_BACKGROUND, BACK, BACK_PRESSED
 
 
 class EditPlayerNames(arcade.View):
@@ -20,13 +18,15 @@ class EditPlayerNames(arcade.View):
         self.player_1 = player_1
         self.player_2 = player_2
 
+        self.buttons_pressed = []
         self.button_list = arcade.SpriteList()
         self.back = arcade.Sprite(BACK, scale=self.scale)
         self.back.position = self.screen_width / 2, 100 * self.scale
         self.button_list.append(self.back)
 
         self.ui_manager = UIManager()
-        self.player_1_name_box = UIInputBox(
+        self.ui_manager.enable()
+        self.player_1_name_box = UIInputText(
             center_x=self.screen_width / 2,
             center_y=self.screen_height / 2 + 100 * self.scale,
             width=round(400 * self.scale),
@@ -34,8 +34,8 @@ class EditPlayerNames(arcade.View):
             text=f'{self.player_1}',
         )
         self.player_1_name_box.cursor_index = len(self.player_1_name_box.text)
-        self.ui_manager.add_ui_element(self.player_1_name_box)
-        self.player_2_name_box = UIInputBox(
+        self.ui_manager.add(self.player_1_name_box)
+        self.player_2_name_box = UIInputText(
             center_x=self.screen_width / 2,
             center_y=self.screen_height / 2 - 100 * self.scale,
             width=round(400 * self.scale),
@@ -44,7 +44,7 @@ class EditPlayerNames(arcade.View):
 
         )
         self.player_2_name_box.cursor_index = len(self.player_2_name_box.text)
-        self.ui_manager.add_ui_element(self.player_2_name_box)
+        self.ui_manager.add(self.player_2_name_box)
 
         self.background = arcade.Sprite(filename=GAME_MENU_BASE_BACKGROUND,
                                         scale=self.screen_width / 1920)
@@ -74,8 +74,11 @@ class EditPlayerNames(arcade.View):
             anchor_y="center"
         )
 
+    def on_show_view(self):
+        self.ui_manager.enable()
+
     def on_hide_view(self):
-        self.ui_manager.unregister_handlers()
+        self.ui_manager.disable()
 
     def on_mouse_press(self, x: float, y: float, button: int, modifiers: int):
         self.buttons_pressed = arcade.get_sprites_at_point((x, y), self.button_list)

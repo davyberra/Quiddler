@@ -1,8 +1,7 @@
 import unittest
 import os
-import arcade
 
-from constants import *
+from src.utils.constants import *
 
 
 class GetClickedPileTest(unittest.TestCase):

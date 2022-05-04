@@ -2,8 +2,8 @@
 View called after a game is finished.
 """
 import arcade
-import game_menu
-from constants import WHITE, GAME_END_THEME, GAME_END_BACKGROUND, GAME_END_BACKGROUND_WIDTH, YES, YES_PRESSED,\
+from src.views import game_menu
+from src.utils.constants import WHITE, GAME_END_THEME, GAME_END_BACKGROUND, GAME_END_BACKGROUND_WIDTH, YES, YES_PRESSED,\
     NO, NO_PRESSED
 
 

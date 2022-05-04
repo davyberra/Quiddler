@@ -4,7 +4,7 @@ Main entry point for entire game.
 import arcade
 import shelve
 
-import game_menu
+from src.views import game_menu
 
 
 def get_player_names(filename):

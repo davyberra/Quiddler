@@ -2,12 +2,11 @@
 Main Menu for Quiddler - called on application start.
 """
 import arcade
-import quiddler
-import edit_player_names
-import highscores
-import instructions
-from constants import BACKGROUND_IMAGE_WIDTH, CONTINUE, EXIT, MAIN_MENU_MUSIC, EXIT_PRESSED, CONTINUE_PRESSED, \
+from src.views import quiddler_game, highscores, instructions, edit_player_names
+from src.utils.constants import BACKGROUND_IMAGE_WIDTH, CONTINUE, EXIT, MAIN_MENU_MUSIC, EXIT_PRESSED, CONTINUE_PRESSED, \
     HIGHSCORES_BUTTON, HIGHSCORES_BUTTON_PRESSED, EDIT_NAMES, EDIT_NAMES_PRESSED
+
+IMAGE_FILE_PATH = 'D:/Python Games/Quiddler_Arcade/src/images/'
 
 
 class GameMenu(arcade.View):
@@ -20,7 +19,7 @@ class GameMenu(arcade.View):
         self.player_1 = player_1
         self.player_2 = player_2
 
-        self.background = arcade.Sprite(filename="images/quiddler_main_menu_background(2).png",
+        self.background = arcade.Sprite(filename=f"{IMAGE_FILE_PATH}/quiddler_main_menu_background(2).png",
                                         scale=self.screen_width / BACKGROUND_IMAGE_WIDTH)
         self.background.position = self.screen_width / 2, self.screen_height / 2
 
@@ -29,16 +28,16 @@ class GameMenu(arcade.View):
         self.continue_button = arcade.Sprite(CONTINUE, scale=self.scale)
         self.continue_button.position = self.screen_width / 2, self.screen_height / 2 + 100 * self.scale
         self.button_list.append(self.continue_button)
-        self.solo_half_game_button = arcade.Sprite("images/half_game_button.png", scale=self.scale)
+        self.solo_half_game_button = arcade.Sprite(f"{IMAGE_FILE_PATH}/half_game_button.png", scale=self.scale)
         self.solo_half_game_button.position = self.screen_width / 2 - 100 * self.scale, self.screen_height / 2
         self.button_list.append(self.solo_half_game_button)
-        self.solo_full_game_button = arcade.Sprite("images/full_game_button.png", scale=self.scale)
+        self.solo_full_game_button = arcade.Sprite(f"{IMAGE_FILE_PATH}/full_game_button.png", scale=self.scale)
         self.solo_full_game_button.position = self.screen_width / 2 + 100 * self.scale, self.screen_height / 2
         self.button_list.append(self.solo_full_game_button)
-        self.half_game_button = arcade.Sprite("images/half_game_button.png", scale=self.scale)
+        self.half_game_button = arcade.Sprite(f"{IMAGE_FILE_PATH}/half_game_button.png", scale=self.scale)
         self.half_game_button.position = self.screen_width / 2 - 100 * self.scale, self.screen_height / 2 - 100 * self.scale
         self.button_list.append(self.half_game_button)
-        self.full_game_button = arcade.Sprite("images/full_game_button.png", scale=self.scale)
+        self.full_game_button = arcade.Sprite(f"{IMAGE_FILE_PATH}/full_game_button.png", scale=self.scale)
         self.full_game_button.position = self.screen_width / 2 + 100 * self.scale, self.screen_height / 2 - 100 * self.scale
         self.button_list.append(self.full_game_button)
         self.edit_names_button = arcade.Sprite(EDIT_NAMES, scale=self.scale)
@@ -47,7 +46,7 @@ class GameMenu(arcade.View):
         self.highscores_button = arcade.Sprite(HIGHSCORES_BUTTON, scale=self.scale)
         self.highscores_button.position = self.screen_width / 2, self.screen_height / 2 - 300 * self.scale
         self.button_list.append(self.highscores_button)
-        self.instructions_button = arcade.Sprite("images/instructions_button.png", scale=self.scale)
+        self.instructions_button = arcade.Sprite(f"{IMAGE_FILE_PATH}/instructions_button.png", scale=self.scale)
         self.instructions_button.position = self.screen_width / 2, self.screen_height / 2 - 400 * self.scale
         self.button_list.append(self.instructions_button)
         self.exit_button = arcade.Sprite(EXIT, scale=self.scale)
@@ -97,7 +96,7 @@ class GameMenu(arcade.View):
         if symbol == arcade.key.F10:
             arcade.close_window()
         elif symbol == arcade.key.F9:
-            game_view = quiddler.Quiddler(
+            game_view = quiddler_game.Quiddler(
                 rnd_number=8,
                 players=[
                     {
@@ -119,15 +118,15 @@ class GameMenu(arcade.View):
             self.buttons_pressed = arcade.get_sprites_at_point((x, y,), self.button_list)
 
             if self.half_game_button in self.buttons_pressed:
-                self.half_game_button.texture = arcade.load_texture("images/half_game_button_pressed.png")
+                self.half_game_button.texture = arcade.load_texture(f"{IMAGE_FILE_PATH}/half_game_button_pressed.png")
             elif self.solo_half_game_button in self.buttons_pressed:
-                self.solo_half_game_button.texture = arcade.load_texture("images/half_game_button_pressed.png")
+                self.solo_half_game_button.texture = arcade.load_texture(f"{IMAGE_FILE_PATH}/half_game_button_pressed.png")
             elif self.solo_full_game_button in self.buttons_pressed:
-                self.solo_full_game_button.texture = arcade.load_texture("images/full_game_button_pressed.png")
+                self.solo_full_game_button.texture = arcade.load_texture(f"{IMAGE_FILE_PATH}/full_game_button_pressed.png")
             elif self.full_game_button in self.buttons_pressed:
-                self.full_game_button.texture = arcade.load_texture("images/full_game_button_pressed.png")
+                self.full_game_button.texture = arcade.load_texture(f"{IMAGE_FILE_PATH}/full_game_button_pressed.png")
             elif self.instructions_button in self.buttons_pressed:
-                self.instructions_button.texture = arcade.load_texture("images/instructions_button_pressed.png")
+                self.instructions_button.texture = arcade.load_texture(f"{IMAGE_FILE_PATH}/instructions_button_pressed.png")
 
             elif self.exit_button in self.buttons_pressed:
                 self.exit_button.texture = arcade.load_texture(EXIT_PRESSED)
@@ -146,7 +145,7 @@ class GameMenu(arcade.View):
         if button:
             if self.half_game_button in self.buttons_pressed:
                 if self.half_game_button == button[0]:
-                    game_view = quiddler.Quiddler(
+                    game_view = quiddler_game.Quiddler(
                         rnd_number=8,
                         players=[
                             {
@@ -165,7 +164,7 @@ class GameMenu(arcade.View):
 
             elif self.full_game_button in self.buttons_pressed:
                 if self.full_game_button == button[0]:
-                    game_view = quiddler.Quiddler(
+                    game_view = quiddler_game.Quiddler(
                         rnd_number=16,
                         players=[
                             {
@@ -184,7 +183,7 @@ class GameMenu(arcade.View):
 
             elif self.solo_half_game_button in self.buttons_pressed:
                 if self.solo_half_game_button == button[0]:
-                    game_view = quiddler.Quiddler(
+                    game_view = quiddler_game.Quiddler(
                         rnd_number=8,
                         players=[
                             {
@@ -203,7 +202,7 @@ class GameMenu(arcade.View):
 
             elif self.solo_full_game_button in self.buttons_pressed:
                 if self.solo_full_game_button == button[0]:
-                    game_view = quiddler.Quiddler(
+                    game_view = quiddler_game.Quiddler(
                         rnd_number=16,
                         players=[
                             {
@@ -233,7 +232,7 @@ class GameMenu(arcade.View):
 
             elif self.continue_button in self.buttons_pressed:
                 if self.continue_button == button[0]:
-                    game_view = quiddler.Quiddler(
+                    game_view = quiddler_game.Quiddler(
                         rnd_number=8,
                         players=[
                             {
@@ -265,8 +264,8 @@ class GameMenu(arcade.View):
 
         self.highscores_button.texture = arcade.load_texture(HIGHSCORES_BUTTON)
         self.edit_names_button.texture = arcade.load_texture(EDIT_NAMES)
-        self.half_game_button.texture = arcade.load_texture("images/half_game_button.png")
-        self.full_game_button.texture = arcade.load_texture("images/full_game_button.png")
-        self.instructions_button.texture = arcade.load_texture("images/instructions_button.png")
+        self.half_game_button.texture = arcade.load_texture(f"{IMAGE_FILE_PATH}/half_game_button.png")
+        self.full_game_button.texture = arcade.load_texture(f"{IMAGE_FILE_PATH}/full_game_button.png")
+        self.instructions_button.texture = arcade.load_texture(f"{IMAGE_FILE_PATH}/instructions_button.png")
         self.exit_button.texture = arcade.load_texture(EXIT)
         self.buttons_pressed = []

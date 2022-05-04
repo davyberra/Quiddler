@@ -1,29 +1,35 @@
-from typing import List
-from constants import FACE_DOWN_PILE, DISCARD_PILE, GO_DOWN_PILE, COMPLETED_CARDS, MAT_WIDTH, MAT_HEIGHT
+from src.utils.constants import MAT_WIDTH, MAT_HEIGHT
 import arcade
 
-def standard_pile_mat(scale: float):
-    return arcade.SpriteSolidColor(
+
+def standard_pile_mat(scale: float, position):
+    sprite = arcade.SpriteSolidColor(
         round(MAT_WIDTH * scale),
         round(MAT_HEIGHT * scale),
         (255, 255, 255, 40)
     )
+    sprite.position = position
+    return sprite
 
 
-def go_down_pile_mat(scale: float, screen_width: int):
-    return arcade.SpriteSolidColor(
+def go_down_pile_mat(scale: float, screen_width: int, position):
+    sprite = arcade.SpriteSolidColor(
         screen_width,
         round(MAT_HEIGHT * scale),
         (255, 255, 0, 1)
     )
+    sprite.position = position
+    return sprite
 
 
-def player_hand_mat(scale: float, rnd_hand_count: int):
-    return arcade.SpriteSolidColor(
+def player_hand_mat(scale: float, rnd_hand_count: int, position):
+    sprite = arcade.SpriteSolidColor(
             round(rnd_hand_count * MAT_WIDTH * scale),
             round(MAT_HEIGHT * scale),
             (255, 255, 255, 10)
         )
+    sprite.position = position
+    return sprite
 
 def create_mats(scale: float) -> arcade.SpriteList():
     # Create the mats for the face down and discard piles

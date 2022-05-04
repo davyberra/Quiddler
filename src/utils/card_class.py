@@ -2,7 +2,7 @@
 Class for Card Sprite.
 """
 import arcade
-from constants import FACE_DOWN_IMAGE
+from src.utils.constants import FACE_DOWN_IMAGE
 
 
 class Card(arcade.Sprite):

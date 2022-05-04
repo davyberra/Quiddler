@@ -1,7 +1,6 @@
 import arcade
-import confirm_exit
-import instructions
-from constants import WHITE, BACKGROUND_MUSIC, EXIT, EXIT_PRESSED, CANCEL, CANCEL_BUTTON_PRESSED, SAVE, SAVE_PRESSED,\
+from src.views import confirm_exit, instructions
+from src.utils.constants import WHITE, BACKGROUND_MUSIC, EXIT, EXIT_PRESSED, CANCEL, CANCEL_BUTTON_PRESSED, SAVE, SAVE_PRESSED,\
     ON, ON_PRESSED, OFF, OFF_PRESSED
 
 
@@ -15,7 +14,7 @@ class PauseMenu(arcade.View):
         self.scale = min(self.screen_width / 1920, self.screen_height / 1080)
         self.game_view = game_view
         self.background = arcade.Sprite(
-            filename="images/game_menu.png",
+            filename="../images/game_menu.png",
             scale=self.scale
         )
         self.background.position = self.screen_width / 2, self.screen_height / 2
@@ -38,7 +37,7 @@ class PauseMenu(arcade.View):
         self.cancel_button = arcade.Sprite(CANCEL, scale=self.scale)
         self.cancel_button.position = self.screen_width / 2, 600 * self.scale
         self.button_list.append(self.cancel_button)
-        self.instructions_button = arcade.Sprite("images/instructions_button.png", scale=self.scale)
+        self.instructions_button = arcade.Sprite("../images/instructions_button.png", scale=self.scale)
         self.instructions_button.position = self.screen_width / 2, 200 * self.scale
         self.button_list.append(self.instructions_button)
         self.exit_button = arcade.Sprite(EXIT, scale=self.scale)
@@ -70,7 +69,7 @@ class PauseMenu(arcade.View):
         self.buttons_pressed = arcade.get_sprites_at_point((x, y), self.button_list)
 
         if self.instructions_button in self.buttons_pressed:
-            self.instructions_button.texture = arcade.load_texture("images/instructions_button_pressed.png")
+            self.instructions_button.texture = arcade.load_texture("../images/instructions_button_pressed.png")
         elif self.exit_button in self.buttons_pressed:
             self.exit_button.texture = arcade.load_texture(EXIT_PRESSED)
         elif self.cancel_button in self.buttons_pressed:
@@ -106,7 +105,7 @@ class PauseMenu(arcade.View):
         self.sound_on_button.texture = arcade.load_texture(ON)
         self.sound_off_button.texture = arcade.load_texture(OFF)
         self.save_button.texture = arcade.load_texture(SAVE)
-        self.instructions_button.texture = arcade.load_texture("images/instructions_button.png")
+        self.instructions_button.texture = arcade.load_texture("../images/instructions_button.png")
         self.exit_button.texture = arcade.load_texture(EXIT)
         self.buttons_pressed = []
 

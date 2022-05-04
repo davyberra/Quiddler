@@ -3,17 +3,16 @@ Splash Screen called between player turns.
 """
 
 import arcade
-import player
+from src.utils import player
 
-from constants import WHITE, FACE_DOWN_IMAGE
-from src import quiddler
+from src.utils.constants import WHITE, FACE_DOWN_IMAGE
 
 
 class SplashScreen(arcade.View):
 
     # Persists game state between views.
     def __init__(self,
-                 game_view: quiddler.Quiddler,
+                 game_view,
                  current_player: player.Player,
                  player_1,
                  player_2,

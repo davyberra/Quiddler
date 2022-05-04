@@ -1,13 +1,24 @@
 from typing import List
-from constants import OTHER_PILES, WHITE_TRANSPARENT
+from src.managers.manager import Manager
+from src.utils.constants import OTHER_PILES, WHITE_TRANSPARENT, GOLD_TRANSPARENT
 
-from src import player
+from src.utils import player
 
 
-class PlayerManager:
-    def __init__(self):
+class PlayerManager(Manager):
+    def __init__(self, game_view):
+        self.game_view = game_view
         self.player_list: List[player.Player] = []
         self.current_player: player.Player = None
+
+    def setup(self):
+        pass
+
+    def draw(self):
+        pass
+
+    def update(self):
+        pass
 
     def create_players(self, players):
         for i, player_dict in enumerate(players):
@@ -26,14 +37,22 @@ class PlayerManager:
 
         self.current_player = self.player_list[0]
 
-    def round_start_sequence(self, game_state_manager):
+    def round_start_sequence(self):
         for player in self.player_list:
             player.rnd_score = 0
             player.has_gone_down = False
-        self.set_current_player(game_state_manager)
+        self.set_current_player(self.game_view.game_state_manager)
+        self.turn_start_sequence()
+
+    def set_current_player(self, game_state_manager):
+        index = (game_state_manager.rnd - 1) % len(self.player_list)
+        self.current_player = self.player_list[index]
 
     def round_end_sequence(self):
         self.current_player.has_gone_down = True
+
+    def turn_start_sequence(self):
+        self.update_player_colors()
 
     def turn_end_sequence(self):
         self.rotate_players()
@@ -60,3 +79,11 @@ class PlayerManager:
             if p != self.current_player and p.has_gone_down:
                 return True
         return False
+
+    def update_player_colors(self):
+        """Update player box color based on player turn"""
+        for p in self.player_list:
+            if p == self.current_player:
+                p.color = GOLD_TRANSPARENT
+            else:
+                p.color = WHITE_TRANSPARENT

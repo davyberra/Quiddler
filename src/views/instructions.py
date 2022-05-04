@@ -5,11 +5,11 @@ InstructionsMenu - basic class that defines main instruction menu functionality,
 subclassed by each InstructionMenu class.
 """
 import arcade
-import buttons
+import src.utils.buttons as buttons
 
 import arcade.gui
 from arcade.gui import UIManager
-from constants import WHITE, BACKGROUND_MUSIC, BACK, BACK_PRESSED
+from src.utils.constants import WHITE, BACKGROUND_MUSIC, BACK, BACK_PRESSED
 
 
 class InstructionsMenu(arcade.View):
@@ -25,6 +25,7 @@ class InstructionsMenu(arcade.View):
         self.background.position = self.screen_width / 2, self.screen_height / 2
 
         self.ui_manager = UIManager()
+        self.ui_manager.enable()
 
         self.background_music = BACKGROUND_MUSIC
 
@@ -32,7 +33,7 @@ class InstructionsMenu(arcade.View):
         self.setup()
 
     def on_hide_view(self):
-        self.ui_manager.unregister_handlers()
+        self.ui_manager.disable()
 
     def setup(self):
         """ To be overriden. """
@@ -49,7 +50,7 @@ class InstructionsMenu1(InstructionsMenu):
     def __init__(self, game_view):
         super().__init__(
             game_view=game_view,
-            background_filename='images/instructions_1.png'
+            background_filename='../images/instructions_1.png'
         )
 
     def setup(self):
@@ -61,7 +62,7 @@ class InstructionsMenu1(InstructionsMenu):
             screen_width=self.screen_width,
             scale=self.scale
         )
-        self.ui_manager.add_ui_element(button)
+        self.ui_manager.add(button)
 
         button = buttons.BackButton(
             game_view=self.game_view,
@@ -69,7 +70,7 @@ class InstructionsMenu1(InstructionsMenu):
             screen_width=self.screen_width,
             scale=self.scale
         )
-        self.ui_manager.add_ui_element(button)
+        self.ui_manager.add(button)
 
 
 class InstructionsMenu2(InstructionsMenu):
@@ -77,7 +78,7 @@ class InstructionsMenu2(InstructionsMenu):
     def __init__(self, game_view):
         super().__init__(
             game_view=game_view,
-            background_filename='images/instructions_2.png'
+            background_filename='../images/instructions_2.png'
         )
 
     def setup(self):
@@ -88,7 +89,7 @@ class InstructionsMenu2(InstructionsMenu):
             ),
             scale=self.scale
         )
-        self.ui_manager.add_ui_element(button)
+        self.ui_manager.add(button)
 
         button = buttons.RightArrow(
             window=self.window,
@@ -98,7 +99,7 @@ class InstructionsMenu2(InstructionsMenu):
             screen_width=self.screen_width,
             scale=self.scale
         )
-        self.ui_manager.add_ui_element(button)
+        self.ui_manager.add(button)
 
         button = buttons.BackButton(
             game_view=self.game_view,
@@ -106,7 +107,7 @@ class InstructionsMenu2(InstructionsMenu):
             screen_width=self.screen_width,
             scale=self.scale
         )
-        self.ui_manager.add_ui_element(button)
+        self.ui_manager.add(button)
 
 
 class InstructionsMenu3(InstructionsMenu):
@@ -114,7 +115,7 @@ class InstructionsMenu3(InstructionsMenu):
     def __init__(self, game_view):
         super().__init__(
             game_view=game_view,
-            background_filename='images/instructions_3.png'
+            background_filename='../images/instructions_3.png'
         )
 
     def setup(self):
@@ -125,7 +126,7 @@ class InstructionsMenu3(InstructionsMenu):
             ),
             scale=self.scale
         )
-        self.ui_manager.add_ui_element(button)
+        self.ui_manager.add(button)
 
         button = buttons.RightArrow(
             window=self.window,
@@ -135,7 +136,7 @@ class InstructionsMenu3(InstructionsMenu):
             screen_width=self.screen_width,
             scale=self.scale
         )
-        self.ui_manager.add_ui_element(button)
+        self.ui_manager.add(button)
 
         button = buttons.BackButton(
             game_view=self.game_view,
@@ -143,7 +144,7 @@ class InstructionsMenu3(InstructionsMenu):
             screen_width=self.screen_width,
             scale=self.scale
         )
-        self.ui_manager.add_ui_element(button)
+        self.ui_manager.add(button)
 
 
 class InstructionsMenu4(InstructionsMenu):
@@ -151,7 +152,7 @@ class InstructionsMenu4(InstructionsMenu):
     def __init__(self, game_view):
         super().__init__(
             game_view=game_view,
-            background_filename='images/instructions_4.png'
+            background_filename='../images/instructions_4.png'
         )
 
     def setup(self):
@@ -162,7 +163,7 @@ class InstructionsMenu4(InstructionsMenu):
             ),
             scale=self.scale
         )
-        self.ui_manager.add_ui_element(button)
+        self.ui_manager.add(button)
 
         button = buttons.BackButton(
             game_view=self.game_view,
@@ -170,4 +171,4 @@ class InstructionsMenu4(InstructionsMenu):
             screen_width=self.screen_width,
             scale=self.scale
         )
-        self.ui_manager.add_ui_element(button)
+        self.ui_manager.add(button)

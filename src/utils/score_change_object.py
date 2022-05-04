@@ -1,4 +1,4 @@
-from src import player
+from src.utils import player
 
 
 class ScoreChangeObject:

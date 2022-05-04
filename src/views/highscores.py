@@ -4,7 +4,7 @@ View that displays high scores.
 import arcade
 import shelve
 
-from constants import HIGHSCORES_BACKGROUND, BACK, BACK_PRESSED
+from src.utils.constants import HIGHSCORES_BACKGROUND, BACK, BACK_PRESSED
 
 
 class HighScores(arcade.View):
@@ -15,6 +15,7 @@ class HighScores(arcade.View):
         self.scale = min(self.screen_width / 1920, self.screen_height / 1080)
         self.game_view = game_view
 
+        self.buttons_pressed = []
         self.button_list = arcade.SpriteList()
         self.back = arcade.Sprite(BACK, scale=self.scale)
         self.back.position = self.screen_width / 2, 100 * self.scale

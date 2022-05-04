@@ -2,7 +2,7 @@
 Confirm Exit view - called when a user tries to exit the game from the Pause Menu.
 """
 import arcade
-from constants import EXIT, CANCEL, EXIT_PRESSED, CANCEL_BUTTON_PRESSED
+from src.utils.constants import EXIT, CANCEL, EXIT_PRESSED, CANCEL_BUTTON_PRESSED
 
 
 class ConfirmExit(arcade.View):
@@ -13,7 +13,7 @@ class ConfirmExit(arcade.View):
         self.screen_width, self.screen_height = self.window.get_size()
         self.scale = min(self.screen_width / 1920, self.screen_height / 1080)
         self.background = arcade.Sprite(
-            filename="images/confirm_exit.png",
+            filename="../images/confirm_exit.png",
             scale=self.scale
         )
         self.background.position = self.screen_width / 2, self.screen_height / 2

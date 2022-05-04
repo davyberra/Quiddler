@@ -1,6 +1,6 @@
 import arcade
-from src import player, score_change_object
-from constants import WHITE, GREEN, RED
+from src.utils import player, score_change_object
+from src.utils.constants import WHITE, GREEN, RED
 
 
 class ScoreBox:
@@ -19,7 +19,6 @@ class ScoreBox:
         self.scale = scale
 
     def draw(self):
-
         arcade.draw_rectangle_filled(
             center_x=self.center_x,
             center_y=self.center_y,
@@ -47,21 +46,21 @@ class ScoreBox:
         )
 
     def draw_score_change(self, score_change_object: score_change_object.ScoreChangeObject):
-            color, prefix = None, None
+        color, prefix = None, None
 
-            if score_change_object.score >= 0:
-                color = GREEN
-                prefix = '+'
-            elif score_change_object.score < 0:
-                color = RED
-                prefix = ''
+        if score_change_object.score >= 0:
+            color = GREEN
+            prefix = '+'
+        elif score_change_object.score < 0:
+            color = RED
+            prefix = ''
 
-            arcade.draw_text(
-                f'{prefix}{score_change_object.score}',
-                self.center_x,
-                self.center_y,
-                color,
-                font_size=round(24 * self.scale),
-                anchor_x="center",
-                anchor_y="center"
-            )
+        arcade.draw_text(
+            f'{prefix}{score_change_object.score}',
+            self.center_x,
+            self.center_y,
+            color,
+            font_size=round(24 * self.scale),
+            anchor_x="center",
+            anchor_y="center"
+        )

@@ -2,8 +2,9 @@ import random
 import time
 from typing import List
 
-from constants import WORD_LIST, CARD_SCORE
-from card_class import Card
+from src.utils.constants import WORD_LIST, CARD_SCORE
+from src.utils.card_class import Card
+
 
 class ComputerTurn:
     def two_letter_valid(self, c1: Card, c2: Card):
